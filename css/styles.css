@@ -1,0 +1,146 @@
+/* css/styles.css */
+body { 
+    font-family: 'BiauKai', 'DFKai-SB', 'Kaiti', 'STKaiti', 'Noto Serif TC', serif; 
+    background: linear-gradient(135deg, #e0e7ff 0%, #f3e8ff 100%);
+    min-height: 100vh;
+    font-weight: bold;
+    color: #1a202c;
+    transition: all 0.5s ease;
+}
+.main-container {
+    transition: all 0.5s ease;
+}
+
+.grid-wrapper { 
+    padding: 24px 36px; 
+    overflow-x: auto; 
+    -webkit-overflow-scrolling: touch; 
+}
+@media (max-width: 640px) {
+    .grid-wrapper { 
+        padding: 20px 24px !important; 
+    }
+    .grid-qimen { 
+        gap: 4px !important; 
+        margin: 0 auto; 
+        width: 100% !important; 
+        max-width: 100% !important; 
+    }
+    .palace { 
+        min-height: 175px !important; 
+        padding: 4px 6px !important; 
+        border-radius: 6px !important; 
+    }
+    .branch-label { 
+        font-size: 0.85rem !important; 
+    }
+    .tian-jiang { 
+        font-size: 0.6rem !important; 
+    }
+    .pos-left { left: -21px !important; }
+    .pos-right { right: -21px !important; }
+    .pos-top { top: -22px !important; }
+    .pos-bottom { bottom: -22px !important; }
+}
+
+.grid-qimen { 
+    display: grid; 
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 6px; 
+    max-width: 640px; 
+    min-width: 280px; 
+    margin: auto; 
+}
+
+.palace { 
+    position: relative; 
+    border-radius: 8px; 
+    padding: 6px 8px; 
+    min-height: 200px; 
+    display: flex; 
+    flex-direction: column; 
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06); 
+    border: 1.5px solid; 
+    background-color: rgba(255, 255, 255, 0.95); 
+    transition: all 0.2s ease; 
+    cursor: pointer;
+}
+
+/* 古典五行配色 */
+.bg-water { background-color: #f0f9ff; border-color: #bae6fd; } .text-water { color: #0369a1; }
+.bg-brown { background-color: #fcf6f0; border-color: #d7c4b4; } .text-brown { color: #78350f; }
+.bg-wood { background-color: #f0fdf4; border-color: #bbf7d0; } .text-wood { color: #15803d; }
+.bg-fire { background-color: #fef2f2; border-color: #fecaca; } .text-fire { color: #b91c1c; }
+.bg-metal { background-color: #fffbeb; border-color: #fde68a; } .text-metal { color: #b45309; }
+.bg-white-palace { background-color: #ffffff; border-color: #e2e8f0; } 
+
+/* 八神／九星／八門字體 */
+.text-main { 
+    font-size: clamp(1.4rem, 5vw, 1.95rem); 
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    line-height: 1.15; 
+}
+.text-palace-name { 
+    font-size: clamp(0.78rem, 1.9vw, 0.95rem); 
+    font-weight: 900; 
+}
+
+.text-tiandi-stem {
+    font-size: clamp(1.2rem, 4.0vw, 1.55rem);
+    font-weight: 900;
+    line-height: 1.05;
+}
+
+.day-stem { display: inline-block; background-color: #f3e8ff; border: 1.5px solid #a855f7; padding: 0 3px; border-radius: 4px; line-height: 1.1; }
+.hour-stem { display: inline-block; background-color: #ffedd5; border: 1.5px solid #f97316; padding: 0 3px; border-radius: 4px; line-height: 1.1; }
+
+.emoji-container { position: absolute; top: 4px; right: 4px; display: flex; flex-direction: column; align-items: flex-end; gap: 1px; font-size: 1rem; line-height: 1; z-index: 10; }
+.branch-label {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.05rem;
+    font-weight: 900;
+    pointer-events: none;
+    white-space: nowrap;
+    z-index: 20;
+}
+
+.tian-jiang {
+    font-size: 0.7rem;
+    color: #7e22ce; 
+    margin-left: 3px;
+}
+
+.vertical-label {
+    flex-direction: column;
+    line-height: 1.1;
+}
+.vertical-label .tian-jiang {
+    margin-left: 0;
+    margin-top: 3px;
+    writing-mode: vertical-lr; 
+    letter-spacing: 1px;
+}
+
+.pos-top { top: -30px; left: 50%; transform: translateX(-50%); }
+.pos-bottom { bottom: -30px; left: 50%; transform: translateX(-50%); }
+.pos-left { top: 50%; left: -30px; transform: translateY(-50%); }
+.pos-right { top: 50%; right: -30px; transform: translateY(-50%); }
+
+.slide-panel {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+}
+
+.chk-label {
+    display: inline-flex; align-items: center; gap: 4px;
+    background-color: #fff; border: 1px solid #e5e7eb;
+    padding: 4px 8px; border-radius: 6px; cursor: pointer;
+    transition: all 0.2s;
+}
+.chk-label:hover { background-color: #fef3c7; border-color: #fcd34d; }
+.chk-label input:checked + span { color: #d97706; font-weight: 900; }
+.chk-label input { accent-color: #f59e0b; width: 14px; height: 14px; }
+.chk-label-disabled { opacity: 0.5; cursor: not-allowed !important; background-color: #f9fafb !important; pointer-events: none; }
