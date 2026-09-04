@@ -1,5 +1,5 @@
 // data/geju_data.js
-// 奇門遁甲 81 格局名堂與吉凶斷語字典
+// 奇門遁甲 81 格局名堂與吉凶斷語字典，及九遁、三詐五假專用匹配引擎
 
 const RAW_GEJU_DATA = [
     [
@@ -114,3 +114,253 @@ RAW_GEJU_DATA.flat().forEach(str => {
         };
     }
 });
+
+// ==========================================
+// 🌟 奇門九遁與三詐五假資料及比對引擎 (新增)
+// ==========================================
+
+/**
+ * 奇門九遁比對
+ * @param {Object} p 宮位狀態物件 { palaceNum, hstem, estem, door, god }
+ */
+function matchNineDun(p) {
+    const matches = [];
+    const { palaceNum, hstem, estem, door, god } = p;
+    const isJiMen = ['開門', '休門', '生門'].includes(door);
+
+    // 1. 天遁：天盤丙奇 + 生門 + 地盤丁奇 (正格為生門，兼取開休吉門)
+    if (hstem === '丙' && estem === '丁' && (door === '生門' || isJiMen)) {
+        matches.push({
+            name: '天遁吉格',
+            category: '九遁',
+            type: '大吉',
+            desc: '《奇門遁甲秘笈大全》：生門合丙奇，臨下六丁，得月華之蔽。所向皆吉，百事生旺，宜行兵、求官、經商、婚娶。'
+        });
+    }
+
+    // 2. 地遁：天盤乙奇 + 開門 + 地盤六己
+    if (hstem === '乙' && estem === '己' && (door === '開門' || isJiMen)) {
+        matches.push({
+            name: '地遁吉格',
+            category: '九遁',
+            type: '大吉',
+            desc: '《奇門遁甲秘笈大全》：開門合乙奇，臨地下六己，得日精之蔽。宜安營紮寨、修造安墳、埋伏藏兵、避難全吉。'
+        });
+    }
+
+    // 3. 人遁：天盤丁奇 + 休門 + 神盤太陰
+    if (hstem === '丁' && door === '休門' && god === '太陰') {
+        matches.push({
+            name: '人遁吉格',
+            category: '九遁',
+            type: '大吉',
+            desc: '《奇門遁甲秘笈大全》：休門與丁奇合太陰，得星精之蔽。宜探密、謁貴、招賢、求婚、經營、盟誓，百事和集。'
+        });
+    }
+
+    // 4. 風遁：天盤乙奇 + 三吉門(開休生) + 落巽四宮
+    if (hstem === '乙' && isJiMen && palaceNum === 4) {
+        matches.push({
+            name: '風遁吉格',
+            category: '九遁',
+            type: '吉',
+            desc: '《奇門遁甲秘笈大全》：日奇合開休生三門臨巽四宮。得風靈之氣，宜借勢乘風、順水推舟、迅速突襲、宣揚威名。'
+        });
+    }
+
+    // 5. 雲遁：天盤乙奇 + 三吉門(開休生) + 地盤六辛
+    if (hstem === '乙' && isJiMen && estem === '辛') {
+        matches.push({
+            name: '雲遁吉格',
+            category: '九遁',
+            type: '吉',
+            desc: '《奇門遁甲秘笈大全》：日奇合開休生三門臨地盤六辛，得雲精之蔽。宜求雨祈福、伏兵掩蔽、暗中籌謀、韜光養晦。'
+        });
+    }
+
+    // 6. 龍遁：天盤乙奇 + (休門或開休生) + (落坎一宮 或 地盤六癸)
+    if (hstem === '乙' && (door === '休門' || isJiMen) && (palaceNum === 1 || estem === '癸')) {
+        matches.push({
+            name: '龍遁吉格',
+            category: '九遁',
+            type: '吉',
+            desc: '《奇門遁甲秘笈大全》：日奇合休門臨坎宮或地盤六癸，如神龍在水。利水路營謀、修橋穿井、開渠乘浪、通達順遂。'
+        });
+    }
+
+    // 7. 虎遁：
+    //  (a) 乙奇合休門/生門臨艮八宮或地盤辛
+    //  (b) 辛加生門臨艮八宮
+    //  (c) 庚加開門臨兌七宮
+    const isHuA = hstem === '乙' && ['休門', '生門'].includes(door) && (palaceNum === 8 || estem === '辛');
+    const isHuB = hstem === '辛' && door === '生門' && palaceNum === 8;
+    const isHuC = hstem === '庚' && door === '開門' && palaceNum === 7;
+    if (isHuA || isHuB || isHuC) {
+        matches.push({
+            name: '虎遁吉格',
+            category: '九遁',
+            type: '吉',
+            desc: '《奇門遁甲秘笈大全》：乙奇合休生二門臨艮宮或辛，或辛加生門臨艮，得猛虎之威。宜安營防守、設伏禦敵、震懾群凶。'
+        });
+    }
+
+    // 8. 神遁：天盤丙奇 + 生門 + 神盤九天
+    if (hstem === '丙' && door === '生門' && god === '九天') {
+        matches.push({
+            name: '神遁吉格',
+            category: '九遁',
+            type: '大吉',
+            desc: '《奇門遁甲秘笈大全》：丙奇合九天臨生門，得天靈百神之蔽。宜祈神禱告、祭天建壇、公眾表態、施法破敵。'
+        });
+    }
+
+    // 9. 鬼遁：天盤丁奇 + 杜門(或開生門) + 神盤九地
+    if (hstem === '丁' && ['杜門', '開門', '生門'].includes(door) && god === '九地') {
+        matches.push({
+            name: '鬼遁吉格',
+            category: '九遁',
+            type: '吉',
+            desc: '《奇門遁甲秘笈大全》：丁奇合杜門（或開生門）乘九地。幽潛神隱，宜暗中行事、探私劫營、超度亡魂、破除邪崇。'
+        });
+    }
+
+    return matches;
+}
+
+/**
+ * 奇門三詐五假比對
+ * @param {Object} p 宮位狀態物件 { palaceNum, hstem, estem, door, god }
+ */
+function matchSanZhaWuJia(p) {
+    const matches = [];
+    const { palaceNum, hstem, estem, door, god } = p;
+    const isSanQi = ['乙', '丙', '丁'].includes(hstem);
+    const isJiMen = ['開門', '休門', '生門'].includes(door);
+    const hasDiStem = ['丁', '己', '癸'].includes(hstem) || ['丁', '己', '癸'].includes(estem);
+
+    // ================= 三詐 =================
+    // 條件：開休生三吉門 + 乙丙丁三奇 + 陰神(太陰、九地、六合)
+    if (isJiMen && isSanQi) {
+        if (god === '太陰') {
+            matches.push({
+                name: '真詐吉格',
+                category: '三詐',
+                type: '大吉',
+                desc: '《奇門遁甲秘笈大全》：開休生合三奇下臨太陰，為真詐。宜施恩佈德、隱遁退藏、祈禱求仙、密謀成事，百事皆吉。'
+            });
+        }
+        if (god === '九地') {
+            matches.push({
+                name: '重詐吉格',
+                category: '三詐',
+                type: '大吉',
+                desc: '《奇門遁甲秘笈大全》：開休生合三奇下臨九地，為重詐。宜拜官受爵、添丁進口、商賈納財、出師設伏，吉。'
+            });
+        }
+        if (god === '六合') {
+            matches.push({
+                name: '休詐吉格',
+                category: '三詐',
+                type: '大吉',
+                desc: '《奇門遁甲秘笈大全》：開休生合三奇下臨六合，為休詐。宜合藥治病、祛邪禳災、求醫祈神、商議和諧。'
+            });
+        }
+    }
+
+    // ================= 五假 =================
+    // 1. 天假：景門 + 乙丙丁三奇 + 神盤九天
+    if (door === '景門' && isSanQi && god === '九天') {
+        matches.push({
+            name: '天假吉格',
+            category: '五假',
+            type: '吉',
+            desc: '《奇門遁甲秘笈大全》：景門合三奇臨九天，為天假。宜陳事上書、獻策謁貴、干求訴訟、宣揚聲威，大吉。'
+        });
+    }
+
+    // 2. 地假：杜門 + (丁、己、癸) + 神盤九地 (亦通太陰、六合)
+    if (door === '杜門' && hasDiStem && ['九地', '太陰', '六合'].includes(god)) {
+        matches.push({
+            name: '地假巧格',
+            category: '五假',
+            type: '吉',
+            desc: '《奇門遁甲秘笈大全》：杜門合丁己癸臨九地（或太陰、六合），為地假。宜行間探私、暗箱策劃、躲災逃亡、潛形隱跡。'
+        });
+    }
+
+    // 3. 人假：驚門 + 六壬(天盤壬) + 神盤九天
+    if (door === '驚門' && hstem === '壬' && god === '九天') {
+        matches.push({
+            name: '人假巧格',
+            category: '五假',
+            type: '吉',
+            desc: '《奇門遁甲秘笈大全》：驚門合六壬臨九天，為人假。宜捕捉逃亡、搜擒盜寇、爭訟破敵、追討失物必獲。'
+        });
+    }
+
+    // 4. 神假（物假）：傷門 + (丁、己、癸) + 神盤九地 (亦通六合)
+    if (door === '傷門' && hasDiStem && ['九地', '六合'].includes(god)) {
+        matches.push({
+            name: '神假巧格 (物假)',
+            category: '五假',
+            type: '吉',
+            desc: '《奇門遁甲秘笈大全》：傷門合丁己癸臨九地或六合，為神假（物假）。宜祈禱神明、索債討償、交易埋伏、捕捉伏藏。'
+        });
+    }
+
+    // 5. 鬼假：死門 + (丁、己、癸) + (神盤九地 或 落坎一宮)
+    if (door === '死門' && hasDiStem && (god === '九地' || palaceNum === 1)) {
+        matches.push({
+            name: '鬼假巧格',
+            category: '五假',
+            type: '吉',
+            desc: '《奇門遁甲秘笈大全》：死門合丁己癸臨九地或坎宮，為鬼假。利超亡度幽、修墳下葬、伐邪安民、探幽制煞。'
+        });
+    }
+
+    return matches;
+}
+
+/**
+ * 整合掃描指定宮位之所有格局（九遁 + 三詐五假 + 81十干克應）
+ * @param {Object} p 宮位完整參數
+ * @returns {Array} 匹配到的格局陣列
+ */
+function scanPalaceAllGeju(p) {
+    const list = [];
+    if (!p) return list;
+
+    // 1. 比對九遁
+    const duns = matchNineDun(p);
+    list.push(...duns);
+
+    // 2. 比對三詐五假
+    const zhaJias = matchSanZhaWuJia(p);
+    list.push(...zhaJias);
+
+    // 3. 比對 81 十干克應 (正干)
+    const baseKey = `${p.hstem}+${p.estem}`;
+    if (GEJU_MAP[baseKey]) {
+        list.push({
+            name: `${GEJU_MAP[baseKey].name} (${baseKey})`,
+            category: '十干克應',
+            type: GEJU_MAP[baseKey].type,
+            desc: GEJU_MAP[baseKey].desc
+        });
+    }
+
+    // 4. 比對天禽星寄宮隱干（若有）
+    if (p.hstemHidden && p.hstemHidden !== p.hstem) {
+        const hiddenKey = `${p.hstemHidden}+${p.estem}`;
+        if (GEJU_MAP[hiddenKey]) {
+            list.push({
+                name: `${GEJU_MAP[hiddenKey].name} (${hiddenKey} 寄干)`,
+                category: '十干克應(寄干)',
+                type: GEJU_MAP[hiddenKey].type,
+                desc: GEJU_MAP[hiddenKey].desc
+            });
+        }
+    }
+
+    return list;
+}
