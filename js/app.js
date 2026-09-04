@@ -293,23 +293,56 @@ function showPalaceDetails(pNum) {
 
     document.getElementById('pm-harms').innerHTML = harmsHTML || '<span class="text-gray-400">無特殊狀態</span>';
 
-    let gejuHTML = "";
+// ====== 替換為以下新代碼 ======
     let gejus = calculateGeju(data);
+    
+    // 同步更新標題旁的格局計數徽章（若 index.html 有加入 pm-geju-count）
+    const countBadge = document.getElementById('pm-geju-count');
+    if (countBadge) {
+        countBadge.innerText = `${gejus.length} 個格局`;
+        countBadge.className = gejus.length > 0 
+            ? "text-xs bg-indigo-100 text-indigo-800 font-black px-2 py-0.5 rounded-full"
+            : "text-xs bg-gray-100 text-gray-500 font-bold px-2 py-0.5 rounded-full";
+    }
+
+    let gejuHTML = "";
     if (gejus.length === 0) {
-        gejuHTML = '<span class="text-gray-400">此宮目前無特殊格局。</span>';
+        gejuHTML = `
+            <div class="p-3 text-center text-gray-400 text-xs sm:text-sm bg-gray-50 rounded-lg border border-dashed border-gray-200">
+                此宮目前無九遁、三詐五假或特殊十干克應格局。
+            </div>`;
     } else {
         gejus.forEach(g => {
+            // 分類標籤樣式 (九遁: 紫色、三詐: 藍色、五假: 琥珀色、十干克應: 石板灰)
+            let catBadge = 'bg-slate-100 text-slate-700 border-slate-300';
+            if (g.category === '九遁') catBadge = 'bg-purple-100 text-purple-800 border-purple-300 font-black';
+            else if (g.category === '三詐') catBadge = 'bg-blue-100 text-blue-800 border-blue-300 font-black';
+            else if (g.category === '五假') catBadge = 'bg-amber-100 text-amber-900 border-amber-300 font-black';
+
+            // 吉凶徽章樣式
             let badgeColor = 'bg-gray-100 text-gray-800 border-gray-200'; 
-            if (g.type.includes('吉')) badgeColor = 'bg-green-100 text-green-800 border-green-200';
-            else if (g.type.includes('凶')) badgeColor = 'bg-red-100 text-red-800 border-red-200';
+            if (g.type.includes('大吉')) {
+                badgeColor = 'bg-emerald-600 text-white font-black shadow-sm';
+            } else if (g.type.includes('吉')) {
+                badgeColor = 'bg-emerald-100 text-emerald-800 border-emerald-300 font-bold';
+            } else if (g.type.includes('凶')) {
+                badgeColor = 'bg-rose-100 text-rose-800 border-rose-300 font-bold';
+            } else if (g.type.includes('平')) {
+                badgeColor = 'bg-amber-100 text-amber-800 border-amber-300 font-bold';
+            }
             
             gejuHTML += `
-                <div class="p-3 bg-gray-50 border border-gray-100 rounded-lg flex flex-col">
-                    <div class="flex items-center gap-2 mb-1.5">
-                        <span class="font-bold text-gray-800 text-base">${g.name}</span>
-                        <span class="text-[10px] px-1.5 py-0.5 rounded border ${badgeColor} font-bold">${g.type}</span>
+                <div class="p-3 bg-slate-50/80 hover:bg-slate-50 border border-slate-200/70 rounded-xl flex flex-col space-y-1.5 transition">
+                    <div class="flex items-center justify-between gap-1 flex-wrap">
+                        <div class="flex items-center gap-1.5">
+                            ${g.category ? `<span class="text-[10px] sm:text-xs px-1.5 py-0.5 rounded border ${catBadge}">${g.category}</span>` : ''}
+                            <span class="font-bold text-gray-900 text-sm sm:text-base">${g.name}</span>
+                        </div>
+                        <span class="text-[10px] sm:text-[11px] px-2 py-0.5 rounded-full border ${badgeColor}">${g.type}</span>
                     </div>
-                    <span class="text-gray-600 text-sm leading-relaxed">${g.desc}</span>
+                    <div class="text-xs sm:text-sm text-gray-600 leading-relaxed pl-1 pt-1 border-t border-gray-200/50">
+                        ${g.desc}
+                    </div>
                 </div>`;
         });
     }
