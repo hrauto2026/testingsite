@@ -323,9 +323,9 @@
                 </div>
 
 <!-- 🌟 八字起盤模組外層容器（位於 Toggle Footer 之下） -->
-<div id="bazi-wrapper" class="hidden mt-6 w-full flex-col items-center">
+<div id="bazi-wrapper" class="hidden mt-6 w-full flex flex-col items-center">
     
-    <!-- (iii) 三態開關：直接置於八字 Table 正上方 -->
+    <!-- 三態開關：直接置於八字 Table 正上方 -->
     <div class="flex items-center gap-2 bg-white/95 px-4 py-1.5 rounded-full shadow-md border border-amber-300 mb-3 select-none">
         <span class="text-xs sm:text-sm font-bold text-amber-900 flex items-center gap-1">📜 八字起盤</span>
         <div class="inline-flex rounded-full bg-slate-100 p-0.5 border border-amber-200 text-xs font-bold">
@@ -335,23 +335,43 @@
         </div>
     </div>
 
-<!-- 🌟 八字排盤展示面板 (手機端內距縮減為 p-2.5，確保四柱無需滾動即可完整入鏡) -->
-<div id="bazi-display-panel" class="hidden w-full bg-white/95 rounded-2xl shadow-xl p-2.5 sm:p-5 border-2 border-amber-300 transition-all select-none">
-    <!-- 命造、生肖與交運資訊 -->
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-amber-200 pb-2.5 mb-3 gap-1.5">
-        <div class="flex items-center gap-2">
-            <span class="text-base sm:text-lg font-black text-amber-950" id="bazi-panel-title">四柱八字</span>
-            <span id="bazi-zodiac-tag" class="text-[11px] sm:text-xs bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded border border-amber-300"></span>
+    <!-- 八字排盤展示面板 (單一容器) -->
+    <div id="bazi-display-panel" class="hidden w-full bg-white/95 rounded-2xl shadow-xl p-2.5 sm:p-5 border-2 border-amber-300 transition-all select-none">
+        <!-- 命造簡介與起運年歲 -->
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-amber-200 pb-2.5 mb-3 gap-1.5">
+            <div class="flex items-center gap-2">
+                <span class="text-base sm:text-lg font-black text-amber-950" id="bazi-panel-title">四柱八字</span>
+                <span id="bazi-zodiac-tag" class="text-[11px] sm:text-xs bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded border border-amber-300"></span>
+            </div>
+            <div id="bazi-yun-info" class="text-xs sm:text-sm font-bold text-amber-900 bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-200"></div>
         </div>
-        <div id="bazi-yun-info" class="text-xs sm:text-sm font-bold text-amber-900 bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-200"></div>
-    </div>
 
-    <!-- 四柱 Table：移除 min-w 限制，固定 w-full 四等分 (w-1/4) 並緊湊排列 -->
-    <div class="w-full mb-5">
-        <div id="bazi-pillars-table" class="w-full flex border-2 border-amber-900 rounded-lg bg-white text-center shadow-sm overflow-hidden">
-            <!-- 由 JS 動態生成四柱 -->
+        <!-- 四柱主盤 Table：四柱並列 + 底部交運時節 -->
+        <div class="w-full mb-5">
+            <div id="bazi-pillars-table" class="w-full flex flex-col border-2 border-amber-900 rounded-lg bg-white text-center shadow-sm overflow-hidden">
+                <!-- 上半部：由左至右 (年/月/日/時) 四柱 -->
+                <div id="bazi-pillars-grid" class="w-full flex"></div>
+                
+                <!-- 下半部：交運時節通欄 -->
+                <div id="bazi-jiaoyun-row" class="w-full border-t-2 border-amber-900 bg-amber-50/90 py-2 px-3 text-xs sm:text-sm font-bold text-amber-950 flex flex-col sm:flex-row justify-between items-center gap-1.5 text-left sm:text-center"></div>
+            </div>
+        </div>
+
+        <!-- 大運與流年區塊 -->
+        <div class="border-t border-amber-100 pt-3 sm:pt-4">
+            <h4 class="text-sm sm:text-base font-bold text-amber-900 mb-2.5 flex items-center gap-1.5">
+                <span>🏃 大運排盤</span>
+                <span class="text-[11px] sm:text-xs font-normal text-stone-500">(點擊大運卡片切換查看 10 年流年)</span>
+            </h4>
+            
+            <div class="overflow-x-auto pb-2 mb-3">
+                <div id="bazi-dayun-list" class="flex gap-1.5 sm:gap-2 min-w-max"></div>
+            </div>
+
+            <div id="bazi-liunian-container" class="bg-amber-50/50 p-2.5 sm:p-4 rounded-xl border border-amber-200"></div>
         </div>
     </div>
+</div>
 
     <!-- 大運與流年區塊 -->
     <div class="border-t border-amber-100 pt-3 sm:pt-4">
@@ -894,8 +914,7 @@ function setBaziState(state) {
 }
 
 
-
-// 正體中文標準十神對應字典
+// 正體中文標準十神字典
 const SHISHEN_TRAD_MAP = {
     '比肩': '比肩', '劫财': '劫財', '劫財': '劫財',
     '食神': '食神', '伤官': '傷官', '傷官': '傷官',
@@ -905,7 +924,6 @@ const SHISHEN_TRAD_MAP = {
     '正印': '正印', '日主': '日主'
 };
 
-// 正體中文生肖對應字典
 const SHENGXIAO_TRAD_MAP = {
     '鼠': '鼠', '牛': '牛', '虎': '虎', '兔': '兔',
     '龙': '龍', '龍': '龍', '蛇': '蛇', '马': '馬', '馬': '馬',
@@ -918,6 +936,98 @@ function toTradShiShen(name) {
     return SHISHEN_TRAD_MAP[name] || name;
 }
 
+// 依據秘訣嚴格計算上運與交運時間
+function calculateShangYunJiaoYun(birthDate, yearGan, gender, lunarObj) {
+    // 1. 判斷陽年/陰年與順逆行 (陽男陰女順行，陰男陽女逆行)
+    const isYangYear = ['甲', '丙', '戊', '庚', '壬'].includes(yearGan);
+    const isForward = (isYangYear && gender === 1) || (!isYangYear && gender === 0);
+
+    // 2. 算到「節」：只取12節氣之「節」（立春、驚蟄、清明、立夏、芒種、小暑、立秋、白露、寒露、立冬、大雪、小寒）
+    const targetJie = isForward ? lunarObj.getNextJie(false) : lunarObj.getPrevJie(false);
+    const targetJieName = TRAD_JIEQI[targetJie.getName()] || targetJie.getName();
+    const targetSolar = targetJie.getSolar();
+    const targetDate = new Date(
+        targetSolar.getYear(),
+        targetSolar.getMonth() - 1,
+        targetSolar.getDay(),
+        targetSolar.getHour(),
+        targetSolar.getMinute(),
+        targetSolar.getSecond()
+    );
+
+    // 3. 計算日時差距
+    const diffMs = Math.abs(targetDate.getTime() - birthDate.getTime());
+    const totalMinutes = Math.floor(diffMs / 60000);
+    const totalHours = Math.floor(totalMinutes / 60);
+    const remMinutes = totalMinutes % 60;
+    const totalDays = Math.floor(totalHours / 24);
+    const remHours = totalHours % 24;
+
+    // 4. 依規則折算：三日折一年、一日折四個月、一時辰折十天
+    const yFromDays = Math.floor(totalDays / 3);
+    const remDays = totalDays % 3;
+    let mFromDays = remDays * 4;
+
+    const shichen = Math.floor(remHours / 2);
+    const rem1Hour = remHours % 2;
+    const extraMinutes = rem1Hour * 60 + remMinutes;
+    let dFromTime = shichen * 10 + Math.round(extraMinutes / 12); // 12分鐘折算1天
+
+    // 進位整理
+    if (dFromTime >= 30) {
+        mFromDays += Math.floor(dFromTime / 30);
+        dFromTime = dFromTime % 30;
+    }
+    let finalYears = yFromDays;
+    if (mFromDays >= 12) {
+        finalYears += Math.floor(mFromDays / 12);
+        mFromDays = mFromDays % 12;
+    }
+    const finalMonths = mFromDays;
+    const finalDays = dFromTime;
+
+    // 首次交運公曆日期
+    const jiaoYunDate = new Date(birthDate.getTime());
+    jiaoYunDate.setFullYear(jiaoYunDate.getFullYear() + finalYears);
+    jiaoYunDate.setMonth(jiaoYunDate.getMonth() + finalMonths);
+    jiaoYunDate.setDate(jiaoYunDate.getDate() + finalDays);
+
+    // 虛歲起運年歲
+    const birthYear = birthDate.getFullYear();
+    const startAge = Math.max(1, jiaoYunDate.getFullYear() - birthYear + 1);
+
+    // 計算交運節氣與時辰描述
+    const jyLunar = Solar.fromDate(jiaoYunDate).getLunar();
+    const jyPrevJq = jyLunar.getPrevJieQi(false);
+    const jyPrevJqName = TRAD_JIEQI[jyPrevJq.getName()] || jyPrevJq.getName();
+    const jyPrevJqDate = new Date(
+        jyPrevJq.getSolar().getYear(),
+        jyPrevJq.getSolar().getMonth() - 1,
+        jyPrevJq.getSolar().getDay()
+    );
+    const daysAfterJq = Math.max(0, Math.floor((jiaoYunDate.getTime() - jyPrevJqDate.getTime()) / (1000 * 3600 * 24)));
+    const jyHourBranch = BRANCHES[Math.floor((jiaoYunDate.getHours() + 1) % 24 / 2)];
+    const jiaoYunYearLastDigit = jiaoYunDate.getFullYear() % 10;
+
+    const jiaoYunShiJieDesc = `每逢公曆尾數逢 ${jiaoYunYearLastDigit} 之年，於「${jyPrevJqName}」節後約 ${daysAfterJq} 天（約公曆 ${jiaoYunDate.getMonth() + 1}月${jiaoYunDate.getDate()}日 ${jyHourBranch}時）交脫大運`;
+
+    return {
+        isForward,
+        targetJieName,
+        diffDays: totalDays,
+        diffHours: remHours,
+        diffMinutes: remMinutes,
+        finalYears,
+        finalMonths,
+        finalDays,
+        startAge,
+        jiaoYunDate,
+        jiaoYunDateStr: `${jiaoYunDate.getFullYear()}-${String(jiaoYunDate.getMonth() + 1).padStart(2, '0')}-${String(jiaoYunDate.getDate()).padStart(2, '0')}`,
+        jiaoYunShiJieDesc
+    };
+}
+
+// 核心排盤與渲染
 function renderBaziModule() {
     if (baziDisplayState === 'off') return;
 
@@ -927,6 +1037,7 @@ function renderBaziModule() {
         const d = parseInt(document.getElementById('sel-day').value);
         const h = parseInt(document.getElementById('sel-hour24').value);
         const min = parseInt(document.getElementById('sel-minute').value);
+        const birthDate = new Date(y, m - 1, d, h, min, 0);
 
         const solarObj = Solar.fromYmdHms(y, m, d, h, min, 0);
         const lunarObj = solarObj.getLunar();
@@ -939,7 +1050,18 @@ function renderBaziModule() {
         document.getElementById('bazi-panel-title').innerText = `${gender === 1 ? '乾造 (男)' : '坤造 (女)'} · 四柱八字`;
         document.getElementById('bazi-zodiac-tag').innerText = `生肖屬${tradShengXiao}`;
 
-        // 轉換為正體中文的四柱資料
+        // 計算上運與交運
+        const syInfo = calculateShangYunJiaoYun(birthDate, bazi.getYearGan(), gender, lunarObj);
+
+        // 頂部交運資訊列
+        document.getElementById('bazi-yun-info').innerHTML = `
+            出生後 <span class="text-red-700 font-black">${syInfo.finalYears}</span> 年 
+            <span class="text-red-700 font-black">${syInfo.finalMonths}</span> 個月 
+            <span class="text-red-700 font-black">${syInfo.finalDays}</span> 天上運 
+            <span class="text-stone-500 font-normal">（約西曆 ${syInfo.jiaoYunDateStr} 起）</span>
+        `;
+
+        // 準備四柱資料 (年、月、日、時 左起排列)
         const pillars = [
             {
                 name: '年柱',
@@ -971,36 +1093,62 @@ function renderBaziModule() {
             }
         ];
 
-        // 計算交運與大運
-        const yun = bazi.getYun(gender);
-        const daYunList = yun.getDaYun();
+        // 排定大運 (配合上運年歲與順逆行)
+        const daYunData = [];
+        const monthGZ = bazi.getMonthGan() + bazi.getMonthZhi();
+        const mIdx = JIA_ZI_ARRAY.indexOf(monthGZ);
+        const birthYearGZ = bazi.getYearGan() + bazi.getYearZhi();
+        const yGzIdx = JIA_ZI_ARRAY.indexOf(birthYearGZ);
 
-        let formattedYunInfo = '';
-        try {
-            const startSolar = yun.getStartSolar();
-            formattedYunInfo = `出生後 ${yun.getStartYear()} 年 ${yun.getStartMonth()} 個月 ${yun.getStartDay()} 天起運（約西曆 ${startSolar.toYmd()} 起）`;
-        } catch (e) {
-            formattedYunInfo = '大運資料計算中...';
+        // 若起運歲數大於 1 歲，加入童限卡片
+        if (syInfo.startAge > 1) {
+            const tongLiuNian = [];
+            for (let age = 1; age < syInfo.startAge; age++) {
+                const lnY = y + (age - 1);
+                const lnGz = JIA_ZI_ARRAY[(yGzIdx + (age - 1)) % 60];
+                tongLiuNian.push({ year: lnY, age: age, ganZhi: lnGz });
+            }
+            daYunData.push({
+                startAge: 1,
+                startYear: y,
+                ganZhi: '',
+                gan: '',
+                zhi: '',
+                liuNian: tongLiuNian
+            });
         }
-        document.getElementById('bazi-yun-info').innerText = formattedYunInfo;
 
-        const daYunData = daYunList.map(dy => ({
-            startAge: dy.getStartAge(),
-            startYear: dy.getStartYear(),
-            ganZhi: dy.getGanZhi(),
-            gan: dy.getGanZhi() ? dy.getGanZhi().charAt(0) : '',
-            zhi: dy.getGanZhi() ? dy.getGanZhi().charAt(1) : '',
-            liuNian: dy.getLiuNian().map(ln => ({
-                year: ln.getYear(),
-                age: ln.getAge(),
-                ganZhi: ln.getGanZhi()
-            }))
-        }));
+        // 排列 9 步大運
+        for (let i = 0; i < 9; i++) {
+            const step = syInfo.isForward ? (i + 1) : -(i + 1);
+            const dyGzIdx = (mIdx + step + 60) % 60;
+            const dyGz = JIA_ZI_ARRAY[dyGzIdx];
+            const dyStartAge = syInfo.startAge + i * 10;
+            const dyStartYear = syInfo.jiaoYunDate.getFullYear() + i * 10;
 
-        currentBaziChartData = { pillars, daYun: daYunData };
+            const lnList = [];
+            for (let j = 0; j < 10; j++) {
+                const lnYear = dyStartYear + j;
+                const lnAge = dyStartAge + j;
+                const offset = lnYear - y;
+                const lnGz = JIA_ZI_ARRAY[(yGzIdx + offset % 60 + 60) % 60];
+                lnList.push({ year: lnYear, age: lnAge, ganZhi: lnGz });
+            }
+
+            daYunData.push({
+                startAge: dyStartAge,
+                startYear: dyStartYear,
+                ganZhi: dyGz,
+                gan: dyGz.charAt(0),
+                zhi: dyGz.charAt(1),
+                liuNian: lnList
+            });
+        }
+
+        currentBaziChartData = { pillars, daYun: daYunData, syInfo };
         if (selectedDaYunIndex >= daYunData.length) selectedDaYunIndex = 0;
 
-        renderPillarsTable(pillars);
+        renderPillarsTable(pillars, syInfo);
         renderDaYunAndLiuNian();
 
     } catch (err) {
@@ -1008,11 +1156,13 @@ function renderBaziModule() {
     }
 }
 
-// 緊湊四柱排版：每欄精確各佔 25% (w-1/4)，手機端字級自動縮放
-function renderPillarsTable(pillars) {
-    const tableEl = document.getElementById('bazi-pillars-table');
+// 渲染四柱 Table 與底部的「交運時節」通欄
+function renderPillarsTable(pillars, syInfo) {
+    const gridEl = document.getElementById('bazi-pillars-grid');
+    const jiaoYunRowEl = document.getElementById('bazi-jiaoyun-row');
     const cellClass = "py-1.5 px-0.5 sm:py-2.5 sm:px-1 border-b border-amber-200 text-center flex items-center justify-center";
     
+    // 渲染四柱
     let html = '';
     pillars.forEach((p, idx) => {
         let hideGanHtml = '';
@@ -1038,14 +1188,25 @@ function renderPillarsTable(pillars) {
                 <div class="${cellClass} text-[11px] sm:text-sm font-bold text-stone-500 truncate">${p.ganShiShen}</div>
                 <div class="${cellClass} text-xl sm:text-3xl font-black leading-tight" style="color: ${ganColor};">${p.gan}</div>
                 <div class="${cellClass} text-xl sm:text-3xl font-black leading-tight" style="color: ${zhiColor};">${p.zhi}</div>
-                <div class="${cellClass} min-h-[72px] sm:min-h-[92px] flex flex-col justify-evenly border-b-0 py-1">${hideGanHtml}</div>
+                <div class="${cellClass} min-h-[72px] sm:min-h-[90px] flex flex-col justify-evenly border-b-0 py-1">${hideGanHtml}</div>
             </div>
         `;
     });
+    gridEl.innerHTML = html;
 
-    tableEl.innerHTML = html;
+    // 渲染八字 Table 專屬底欄之「交運時節」
+    jiaoYunRowEl.innerHTML = `
+        <div class="flex items-center gap-1.5 flex-wrap">
+            <span class="bg-amber-700 text-white text-[10px] sm:text-xs px-2 py-0.5 rounded font-black tracking-wider shadow-sm">交運時節</span>
+            <span class="text-amber-950 font-bold">${syInfo.jiaoYunShiJieDesc}</span>
+        </div>
+        <div class="text-[11px] sm:text-xs text-stone-500 font-normal">
+            (${syInfo.isForward ? '陽男陰女順行' : '陰男陽女逆行'}算至「${syInfo.targetJieName}」節，相距 ${syInfo.diffDays}天${syInfo.diffHours}時${syInfo.diffMinutes}分)
+        </div>
+    `;
 }
 
+// 渲染大運卡片與流年
 function renderDaYunAndLiuNian() {
     if (!currentBaziChartData || !currentBaziChartData.daYun.length) return;
     const dyListEl = document.getElementById('bazi-dayun-list');
@@ -1066,7 +1227,7 @@ function renderDaYunAndLiuNian() {
                 <div class="text-[10px] sm:text-[11px] font-bold text-amber-900">${dy.startAge} 歲</div>
                 <div class="text-[9px] sm:text-[10px] text-stone-400 mb-0.5 sm:mb-1">${dy.startYear} 年</div>
                 <div class="text-lg sm:text-xl font-black flex justify-center gap-0.5 leading-tight min-h-[24px] sm:min-h-[28px] items-center">
-                    ${dy.gan ? `<span style="color: ${gColor};">${dy.gan}</span><span style="color: ${zColor};">${dy.zhi}</span>` : '<span class="text-[10px] text-stone-300 font-normal">童限</span>'}
+                    ${dy.gan ? `<span style="color: ${gColor};">${dy.gan}</span><span style="color: ${zColor};">${dy.zhi}</span>` : '<span class="text-[11px] text-stone-400 font-bold">童限</span>'}
                 </div>
             </div>
         `;
@@ -1077,7 +1238,7 @@ function renderDaYunAndLiuNian() {
     const lnContainer = document.getElementById('bazi-liunian-container');
     if (!curDaYun) return;
 
-    const titlePrefix = curDaYun.ganZhi ? `【${curDaYun.ganZhi}】大運` : `【起運前 / 童限】`;
+    const titlePrefix = curDaYun.ganZhi ? `【${curDaYun.ganZhi}】大運` : `【童限】`;
     const endYear = curDaYun.startYear + (curDaYun.liuNian.length > 0 ? curDaYun.liuNian.length - 1 : 9);
 
     let lnGridHtml = `
