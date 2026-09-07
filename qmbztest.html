@@ -335,40 +335,38 @@
         </div>
     </div>
 
-    <!-- 八字排盤展示面板 (切換乾/坤造時展開) -->
-    <div id="bazi-display-panel" class="hidden w-full bg-white/95 rounded-2xl shadow-xl p-4 sm:p-6 border-2 border-amber-300 transition-all select-none">
-        <!-- 命造、生肖與精確起運交運資訊 -->
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-amber-200 pb-3 mb-4 gap-2">
-            <div class="flex items-center gap-2">
-                <span class="text-lg font-black text-amber-950" id="bazi-panel-title">四柱八字</span>
-                <span id="bazi-zodiac-tag" class="text-xs bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded border border-amber-300"></span>
-            </div>
-            <div id="bazi-yun-info" class="text-xs sm:text-sm font-bold text-amber-900 bg-amber-50 px-3 py-1 rounded-lg border border-amber-200"></div>
+<!-- 🌟 八字排盤展示面板 (手機端內距縮減為 p-2.5，確保四柱無需滾動即可完整入鏡) -->
+<div id="bazi-display-panel" class="hidden w-full bg-white/95 rounded-2xl shadow-xl p-2.5 sm:p-5 border-2 border-amber-300 transition-all select-none">
+    <!-- 命造、生肖與交運資訊 -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-amber-200 pb-2.5 mb-3 gap-1.5">
+        <div class="flex items-center gap-2">
+            <span class="text-base sm:text-lg font-black text-amber-950" id="bazi-panel-title">四柱八字</span>
+            <span id="bazi-zodiac-tag" class="text-[11px] sm:text-xs bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded border border-amber-300"></span>
         </div>
+        <div id="bazi-yun-info" class="text-xs sm:text-sm font-bold text-amber-900 bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-200"></div>
+    </div>
 
-        <!-- (i) & (ii) 四柱 Table：左起 (年、月、日、時)，無柱別列，四等分排列 -->
-        <div class="overflow-x-auto pb-2 mb-6">
-            <div id="bazi-pillars-table" class="flex border-2 border-amber-900 rounded-lg bg-white min-w-[480px] text-center shadow-sm overflow-hidden">
-                <!-- 由 JS 動態生成左起四柱 -->
-            </div>
-        </div>
-
-        <!-- 大運與流年展示區 -->
-        <div class="border-t border-amber-100 pt-4">
-            <h4 class="text-base font-bold text-amber-900 mb-3 flex items-center gap-1.5">
-                <span>🏃 大運排盤</span>
-                <span class="text-xs font-normal text-stone-500">(點擊大運卡片切換查看 10 年流年)</span>
-            </h4>
-            
-            <div class="overflow-x-auto pb-2 mb-4">
-                <div id="bazi-dayun-list" class="flex gap-2 min-w-max"></div>
-            </div>
-
-            <div id="bazi-liunian-container" class="bg-amber-50/50 p-3 sm:p-4 rounded-xl border border-amber-200"></div>
+    <!-- 四柱 Table：移除 min-w 限制，固定 w-full 四等分 (w-1/4) 並緊湊排列 -->
+    <div class="w-full mb-5">
+        <div id="bazi-pillars-table" class="w-full flex border-2 border-amber-900 rounded-lg bg-white text-center shadow-sm overflow-hidden">
+            <!-- 由 JS 動態生成四柱 -->
         </div>
     </div>
-</div>
 
+    <!-- 大運與流年區塊 -->
+    <div class="border-t border-amber-100 pt-3 sm:pt-4">
+        <h4 class="text-sm sm:text-base font-bold text-amber-900 mb-2.5 flex items-center gap-1.5">
+            <span>🏃 大運排盤</span>
+            <span class="text-[11px] sm:text-xs font-normal text-stone-500">(點擊大運卡片切換 10 年流年)</span>
+        </h4>
+        
+        <div class="overflow-x-auto pb-2 mb-3">
+            <div id="bazi-dayun-list" class="flex gap-1.5 sm:gap-2 min-w-max"></div>
+        </div>
+
+        <div id="bazi-liunian-container" class="bg-amber-50/50 p-2.5 sm:p-4 rounded-xl border border-amber-200"></div>
+    </div>
+</div>
                 <div class="w-full text-center mt-2">
                     <span class="text-xs text-gray-400 font-normal">created by RS2026 <button onclick="showManualModal()" class="text-indigo-600 hover:text-indigo-800 underline font-bold transition-colors focus:outline-none cursor-pointer" title="點擊查看使用手冊">(vc1.4)</button></span>
                 </div>
@@ -895,7 +893,31 @@ function setBaziState(state) {
     }
 }
 
-// 依據 el001a 規則計算八字與大運
+
+
+// 正體中文標準十神對應字典
+const SHISHEN_TRAD_MAP = {
+    '比肩': '比肩', '劫财': '劫財', '劫財': '劫財',
+    '食神': '食神', '伤官': '傷官', '傷官': '傷官',
+    '偏财': '偏財', '偏財': '偏財', '正财': '正財', '正財': '正財',
+    '七杀': '七殺', '七殺': '七殺', '偏官': '七殺',
+    '正官': '正官', '偏印': '偏印', '枭神': '偏印', '梟神': '偏印',
+    '正印': '正印', '日主': '日主'
+};
+
+// 正體中文生肖對應字典
+const SHENGXIAO_TRAD_MAP = {
+    '鼠': '鼠', '牛': '牛', '虎': '虎', '兔': '兔',
+    '龙': '龍', '龍': '龍', '蛇': '蛇', '马': '馬', '馬': '馬',
+    '羊': '羊', '猴': '猴', '鸡': '雞', '雞': '雞',
+    '狗': '狗', '猪': '豬', '豬': '豬'
+};
+
+function toTradShiShen(name) {
+    if (!name) return '';
+    return SHISHEN_TRAD_MAP[name] || name;
+}
+
 function renderBaziModule() {
     if (baziDisplayState === 'off') return;
 
@@ -906,48 +928,50 @@ function renderBaziModule() {
         const h = parseInt(document.getElementById('sel-hour24').value);
         const min = parseInt(document.getElementById('sel-minute').value);
 
-        // 使用與 el001a 完全相同的起盤核心
         const solarObj = Solar.fromYmdHms(y, m, d, h, min, 0);
         const lunarObj = solarObj.getLunar();
         const bazi = lunarObj.getEightChar();
         const gender = (baziDisplayState === 'qian') ? 1 : 0; // 1: 乾造, 0: 坤造
 
-        document.getElementById('bazi-panel-title').innerText = `${gender === 1 ? '乾造 (男)' : '坤造 (女)'} · 四柱八字`;
-        document.getElementById('bazi-zodiac-tag').innerText = `生肖屬${lunarObj.getYearShengXiao()}`;
+        const rawShengXiao = lunarObj.getYearShengXiao();
+        const tradShengXiao = SHENGXIAO_TRAD_MAP[rawShengXiao] || rawShengXiao;
 
-        // (ii) 四柱順序嚴格左起：年柱 -> 月柱 -> 日柱 -> 時柱
+        document.getElementById('bazi-panel-title').innerText = `${gender === 1 ? '乾造 (男)' : '坤造 (女)'} · 四柱八字`;
+        document.getElementById('bazi-zodiac-tag').innerText = `生肖屬${tradShengXiao}`;
+
+        // 轉換為正體中文的四柱資料
         const pillars = [
             {
                 name: '年柱',
                 gan: bazi.getYearGan(), zhi: bazi.getYearZhi(),
-                ganShiShen: bazi.getYearShiShenGan(),
+                ganShiShen: toTradShiShen(bazi.getYearShiShenGan()),
                 zhiHideGan: bazi.getYearHideGan(),
-                zhiShiShen: bazi.getYearShiShenZhi()
+                zhiShiShen: bazi.getYearShiShenZhi().map(toTradShiShen)
             },
             {
                 name: '月柱',
                 gan: bazi.getMonthGan(), zhi: bazi.getMonthZhi(),
-                ganShiShen: bazi.getMonthShiShenGan(),
+                ganShiShen: toTradShiShen(bazi.getMonthShiShenGan()),
                 zhiHideGan: bazi.getMonthHideGan(),
-                zhiShiShen: bazi.getMonthShiShenZhi()
+                zhiShiShen: bazi.getMonthShiShenZhi().map(toTradShiShen)
             },
             {
                 name: '日柱',
                 gan: bazi.getDayGan(), zhi: bazi.getDayZhi(),
                 ganShiShen: '日主',
                 zhiHideGan: bazi.getDayHideGan(),
-                zhiShiShen: bazi.getDayShiShenZhi()
+                zhiShiShen: bazi.getDayShiShenZhi().map(toTradShiShen)
             },
             {
                 name: '時柱',
                 gan: bazi.getTimeGan(), zhi: bazi.getTimeZhi(),
-                ganShiShen: bazi.getTimeShiShenGan(),
+                ganShiShen: toTradShiShen(bazi.getTimeShiShenGan()),
                 zhiHideGan: bazi.getTimeHideGan(),
-                zhiShiShen: bazi.getTimeShiShenZhi()
+                zhiShiShen: bazi.getTimeShiShenZhi().map(toTradShiShen)
             }
         ];
 
-        // 計算交運與大運 (el001a 算法)
+        // 計算交運與大運
         const yun = bazi.getYun(gender);
         const daYunList = yun.getDaYun();
 
@@ -984,10 +1008,10 @@ function renderBaziModule() {
     }
 }
 
-// 渲染四柱主盤：由左至右 (年/月/日/時)，無右側「柱別」標籤欄
+// 緊湊四柱排版：每欄精確各佔 25% (w-1/4)，手機端字級自動縮放
 function renderPillarsTable(pillars) {
     const tableEl = document.getElementById('bazi-pillars-table');
-    const cellClass = "p-2 sm:p-2.5 border-b border-amber-200 text-center";
+    const cellClass = "py-1.5 px-0.5 sm:py-2.5 sm:px-1 border-b border-amber-200 text-center flex items-center justify-center";
     
     let html = '';
     pillars.forEach((p, idx) => {
@@ -997,9 +1021,9 @@ function renderPillarsTable(pillars) {
             const ss = p.zhiShiShen[i] || '';
             const hgColor = WUXING_COLORS[hg] || '#1a202c';
             hideGanHtml += `
-                <div class="flex justify-center items-center gap-1.5 text-xs sm:text-sm">
-                    <span style="color: ${hgColor};" class="font-black">${hg}</span>
-                    <span class="text-stone-400 text-[11px] sm:text-xs">${ss}</span>
+                <div class="flex items-center justify-center gap-0.5 sm:gap-1 w-full leading-none">
+                    <span style="color: ${hgColor};" class="font-black text-[11px] sm:text-sm">${hg}</span>
+                    <span class="text-stone-400 text-[9px] sm:text-xs scale-90 sm:scale-100 whitespace-nowrap">${ss}</span>
                 </div>`;
         }
 
@@ -1009,12 +1033,12 @@ function renderPillarsTable(pillars) {
         const borderR = isLast ? '' : 'border-r border-amber-200';
 
         html += `
-            <div class="flex-1 flex flex-col ${borderR}">
-                <div class="${cellClass} bg-amber-50/90 font-black text-amber-900 text-sm sm:text-base">${p.name}</div>
-                <div class="${cellClass} text-xs sm:text-sm font-bold text-stone-500">${p.ganShiShen}</div>
-                <div class="${cellClass} text-2xl sm:text-3xl font-black leading-none" style="color: ${ganColor};">${p.gan}</div>
-                <div class="${cellClass} text-2xl sm:text-3xl font-black leading-none" style="color: ${zhiColor};">${p.zhi}</div>
-                <div class="${cellClass} h-24 sm:h-28 flex flex-col justify-center gap-1 border-b-0">${hideGanHtml}</div>
+            <div class="w-1/4 flex-1 flex flex-col min-w-0 ${borderR}">
+                <div class="${cellClass} bg-amber-50/90 font-black text-amber-900 text-xs sm:text-base">${p.name}</div>
+                <div class="${cellClass} text-[11px] sm:text-sm font-bold text-stone-500 truncate">${p.ganShiShen}</div>
+                <div class="${cellClass} text-xl sm:text-3xl font-black leading-tight" style="color: ${ganColor};">${p.gan}</div>
+                <div class="${cellClass} text-xl sm:text-3xl font-black leading-tight" style="color: ${zhiColor};">${p.zhi}</div>
+                <div class="${cellClass} min-h-[72px] sm:min-h-[92px] flex flex-col justify-evenly border-b-0 py-1">${hideGanHtml}</div>
             </div>
         `;
     });
@@ -1022,7 +1046,6 @@ function renderPillarsTable(pillars) {
     tableEl.innerHTML = html;
 }
 
-// 渲染大運與流年 (無納音)
 function renderDaYunAndLiuNian() {
     if (!currentBaziChartData || !currentBaziChartData.daYun.length) return;
     const dyListEl = document.getElementById('bazi-dayun-list');
@@ -1039,11 +1062,11 @@ function renderDaYunAndLiuNian() {
         const zColor = WUXING_COLORS[dy.zhi] || '#1a202c';
 
         dyHtml += `
-            <div onclick="selectBaziDaYun(${idx})" class="cursor-pointer border rounded-xl p-2.5 text-center min-w-[76px] transition-all select-none ${activeCardStyle}">
-                <div class="text-[11px] font-bold text-amber-900">${dy.startAge} 歲</div>
-                <div class="text-[10px] text-stone-400 mb-1">${dy.startYear} 年</div>
-                <div class="text-xl font-black flex justify-center gap-0.5 leading-tight min-h-[28px] items-center">
-                    ${dy.gan ? `<span style="color: ${gColor};">${dy.gan}</span><span style="color: ${zColor};">${dy.zhi}</span>` : '<span class="text-xs text-stone-300 font-normal">童限</span>'}
+            <div onclick="selectBaziDaYun(${idx})" class="cursor-pointer border rounded-xl p-2 sm:p-2.5 text-center min-w-[68px] sm:min-w-[76px] transition-all select-none ${activeCardStyle}">
+                <div class="text-[10px] sm:text-[11px] font-bold text-amber-900">${dy.startAge} 歲</div>
+                <div class="text-[9px] sm:text-[10px] text-stone-400 mb-0.5 sm:mb-1">${dy.startYear} 年</div>
+                <div class="text-lg sm:text-xl font-black flex justify-center gap-0.5 leading-tight min-h-[24px] sm:min-h-[28px] items-center">
+                    ${dy.gan ? `<span style="color: ${gColor};">${dy.gan}</span><span style="color: ${zColor};">${dy.zhi}</span>` : '<span class="text-[10px] text-stone-300 font-normal">童限</span>'}
                 </div>
             </div>
         `;
@@ -1058,11 +1081,11 @@ function renderDaYunAndLiuNian() {
     const endYear = curDaYun.startYear + (curDaYun.liuNian.length > 0 ? curDaYun.liuNian.length - 1 : 9);
 
     let lnGridHtml = `
-        <div class="font-black text-amber-950 mb-2.5 flex items-center gap-1.5 text-sm">
+        <div class="font-black text-amber-950 mb-2 flex items-center gap-1.5 text-xs sm:text-sm">
             <span>${titlePrefix} 流年列表</span>
-            <span class="text-xs text-stone-400 font-normal">(${curDaYun.startYear} - ${endYear})</span>
+            <span class="text-[11px] sm:text-xs text-stone-400 font-normal">(${curDaYun.startYear} - ${endYear})</span>
         </div>
-        <div class="grid grid-cols-5 sm:grid-cols-10 gap-1.5">
+        <div class="grid grid-cols-5 sm:grid-cols-10 gap-1 sm:gap-1.5">
     `;
 
     curDaYun.liuNian.forEach(ln => {
@@ -1072,13 +1095,13 @@ function renderDaYunAndLiuNian() {
         const zCol = WUXING_COLORS[z] || '#1a202c';
 
         lnGridHtml += `
-            <div class="bg-white border border-amber-200/80 rounded-lg p-1.5 text-center shadow-sm">
-                <div class="text-[10px] text-stone-400">${ln.year}</div>
-                <div class="font-black text-base my-0.5 leading-none flex justify-center">
+            <div class="bg-white border border-amber-200/80 rounded-lg p-1 sm:p-1.5 text-center shadow-sm">
+                <div class="text-[9px] sm:text-[10px] text-stone-400">${ln.year}</div>
+                <div class="font-black text-sm sm:text-base my-0.5 leading-none flex justify-center">
                     <span style="color: ${gCol};">${g}</span>
                     <span style="color: ${zCol};">${z}</span>
                 </div>
-                <div class="text-[10px] font-bold text-stone-600">${ln.age} 歲</div>
+                <div class="text-[9px] sm:text-[10px] font-bold text-stone-600">${ln.age} 歲</div>
             </div>
         `;
     });
