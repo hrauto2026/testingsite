@@ -298,63 +298,87 @@
                 </div>
             </div>
 
-            <div class="flex justify-center items-center mt-6 hidden gap-3 flex-wrap" id="action-footer">
-                <button onclick="copyPan()" class="bg-slate-800 hover:bg-black text-white py-2 px-4 rounded-full shadow-lg transition active:scale-95 flex items-center justify-center text-sm">
-                    <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
-                    複製盤面資料
-                </button>
-                <button onclick="sharePan()" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-full shadow-lg transition active:scale-95 flex items-center justify-center text-sm">
-                    <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
-                    分享起盤連結
-                </button>
 
-<!-- Toggle Switch: 奇門指南針 -->
-<div class="flex items-center gap-2 bg-white/80 px-3 py-1.5 rounded-full shadow border border-purple-200">
-    <span class="text-xs font-bold text-purple-900 flex items-center gap-1">🧭 奇門指南針</span>
-    <label class="relative inline-flex items-center cursor-pointer">
-        <input type="checkbox" id="toggle-compass" class="sr-only peer" onchange="handleToggleSwitch('toggle-compass')">
-        <div class="w-9 h-5 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-purple-600 shadow-inner"></div>
-    </label>
-</div>
+<!-- 🌟 底部工具列：超薄風琴 Container (開關尺寸已修正正常) -->
+<div class="w-full mt-4 hidden flex-col items-center" id="action-footer">
+    
+    <details id="accordion-tools" class="group w-full max-w-5xl mx-auto bg-slate-50/90 border border-indigo-100 rounded-xl shadow-sm select-none" open>
+        <!-- 超薄標題列 -->
+        <summary class="py-1.5 px-3 cursor-pointer text-xs sm:text-sm font-bold text-indigo-900 bg-indigo-50/70 rounded-xl group-open:rounded-b-none group-open:border-b border-indigo-100 flex justify-between items-center transition-colors hover:bg-indigo-100/60">
+            <span class="flex items-center gap-1.5">🛠️ 盤面工具與輔助開關</span>
+            <span class="transform group-open:rotate-180 transition-transform duration-200 text-xs text-indigo-400">▼</span>
+        </summary>
 
-                <div class="flex items-center gap-2 bg-white/80 px-3 py-1.5 rounded-full shadow border border-indigo-100">
-                    <span class="text-xs font-bold text-gray-700" id="bagua-label">先天八卦數</span>
-                    <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" id="toggle-bagua" class="sr-only peer" onchange="handleToggleSwitch('toggle-bagua')">
-                        <div class="w-9 h-5 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600 shadow-inner"></div>
-                    </label>
-                </div>
-                <div class="flex items-center gap-2 bg-white/80 px-3 py-1.5 rounded-full shadow border border-orange-100">
-                    <span class="text-xs font-bold text-gray-700" id="energy-label">能量狀態</span>
-                    <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" id="toggle-energy" class="sr-only peer" onchange="handleToggleSwitch('toggle-energy')">
-                        <div class="w-9 h-5 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-orange-500 shadow-inner"></div>
-                    </label>
-                </div>
-                <div class="flex items-center gap-2 bg-white/80 px-3 py-1.5 rounded-full shadow border border-green-100">
-                    <span class="text-xs font-bold text-gray-700">內外盤</span>
-                    <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" id="toggle-neiwai" class="sr-only peer" onchange="handleToggleSwitch('toggle-neiwai')">
-                        <div class="w-9 h-5 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-green-500 shadow-inner"></div>
-                    </label>
-                </div>
-                <div class="flex items-center gap-2 bg-white/80 px-3 py-1.5 rounded-full shadow border border-blue-100">
-                    <span class="text-xs font-bold text-gray-700">按宮看格局</span>
-                    <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" id="toggle-palacemodal" class="sr-only peer" checked onchange="handleToggleSwitch('toggle-palacemodal')">    
-                        <div class="w-9 h-5 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-500 shadow-inner"></div>
-                    </label>
-                </div>
-                <!-- Toggle Switch 7: 流年飛星 -->
-                <div class="flex items-center gap-2 bg-white/80 px-3 py-1.5 rounded-full shadow border border-rose-100">
-                    <span class="text-xs font-bold text-gray-700">流年飛星</span>
-                    <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" id="toggle-feixing" class="sr-only peer" onchange="handleToggleSwitch('toggle-feixing')">
-                        <div class="w-9 h-5 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-rose-600 shadow-inner"></div>
-                    </label>
-                    <select id="sel-feixing-year" class="hidden text-xs p-1 border border-rose-200 rounded bg-rose-50 font-bold text-rose-900 outline-none focus:ring-1 focus:ring-rose-400" onchange="generatePan()"></select>
-                </div>
+        <!-- 工具與開關群組 -->
+        <div class="p-2 sm:p-3 bg-white/70 flex flex-wrap justify-center items-center gap-2">
+            <!-- 1. 複製盤面資料 -->
+            <button onclick="copyPan()" class="bg-slate-800 hover:bg-black text-white py-1 px-3 rounded-full shadow transition active:scale-95 flex items-center justify-center text-xs font-bold">
+                <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                複製盤面資料
+            </button>
 
+            <!-- 2. 分享起盤連結 -->
+            <button onclick="sharePan()" class="bg-indigo-600 hover:bg-indigo-700 text-white py-1 px-3 rounded-full shadow transition active:scale-95 flex items-center justify-center text-xs font-bold">
+                <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+                分享起盤連結
+            </button>
+
+            <!-- 3. 奇門指南針 -->
+            <div class="flex items-center gap-2 bg-white/90 px-3 py-1 rounded-full shadow-sm border border-purple-200">
+                <span class="text-xs font-bold text-purple-900 flex items-center gap-1">🧭 奇門指南針</span>
+                <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="toggle-compass" class="sr-only peer" onchange="handleToggleSwitch('toggle-compass')">
+                    <div class="w-9 h-5 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-purple-600 shadow-inner"></div>
+                </label>
+            </div>
+
+            <!-- 4. 先天八卦數 -->
+            <div class="flex items-center gap-2 bg-white/90 px-3 py-1 rounded-full shadow-sm border border-indigo-100">
+                <span class="text-xs font-bold text-gray-700" id="bagua-label">先天八卦數</span>
+                <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="toggle-bagua" class="sr-only peer" onchange="handleToggleSwitch('toggle-bagua')">
+                    <div class="w-9 h-5 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600 shadow-inner"></div>
+                </label>
+            </div>
+
+            <!-- 5. 能量狀態 -->
+            <div class="flex items-center gap-2 bg-white/90 px-3 py-1 rounded-full shadow-sm border border-orange-100">
+                <span class="text-xs font-bold text-gray-700" id="energy-label">能量狀態</span>
+                <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="toggle-energy" class="sr-only peer" onchange="handleToggleSwitch('toggle-energy')">
+                    <div class="w-9 h-5 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-orange-500 shadow-inner"></div>
+                </label>
+            </div>
+
+            <!-- 6. 內外盤 -->
+            <div class="flex items-center gap-2 bg-white/90 px-3 py-1 rounded-full shadow-sm border border-green-100">
+                <span class="text-xs font-bold text-gray-700">內外盤</span>
+                <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="toggle-neiwai" class="sr-only peer" onchange="handleToggleSwitch('toggle-neiwai')">
+                    <div class="w-9 h-5 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-green-500 shadow-inner"></div>
+                </label>
+            </div>
+
+            <!-- 7. 按宮看格局 -->
+            <div class="flex items-center gap-2 bg-white/90 px-3 py-1 rounded-full shadow-sm border border-blue-100">
+                <span class="text-xs font-bold text-gray-700">按宮看格局</span>
+                <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="toggle-palacemodal" class="sr-only peer" checked onchange="handleToggleSwitch('toggle-palacemodal')">    
+                    <div class="w-9 h-5 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-500 shadow-inner"></div>
+                </label>
+            </div>
+
+            <!-- 8. 流年飛星 -->
+            <div class="flex items-center gap-2 bg-white/90 px-3 py-1 rounded-full shadow-sm border border-rose-100">
+                <span class="text-xs font-bold text-gray-700">流年飛星</span>
+                <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="toggle-feixing" class="sr-only peer" onchange="handleToggleSwitch('toggle-feixing')">
+                    <div class="w-9 h-5 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-rose-600 shadow-inner"></div>
+                </label>
+                <select id="sel-feixing-year" class="hidden text-xs p-1 border border-rose-200 rounded bg-rose-50 font-bold text-rose-900 outline-none" onchange="generatePan()"></select>
+            </div>
+        </div>
+    </details>
 
 <!-- 🌟 八字起盤模組外層容器 (超緊湊佈局) -->
 <div id="bazi-wrapper" class="hidden mt-3 w-full flex flex-col items-center">
