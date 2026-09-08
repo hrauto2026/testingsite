@@ -2981,20 +2981,20 @@ function initSelectors() {
             const lunarStr = `農曆${exactLunar.getMonthInChinese()}月${exactLunar.getDayInChinese()}`;
             let displayZiMark = ziMark ? `<span class="text-orange-600 font-bold ml-1">【${ziMark}】</span>` : "";
             
-const appTitle = document.getElementById('app-title');
+// 🌟 起盤後自動隱藏頂部大標題
+            const appTitle = document.getElementById('app-title');
             if (appTitle) appTitle.classList.add('hidden');
 
+// 🌟 1. 收折「設定」Accordion，並展示且預設展開「📋 排盤資料」Accordion
             const accControls = document.getElementById('accordion-controls');
             const accInfo = document.getElementById('accordion-pan-info');
             const quickBar = document.getElementById('quick-time-bar');
 
             if (accControls) accControls.open = false; // 自動收起時間設定欄
-            
-            // 💡 關鍵修復：將排盤資料設為預設關閉（可節省約 140px 高度），盤面立即上提
             if (accInfo) {
                 accInfo.classList.remove('hidden');
-                accInfo.open = false; 
-                document.getElementById('pan-summary-title').innerHTML = `📋 排盤資料 (點擊展開)`;
+                accInfo.open = true; // 確保每次起盤後「排盤資料」風琴預設保持開啟狀態
+                document.getElementById('pan-summary-title').innerHTML = `📋 排盤資料`;
             }
 
             // 顯示常駐快調 Bar
