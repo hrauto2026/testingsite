@@ -271,18 +271,18 @@
                 </div>
             </details>
 
-            <!-- 🌟 4. 頂部常駐快調 Bar：移除四柱，改為單行精準呈現時間與農曆 -->
-            <div id="quick-time-bar" class="hidden justify-between items-center bg-white/95 border border-indigo-200 rounded-lg py-1 px-2 shadow-sm mb-1.5 max-w-xl mx-auto">
-                <button onclick="shiftHour(-1)" class="bg-indigo-50 hover:bg-indigo-100 active:bg-indigo-200 text-indigo-800 py-1 px-2.5 sm:px-3 rounded border border-indigo-200 text-xs font-black transition-all">
-                    <span>⏪</span>
-                </button>
-                <div class="flex items-center text-center text-xs sm:text-sm font-bold text-indigo-950 px-1">
-                    <span id="quick-bar-time"></span>
-                </div>
-                <button onclick="shiftHour(1)" class="bg-indigo-50 hover:bg-indigo-100 active:bg-indigo-200 text-indigo-800 py-1 px-2.5 sm:px-3 rounded border border-indigo-200 text-xs font-black transition-all">
-                    <span>⏩</span>
-                </button>
-            </div>
+<!-- 🌟 4. 頂部常駐快調 Bar (日期時間字體加大 ~70%) -->
+<div id="quick-time-bar" class="hidden justify-between items-center bg-white/95 border border-indigo-200 rounded-xl py-1.5 px-3 shadow-sm mb-2 max-w-xl sm:max-w-2xl mx-auto">
+    <button onclick="shiftHour(-1)" class="bg-indigo-50 hover:bg-indigo-100 active:bg-indigo-200 text-indigo-800 py-1.5 px-3 sm:px-4 rounded-lg border border-indigo-200 text-sm sm:text-base font-black transition-all flex items-center justify-center">
+        <span>⏪</span>
+    </button>
+    <div class="flex items-center text-center text-base sm:text-xl md:text-2xl font-black text-indigo-950 px-2 tracking-wide leading-none">
+        <span id="quick-bar-time"></span>
+    </div>
+    <button onclick="shiftHour(1)" class="bg-indigo-50 hover:bg-indigo-100 active:bg-indigo-200 text-indigo-800 py-1.5 px-3 sm:px-4 rounded-lg border border-indigo-200 text-sm sm:text-base font-black transition-all flex items-center justify-center">
+        <span>⏩</span>
+    </button>
+</div>
 
             <div class="grid-wrapper">
                 <div id="qimen-grid" class="grid-qimen hidden">
