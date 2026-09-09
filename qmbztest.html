@@ -3425,7 +3425,7 @@ if (jqData.isTransitionInHour) {
     const WX_EARTH_STEMS_YUN9 = ['己', '乙', '辛', '壬', '戊', '庚癸', '丙', '丁'];
 
     const YUN9_XUN_CONFIGS = {
-        '子_1': { door: '子', house: 1, god: '六合', star: '天心', doorName: '傷門', stem: '丁', fuTou: '戊', starLeader: '天英' },
+        '子_1': { door: '子', house: 1, god: '六合', star: '天心', doorName: '杜門', stem: '丁', fuTou: '戊', starLeader: '天英' },
         '丑_8': { door: '丑', house: 8, god: '太陰', star: '天柱', doorName: '開門', stem: '丙', fuTou: '戊', starLeader: '天英' },
         '亥_6': { door: '亥', house: 6, god: '白虎', star: '天任', doorName: '開門', stem: '乙', fuTou: '癸', starLeader: '天芮' },
         '寅_8': { door: '寅', house: 8, god: '太陰', star: '天心', doorName: '生門', stem: '丁', fuTou: '癸', starLeader: '天芮' },
@@ -3729,7 +3729,7 @@ function renderCompassQimen() {
         const FLIGHT_OFFSET = { 5: 0, 6: 1, 7: 2, 8: 3, 9: 4, 1: 5, 2: 6, 3: 7, 4: 8 };
         const FEIXING_ZH_NAMES = ["", "一白", "二黑", "三碧", "四綠", "五黃", "六白", "七赤", "八白", "九紫"];
 
-        order.forEach(pNum => {
+order.forEach(pNum => {
             let data = globalPalaceData[pNum];
             let feixingNum = (starC + FLIGHT_OFFSET[pNum] - 1) % 9 + 1;
             let feixingStr = FEIXING_ZH_NAMES[feixingNum];
@@ -3752,13 +3752,12 @@ function renderCompassQimen() {
                 </div>`;
             } else if (data) {
                 let pGua = PALACES_HOU[pNum].gua;
-                let tags = [];
-                if (data.isKong) tags.push("🈳");
-                if (data.isMa) tags.push("🐎");
-                if (data.isMenPo) tags.push("迫");
-                let tagDisplay = tags.length ? `<span class="text-[9px] text-red-400 ml-0.5">${tags.join('')}</span>` : '';
 
-                // 🌟 新排版：天盤干放在九星之後、地盤干放在八門之後，取消底部多餘橫欄徹底防裁切
+                // 🌟 分開定義：空亡與驛馬移至第一行暗干後；門迫獨立留在第三行八門後
+                let kongDisplay = data.isKong ? `<span class="text-[8px] sm:text-[9px] text-red-400 border border-red-500/70 rounded px-0.5 font-bold leading-none ml-0.5">空</span>` : '';
+                let maDisplay = data.isMa ? `<span class="text-[8px] sm:text-[9px] text-amber-300 border border-amber-400/70 rounded px-0.5 font-bold leading-none ml-0.5">馬</span>` : '';
+                let menPoDisplay = data.isMenPo ? `<span class="text-[8px] sm:text-[9px] text-red-400 border border-red-500/70 rounded px-0.5 font-bold leading-none ml-0.5">迫</span>` : '';
+
                 html += `
                 <div class="flex flex-col justify-between p-1 bg-slate-950/95 border border-slate-800 rounded text-white overflow-hidden shadow">
                     <!-- 宮名與飛星 -->
@@ -3769,21 +3768,28 @@ function renderCompassQimen() {
 
                     <!-- 內容主體：八神 / 九星+天盤干 / 八門+地盤干 -->
                     <div class="flex flex-col justify-around flex-grow py-0.5 text-xs sm:text-sm md:text-base font-black leading-tight w-full">
-                        <!-- 第一行：八神與暗干 -->
+                        
+                        <!-- 🌟 第一行：左側八神；右側暗干 + 空亡 + 驛馬 -->
                         <div class="flex justify-between items-center w-full">
                             <span class="text-emerald-400 truncate">${data.god}</span>
-                            ${data.anGan ? `<span class="text-[9px] text-gray-500 font-normal">暗${data.anGan}</span>` : ''}
+                            <div class="flex items-center gap-0.5 flex-shrink-0">
+                                ${data.anGan ? `<span class="text-[9px] text-gray-400 font-normal">暗${data.anGan}</span>` : ''}
+                                ${kongDisplay}
+                                ${maDisplay}
+                            </div>
                         </div>
+
                         <!-- 第二行：九星 + 天盤干 (青色) -->
                         <div class="flex justify-between items-center w-full">
                             <span class="text-yellow-300 truncate">${data.star}</span>
                             <span class="text-cyan-300 font-black ml-1 text-sm sm:text-base tracking-wider">${data.hStems.join('|')}</span>
                         </div>
-                        <!-- 第三行：八門 + 地盤干 (橙色) -->
+
+                        <!-- 🌟 第三行：八門 + 門迫(獨立留在八門旁)；右側地盤干 (橙色) -->
                         <div class="flex justify-between items-center w-full">
                             <div class="flex items-center truncate">
                                 <span class="text-red-400">${data.door}</span>
-                                ${tagDisplay}
+                                ${menPoDisplay}
                             </div>
                             <span class="text-orange-300 font-black ml-1 text-sm sm:text-base tracking-wider">${data.eStems.join('|')}</span>
                         </div>
@@ -3791,7 +3797,6 @@ function renderCompassQimen() {
                 </div>`;
             }
         });
-    } 
     // ==========================================
     // 模式 B：九運地盤 (屋向盤)
     // ==========================================
