@@ -677,55 +677,55 @@
     </div>
 </div>
 
-<!-- 🌟 奇門指南針全螢幕模式 (滿版放大) -->
-<div id="compass-modal" class="fixed inset-0 bg-black/95 z-[100] hidden flex flex-col justify-between items-center px-1 py-2 sm:p-3 select-none overflow-hidden touch-none text-white">
+<!-- 🌟 奇門指南針風水全螢幕黑屏模式 (邊距縮至極小貼近螢幕邊界) -->
+<div id="compass-modal" class="fixed inset-0 bg-black/95 z-[100] hidden flex flex-col justify-between items-center px-1 py-1.5 sm:p-3 select-none overflow-hidden touch-none text-white">
 
-    <!-- 頂部資訊區 (精簡垂直高度) -->
-    <div class="w-full flex flex-col gap-1.5 pt-1 px-2 sm:px-4 z-20">
-        <div class="flex justify-between items-center flex-wrap gap-1.5">
-            <!-- 角度與廿四山 -->
-            <div class="flex items-center gap-2">
+    <!-- 頂部資訊區：角度、廿四山、盤式切換與參數控制 (字體放大50% & 單一九運下拉選單) -->
+    <div class="w-full flex flex-col gap-2.5 pt-2 sm:pt-3 px-3 sm:px-6 z-20">
+        <div class="flex justify-between items-center flex-wrap gap-2">
+            <!-- 角度與廿四山 (字體放大 50%) -->
+            <div class="flex items-center gap-3">
                 <div class="flex flex-col">
-                    <div class="flex items-baseline gap-2">
-                        <span id="compass-degree" class="text-3xl sm:text-5xl font-black text-amber-400 font-mono tracking-wider">000°</span>
-                        <span id="compass-direction-text" class="text-xl sm:text-3xl font-black text-white">正北</span>
+                    <div class="flex items-baseline gap-2.5">
+                        <span id="compass-degree" class="text-4xl sm:text-5xl font-black text-amber-400 font-mono tracking-wider">000°</span>
+                        <span id="compass-direction-text" class="text-2xl sm:text-3xl font-black text-white">正北</span>
                     </div>
-                    <div class="text-xs sm:text-base font-bold text-gray-300 mt-0.5">
-                        廿四山：<span id="compass-mountain" class="text-amber-300 font-black">坎宮 · 子山</span>
+                    <div class="text-base sm:text-lg font-bold text-gray-300 flex items-center gap-1.5 mt-0.5">
+                        <span>廿四山：<span id="compass-mountain" class="text-amber-300 font-black">坎宮 · 子山</span></span>
                     </div>
                 </div>
             </div>
 
-            <!-- 模式切換按鈕 -->
-            <div class="flex items-center bg-slate-900 border border-amber-500/50 rounded-xl p-0.5 sm:p-1 shadow-lg">
-                <button id="btn-mode-shijia" onclick="switchCompassPanMode('shijia')" class="px-3 sm:px-4 py-1 sm:py-1.5 text-sm sm:text-base font-black rounded-lg bg-amber-500 text-slate-950 transition">時家盤</button>
-                <button id="btn-mode-wuxiang" onclick="switchCompassPanMode('wuxiang')" class="px-3 sm:px-4 py-1 sm:py-1.5 text-sm sm:text-base font-black rounded-lg text-gray-300 hover:text-white transition">屋向盤</button>
+            <!-- 盤面模式切換按鈕組 (字體與按鈕放大 50%) -->
+            <div class="flex items-center bg-slate-900 border border-amber-500/50 rounded-xl p-1 shadow-lg">
+                <button id="btn-mode-shijia" onclick="switchCompassPanMode('shijia')" class="px-4 py-1.5 text-base sm:text-lg font-black rounded-lg bg-amber-500 text-slate-950 transition">時家盤</button>
+                <button id="btn-mode-wuxiang" onclick="switchCompassPanMode('wuxiang')" class="px-4 py-1.5 text-base sm:text-lg font-black rounded-lg text-gray-300 hover:text-white transition">屋向盤</button>
             </div>
 
-            <!-- 鎖定與關閉按鈕 -->
-            <div class="flex items-center gap-1.5">
-                <button id="btn-compass-lock" onclick="toggleCompassLock()" class="bg-gray-900 hover:bg-gray-800 text-gray-200 px-3 py-1 sm:py-1.5 rounded-full border border-gray-700 text-xs sm:text-base font-bold transition flex items-center gap-1">
+            <!-- 鎖定與關閉按鈕 (字體與按鈕放大 50%) -->
+            <div class="flex items-center gap-2">
+                <button id="btn-compass-lock" onclick="toggleCompassLock()" class="bg-gray-900 hover:bg-gray-800 text-gray-200 px-4 py-2 rounded-full border border-gray-700 text-base sm:text-lg font-bold transition flex items-center gap-1.5 shadow">
                     <span id="compass-lock-icon">🔓</span> <span id="compass-lock-text">鎖定</span>
                 </button>
-                <button onclick="closeCompassMode()" class="bg-red-600 hover:bg-red-700 text-white px-3.5 py-1 sm:py-1.5 rounded-full font-black text-xs sm:text-base shadow border border-red-500 transition active:scale-95">
+                <button onclick="closeCompassMode()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-full font-black text-base sm:text-lg shadow border border-red-500 transition active:scale-95">
                     關閉
                 </button>
             </div>
         </div>
 
-        <!-- 子工具列：時家模式 -->
-        <div id="compass-sub-shijia" class="flex items-center justify-between text-xs sm:text-base text-gray-300 bg-slate-900/90 px-3 py-1.5 rounded-xl border border-gray-800">
+        <!-- 子工具列：時家模式專用 (飛星年份) -->
+        <div id="compass-sub-shijia" class="flex items-center justify-between text-base sm:text-lg text-gray-300 bg-slate-900/90 px-4 py-2 rounded-xl border border-gray-800">
             <span class="text-amber-200 font-bold">✨ 時辰奇門局象</span>
-            <div class="flex items-center gap-1.5">
-                <span class="text-rose-300 text-xs sm:text-sm font-bold">流年飛星:</span>
-                <select id="sel-compass-feixing-year" onchange="changeCompassFeiXingYear()" class="bg-slate-950 border border-rose-500/60 rounded-lg px-2 py-0.5 text-rose-300 text-xs sm:text-base font-bold outline-none cursor-pointer"></select>
+            <div class="flex items-center gap-2">
+                <span class="text-rose-300 text-sm sm:text-base font-bold">流年飛星:</span>
+                <select id="sel-compass-feixing-year" onchange="changeCompassFeiXingYear()" class="bg-slate-950 border border-rose-500/60 rounded-lg px-2.5 py-1 text-rose-300 text-base sm:text-lg font-bold outline-none cursor-pointer"></select>
             </div>
         </div>
 
-        <!-- 子工具列：屋向模式 -->
-        <div id="compass-sub-wuxiang" class="hidden flex items-center justify-between gap-2 text-xs sm:text-base bg-slate-900/90 px-3 py-1.5 rounded-xl border border-indigo-500/60">
+        <!-- 子工具列：九運十二局專用單一下拉選單 -->
+        <div id="compass-sub-wuxiang" class="hidden flex items-center justify-between gap-2.5 text-base sm:text-lg bg-slate-900/90 px-4 py-2 rounded-xl border border-indigo-500/60">
             <span class="text-indigo-300 font-bold whitespace-nowrap">九運地盤：</span>
-            <select id="sel-compass-yun9-ju" onchange="renderCompassQimen()" class="bg-slate-950 border border-indigo-400/70 rounded-lg px-2 py-1 text-amber-300 font-bold outline-none text-xs sm:text-base cursor-pointer flex-grow">
+            <select id="sel-compass-yun9-ju" onchange="renderCompassQimen()" class="bg-slate-950 border border-indigo-400/70 rounded-lg px-3 py-1 text-amber-300 font-bold outline-none text-sm sm:text-base cursor-pointer flex-grow">
                 <option value="子_1" selected>九運 · 門向子 屋向坎 (坎一宮)</option>
                 <option value="丑_8">九運 · 門向丑 屋向艮 (艮八宮)</option>
                 <option value="寅_8">九運 · 門向寅 屋向艮 (艮八宮)</option>
@@ -740,36 +740,40 @@
                 <option value="亥_6">九運 · 門向亥 屋向乾 (乾六宮)</option>
             </select>
         </div>
+    </div>
 
-    <!-- 中間旋轉羅盤本體與瞄準線 -->
+    <!-- 中間旋轉羅盤本體與朝向瞄準線 -->
     <div class="relative flex flex-col items-center justify-center flex-grow w-full my-auto overflow-hidden">
-        <!-- 指針 (高度縮減，騰出垂直空間) -->
-        <div class="w-full flex flex-col items-center justify-end h-6 sm:h-8 z-20 pointer-events-none flex-shrink-0">
-            <div class="w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[10px] border-t-red-500 drop-shadow-[0_0_8px_rgba(239,68,68,0.9)]"></div>
-            <div class="w-[2px] h-2 bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.9)]"></div>
+        <!-- 朝向指示指針與紅線 -->
+        <div class="w-full flex flex-col items-center justify-end flex-grow z-20 pointer-events-none">
+            <div class="w-0 h-0 border-l-[7px] border-l-transparent border-r-[7px] border-r-transparent border-t-[12px] border-t-red-500 drop-shadow-[0_0_8px_rgba(239,68,68,0.9)] flex-shrink-0"></div>
+            <div class="text-[9px] text-red-400 font-black tracking-widest uppercase my-0.5 leading-none flex-shrink-0">朝向</div>
+            <div class="w-[2px] flex-grow bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.9)] min-h-[12px]"></div>
         </div>
 
-        <!-- 🌟 羅盤圓盤：貼齊手機左右邊框 (96vw)，同時以 calc(100dvh - 195px) 限制最高高度防止超出 -->
-        <div id="compass-dial-container" class="relative rounded-full flex-shrink-0 flex items-center justify-center transition-transform duration-100 ease-out will-change-transform shadow-[0_0_50px_rgba(30,58,138,0.35)] border-2 border-amber-500/40 bg-slate-950" style="width: min(96vw, calc(100dvh - 195px), 480px); height: min(96vw, calc(100dvh - 195px), 480px);">
+<!-- 旋轉羅盤本體 (寬度拉大至 98vw 貼齊左右邊框，九宮格縮至 70% 讓出外圈空間) -->
+        <div id="compass-dial-container" class="relative rounded-full flex-shrink-0 flex items-center justify-center transition-transform duration-100 ease-out will-change-transform shadow-[0_0_50px_rgba(30,58,138,0.35)] border-2 border-amber-500/40 bg-slate-950" style="width: min(98vw, calc(100dvh - 185px), 480px); height: min(98vw, calc(100dvh - 185px), 480px);">
             <!-- 外圈 24 山刻度 SVG -->
             <svg id="compass-svg-dial" class="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 440 440"></svg>
 
-            <!-- 內圈微縮九宮格 (佔比維持 74%，邊距與間隙壓緊以放大內部文字) -->
-            <div id="compass-qimen-grid" class="grid grid-cols-3 gap-0.5 sm:gap-1 z-10 w-[74%] h-[74%] p-0.5 sm:p-1 rounded-xl bg-black/85 backdrop-blur-md border border-amber-500/30">
+            <!-- 內圈微縮九宮格 (緊湊比例 70%，內距微調留出字體延展空間) -->
+            <div id="compass-qimen-grid" class="grid grid-cols-3 gap-0.5 sm:gap-1 z-10 w-[70%] h-[70%] p-0.5 sm:p-1 rounded-lg bg-black/90 backdrop-blur-md border border-amber-500/30">
             </div>
         </div>
 
-        <div class="w-full h-2 pointer-events-none flex-shrink-0"></div>
+        <!-- 底部等距平衡佔位 -->
+        <div class="w-full flex-grow pointer-events-none"></div>
     </div>
 
-    <!-- 底部提示欄 -->
-    <div class="w-full text-center pb-1 text-[11px] sm:text-xs text-gray-400 font-bold z-20 flex justify-center items-center gap-2">
+    <!-- 底部提示欄與 iOS 授權按鈕 -->
+    <div class="w-full text-center pb-2 text-[11px] sm:text-xs text-gray-400 font-bold z-20 flex justify-center items-center gap-2">
         <span id="compass-status-hint">💡 轉動手機，奇門盤將自動對準方位實地堪輿</span>
-        <button id="btn-ios-perm" onclick="requestDeviceOrientationPerm()" class="hidden bg-amber-500 hover:bg-amber-600 text-slate-950 px-2 py-0.5 rounded text-xs font-black shadow transition">
+        <button id="btn-ios-perm" onclick="requestDeviceOrientationPerm()" class="hidden bg-amber-500 hover:bg-amber-600 text-slate-950 px-2.5 py-1 rounded-md text-xs font-black shadow transition">
             啟用指南針感測
         </button>
     </div>
 </div>
+
 
 <div id="jieqi-modal" class="fixed inset-0 bg-gray-900/60 hidden flex justify-center items-center z-50 p-4">
     <div class="bg-white rounded-2xl shadow-2xl p-5 max-w-md w-full max-h-[80vh] overflow-y-auto relative border-t-8 border-teal-600">
@@ -3655,60 +3659,63 @@ function switchCompassPanMode(mode) {
         return "正北";
     }
 
-function renderCompassSvgDial() {
-    const svg = document.getElementById('compass-svg-dial');
-    if (!svg) return;
-    const cx = 220, cy = 220, rOut = 216, rMid = 174, rIn = 162;
-    let html = `
-        <circle cx="${cx}" cy="${cy}" r="${rOut}" fill="#050b14" stroke="#d97706" stroke-width="2"/>
-        <circle cx="${cx}" cy="${cy}" r="${rMid}" fill="#0f172a" stroke="#78350f" stroke-width="1.5"/>
-        <circle cx="${cx}" cy="${cy}" r="${rIn}" fill="#020617" stroke="#d97706" stroke-width="1.5"/>
-    `;
+    function renderCompassSvgDial() {
+        const svg = document.getElementById('compass-svg-dial');
+        if (!svg) return;
+        const cx = 220, cy = 220, rOut = 216, rMid = 176, rIn = 162;
+        let html = `
+            <circle cx="${cx}" cy="${cy}" r="${rOut}" fill="#050b14" stroke="#d97706" stroke-width="2"/>
+            <circle cx="${cx}" cy="${cy}" r="${rMid}" fill="#0f172a" stroke="#78350f" stroke-width="1.5"/>
+            <circle cx="${cx}" cy="${cy}" r="${rIn}" fill="#020617" stroke="#d97706" stroke-width="1.5"/>
+        `;
 
-    for (let deg = 0; deg < 360; deg += 5) {
-        let dialAngle = (deg - 180 + 360) % 360;
-        let rad = dialAngle * Math.PI / 180;
-        
-        let isMajorCardinal = (deg === 0 || deg === 90 || deg === 180 || deg === 270);
-        let is10 = (deg % 10 === 0);
-        let is30 = (deg % 30 === 0);
+        for (let deg = 0; deg < 360; deg += 5) {
+            let dialAngle = (deg - 180 + 360) % 360;
+            let rad = dialAngle * Math.PI / 180;
+            
+            let isMajorCardinal = (deg === 0 || deg === 90 || deg === 180 || deg === 270);
+            let is10 = (deg % 10 === 0);
+            let is30 = (deg % 30 === 0);
 
-        let len = isMajorCardinal ? 15 : (is30 ? 9 : (is10 ? 6 : 3.5));
-        let x1 = cx + (rOut - 2) * Math.sin(rad);
-        let y1 = cy - (rOut - 2) * Math.cos(rad);
-        let x2 = cx + (rOut - 2 - len) * Math.sin(rad);
-        let y2 = cy - (rOut - 2 - len) * Math.cos(rad);
+            let len = isMajorCardinal ? 16 : (is30 ? 9 : (is10 ? 6 : 3.5));
+            let x1 = cx + (rOut - 2) * Math.sin(rad);
+            let y1 = cy - (rOut - 2) * Math.cos(rad);
+            let x2 = cx + (rOut - 2 - len) * Math.sin(rad);
+            let y2 = cy - (rOut - 2 - len) * Math.cos(rad);
 
-        let strokeColor = isMajorCardinal ? '#f87171' : (is30 ? '#fbbf24' : (is10 ? '#94a3b8' : '#475569'));
-        let strokeWidth = isMajorCardinal ? 2.5 : (is30 ? 1.5 : 1);
+            let strokeColor = isMajorCardinal ? '#f87171' : (is30 ? '#fbbf24' : (is10 ? '#94a3b8' : '#475569'));
+            let strokeWidth = isMajorCardinal ? 2.5 : (is30 ? 1.5 : 1);
 
-        html += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${strokeColor}" stroke-width="${strokeWidth}"/>`;
+            html += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${strokeColor}" stroke-width="${strokeWidth}"/>`;
+        }
+
+        MOUNTAINS_24.forEach(m => {
+            let dialAngle = (m.center - 180 + 360) % 360;
+            let boundaryDialAngle = (dialAngle - 7.5 + 360) % 360;
+            let bRad = boundaryDialAngle * Math.PI / 180;
+            
+            let bx1 = cx + rOut * Math.sin(bRad);
+            let by1 = cy - rOut * Math.cos(bRad);
+            let bx2 = cx + rIn * Math.sin(bRad);
+            let by2 = cy - rIn * Math.cos(bRad);
+            html += `<line x1="${bx1}" y1="${by1}" x2="${bx2}" y2="${by2}" stroke="#78350f" stroke-width="1" opacity="0.6"/>`;
+
+            let tRad = dialAngle * Math.PI / 180;
+            let textR = (rMid + rOut - 10) / 2 + 2;
+            let tx = cx + textR * Math.sin(tRad);
+            let ty = cy - textR * Math.cos(tRad);
+            
+            let fontSize = m.isMajor ? "14" : "12";
+            let fontWeight = m.isMajor ? "900" : "800";
+            html += `<text x="${tx}" y="${ty}" fill="${m.color}" font-size="${fontSize}" font-weight="${fontWeight}" text-anchor="middle" dominant-baseline="central" transform="rotate(${dialAngle}, ${tx}, ${ty})">${m.name}</text>`;
+        });
+
+        svg.innerHTML = html;
     }
 
-    MOUNTAINS_24.forEach(m => {
-        let dialAngle = (m.center - 180 + 360) % 360;
-        let boundaryDialAngle = (dialAngle - 7.5 + 360) % 360;
-        let bRad = boundaryDialAngle * Math.PI / 180;
-        
-        let bx1 = cx + rOut * Math.sin(bRad);
-        let by1 = cy - rOut * Math.cos(bRad);
-        let bx2 = cx + rIn * Math.sin(bRad);
-        let by2 = cy - rIn * Math.cos(bRad);
-        html += `<line x1="${bx1}" y1="${by1}" x2="${bx2}" y2="${by2}" stroke="#78350f" stroke-width="1" opacity="0.6"/>`;
 
-        let tRad = dialAngle * Math.PI / 180;
-        let textR = (rMid + rOut) / 2 + 0.5;
-        let tx = cx + textR * Math.sin(tRad);
-        let ty = cy - textR * Math.cos(tRad);
-        
-        // 🌟 廿四山文字加大 ~40%，飽滿清晰
-        let fontSize = m.isMajor ? "16.5" : "13.5";
-        let fontWeight = "900";
-        html += `<text x="${tx}" y="${ty}" fill="${m.color}" font-size="${fontSize}" font-weight="${fontWeight}" text-anchor="middle" dominant-baseline="central" transform="rotate(${dialAngle}, ${tx}, ${ty})">${m.name}</text>`;
-    });
 
-    svg.innerHTML = html;
-}
+
 function renderCompassQimen() {
     const grid = document.getElementById('compass-qimen-grid');
     if (!grid) return;
@@ -3729,7 +3736,7 @@ function renderCompassQimen() {
         const FLIGHT_OFFSET = { 5: 0, 6: 1, 7: 2, 8: 3, 9: 4, 1: 5, 2: 6, 3: 7, 4: 8 };
         const FEIXING_ZH_NAMES = ["", "一白", "二黑", "三碧", "四綠", "五黃", "六白", "七赤", "八白", "九紫"];
 
-order.forEach(pNum => {
+        order.forEach(pNum => {
             let data = globalPalaceData[pNum];
             let feixingNum = (starC + FLIGHT_OFFSET[pNum] - 1) % 9 + 1;
             let feixingStr = FEIXING_ZH_NAMES[feixingNum];
@@ -3738,68 +3745,55 @@ order.forEach(pNum => {
                 let s = data ? data.hStems[0] : "";
                 let b5 = panData.bazi5Info;
                 html += `
-                <div class="flex flex-col justify-between p-1 bg-slate-900/95 border border-amber-500/40 rounded text-center text-white overflow-hidden shadow-inner leading-tight">
-                    <div class="flex justify-between items-center text-[10px] sm:text-xs font-black border-b border-gray-700/60 pb-0.5">
+                <div class="flex flex-col justify-between p-0.5 sm:p-1 bg-slate-900/95 border border-amber-500/40 rounded text-center text-white overflow-hidden shadow-inner">
+                    <div class="flex justify-between items-center text-[9px] sm:text-[10px] font-black border-b border-gray-700/60 pb-0.5 leading-none">
                         <span class="text-amber-300">中五</span>
-                        <span class="bg-rose-900/90 text-rose-200 px-1 rounded text-[9px] sm:text-[10px] font-mono">${feixingStr}</span>
+                        <span class="bg-rose-900/90 text-rose-200 px-1 rounded text-[8px] sm:text-[9px] font-mono">${feixingStr}</span>
                     </div>
-                    <div class="flex flex-col justify-center items-center my-auto leading-none space-y-1">
-                        <div class="text-xs sm:text-sm text-amber-200 font-black">${b5 ? b5.hS + b5.hB + '時' : ''}</div>
-                        <div class="text-[10px] sm:text-xs text-gray-300 font-bold">符:${b5 ? b5.zf : ''}</div>
-                        <div class="text-[10px] sm:text-xs text-gray-300 font-bold">使:${b5 ? b5.zs : ''}</div>
+                    <div class="flex flex-col justify-center items-center my-auto leading-tight space-y-0.5">
+                        <div class="text-[10px] sm:text-xs text-amber-200 font-black">${b5 ? b5.hS + b5.hB + '時' : ''}</div>
+                        <div class="text-[9px] sm:text-[10px] text-gray-300">符:${b5 ? b5.zf : ''}</div>
+                        <div class="text-[9px] sm:text-[10px] text-gray-300">使:${b5 ? b5.zs : ''}</div>
                     </div>
-                    <div class="text-sm sm:text-base text-center font-black text-amber-400 border-t border-gray-800/80 pt-0.5">${s}</div>
+                    <div class="text-[11px] sm:text-xs text-right font-black text-amber-400 mt-auto leading-none">${s}</div>
                 </div>`;
             } else if (data) {
                 let pGua = PALACES_HOU[pNum].gua;
 
-                // 🌟 分開定義：空亡與驛馬移至第一行暗干後；門迫獨立留在第三行八門後
-                let kongDisplay = data.isKong ? `<span class="text-[8px] sm:text-[9px] text-red-400 border border-red-500/70 rounded px-0.5 font-bold leading-none ml-0.5">空</span>` : '';
-                let maDisplay = data.isMa ? `<span class="text-[8px] sm:text-[9px] text-amber-300 border border-amber-400/70 rounded px-0.5 font-bold leading-none ml-0.5">馬</span>` : '';
-                let menPoDisplay = data.isMenPo ? `<span class="text-[8px] sm:text-[9px] text-red-400 border border-red-500/70 rounded px-0.5 font-bold leading-none ml-0.5">迫</span>` : '';
+                // 迫在首位，其後緊隨 驛馬 🐎 與 空亡 🈳
+                let tags = [];
+                if (data.isMenPo) tags.push('<span class="text-red-500 font-black">迫</span>');
+                if (data.isMa) tags.push('🐎');
+                if (data.isKong) tags.push('🈳');
+                let tagDisplay = tags.length ? `<span class="inline-flex items-center text-[9px] sm:text-[10px] ml-0.5">${tags.join('')}</span>` : '';
 
                 html += `
-                <div class="flex flex-col justify-between p-1 bg-slate-950/95 border border-slate-800 rounded text-white overflow-hidden shadow">
-                    <!-- 宮名與飛星 -->
-                    <div class="flex justify-between items-center text-[10px] sm:text-xs font-black border-b border-slate-800/80 pb-0.5 leading-none">
-                        <span class="text-amber-300">${data.name} ${pGua}</span>
-                        <span class="bg-rose-900/90 text-rose-200 px-1 rounded text-[9px] sm:text-[10px] font-mono">${feixingStr}</span>
+                <div class="flex flex-col justify-between p-0.5 sm:p-1 bg-slate-950/95 border border-slate-800 rounded text-white overflow-hidden shadow">
+                    <!-- 頂部：宮名、卦象、暗干與流年飛星 -->
+                    <div class="flex justify-between items-center text-[9px] sm:text-[10px] font-black border-b border-slate-800/80 pb-0.5 leading-none">
+                        <span class="text-amber-300 truncate">${data.name}${pGua} <span class="text-gray-400 font-normal text-[8px]">${data.anGan || ''}</span></span>
+                        <span class="bg-rose-900/90 text-rose-200 px-1 rounded text-[8px] sm:text-[9px] font-mono">${feixingStr}</span>
                     </div>
 
-                    <!-- 內容主體：八神 / 九星+天盤干 / 八門+地盤干 -->
-                    <div class="flex flex-col justify-around flex-grow py-0.5 text-xs sm:text-sm md:text-base font-black leading-tight w-full">
-                        
-                        <!-- 🌟 第一行：左側八神；右側暗干 + 空亡 + 驛馬 -->
-                        <div class="flex justify-between items-center w-full">
-                            <span class="text-emerald-400 truncate">${data.god}</span>
-                            <div class="flex items-center gap-0.5 flex-shrink-0">
-                                ${data.anGan ? `<span class="text-[9px] text-gray-400 font-normal">暗${data.anGan}</span>` : ''}
-                                ${kongDisplay}
-                                ${maDisplay}
-                            </div>
+                    <!-- 中間核心：八神、九星+天盤干、八門+地盤干+(迫/馬/空) 盡用空間大字體 -->
+                    <div class="flex flex-col justify-around flex-grow my-auto py-0.5 text-[11px] sm:text-[13px] md:text-[14px] font-black leading-tight w-full">
+                        <span class="text-emerald-400 truncate w-full">${data.god}</span>
+                        <div class="flex items-center truncate w-full">
+                            <span class="text-yellow-300">${data.star}</span>
+                            <span class="text-cyan-300 ml-1 tracking-tight">${data.hStems.join('')}</span>
                         </div>
-
-                        <!-- 第二行：九星 + 天盤干 (青色) -->
-                        <div class="flex justify-between items-center w-full">
-                            <span class="text-yellow-300 truncate">${data.star}</span>
-                            <span class="text-cyan-300 font-black ml-1 text-sm sm:text-base tracking-wider">${data.hStems.join('|')}</span>
-                        </div>
-
-                        <!-- 🌟 第三行：八門 + 門迫(獨立留在八門旁)；右側地盤干 (橙色) -->
-                        <div class="flex justify-between items-center w-full">
-                            <div class="flex items-center truncate">
-                                <span class="text-red-400">${data.door}</span>
-                                ${menPoDisplay}
-                            </div>
-                            <span class="text-orange-300 font-black ml-1 text-sm sm:text-base tracking-wider">${data.eStems.join('|')}</span>
+                        <div class="flex items-center truncate w-full">
+                            <span class="text-red-400">${data.door}</span>
+                            <span class="text-orange-300 ml-1 tracking-tight">${data.eStems.join('')}</span>
+                            ${tagDisplay}
                         </div>
                     </div>
                 </div>`;
             }
         });
-	}
+    } 
     // ==========================================
-    // 模式 B：九運地盤 (屋向盤)
+    // 模式 B：九運地盤 (直接讀取下拉選單)
     // ==========================================
     else {
         const juVal = document.getElementById('sel-compass-yun9-ju')?.value || '子_1';
@@ -3814,19 +3808,19 @@ order.forEach(pNum => {
             if (pNum === 5) {
                 const eNumZh = wx.CHINESE_NUMS[wx.earthNum[5]];
                 html += `
-                <div class="flex flex-col justify-between p-1 bg-slate-900/95 border border-indigo-500/50 rounded text-center text-white overflow-hidden shadow-inner leading-tight">
-                    <div class="flex justify-between items-center text-[10px] sm:text-xs font-black border-b border-indigo-900 pb-0.5">
+                <div class="flex flex-col justify-between p-0.5 sm:p-1 bg-slate-900/95 border border-indigo-500/50 rounded text-center text-white overflow-hidden shadow-inner">
+                    <div class="flex justify-between items-center text-[9px] sm:text-[10px] font-black border-b border-indigo-900 pb-0.5 leading-none">
                         <span class="text-indigo-300">中五</span>
-                        <span class="bg-indigo-900 text-indigo-200 px-1 rounded text-[9px]">立極</span>
+                        <span class="bg-indigo-900 text-indigo-200 px-1 rounded text-[8px]">立極</span>
                     </div>
-                    <div class="flex flex-col justify-center items-center my-auto leading-none space-y-1">
-                        <div class="text-xs sm:text-sm text-amber-300 font-black">${wx.yun}運</div>
-                        <div class="text-[10px] sm:text-xs text-gray-300 font-bold">頭:${wx.fuTouStem}</div>
-                        <div class="text-[10px] sm:text-xs text-gray-300 font-bold">星:${wx.starLeader}</div>
+                    <div class="flex flex-col justify-center items-center my-auto leading-tight space-y-0.5">
+                        <div class="text-[10px] sm:text-xs text-amber-300 font-bold">${wx.yun}運</div>
+                        <div class="text-[8px] sm:text-[9px] text-gray-400">符頭:${wx.fuTouStem}</div>
+                        <div class="text-[8px] sm:text-[9px] text-gray-400">符星:${wx.starLeader}</div>
                     </div>
-                    <div class="flex justify-between items-center text-xs sm:text-sm font-mono font-black border-t border-indigo-900/80 pt-0.5 px-1">
+                    <div class="flex justify-between items-end mt-auto text-[10px] sm:text-xs font-mono font-bold leading-none">
                         <span class="text-amber-400">${eNumZh}</span>
-                        <span class="text-orange-300 font-sans">${wx.centerStem}</span>
+                        <span class="text-orange-300">${wx.centerStem}</span>
                     </div>
                 </div>`;
             } else {
@@ -3843,30 +3837,25 @@ order.forEach(pNum => {
                 const hStem = wx.heavenStemPan[pNum];
                 const eStem = wx.earthStem[pNum];
 
-                // 🌟 屋向盤：天盤干放九星後、地盤干放八門後，洛書數置於右上角
                 html += `
-                <div class="flex flex-col justify-between p-1 bg-slate-950/95 border border-slate-800 rounded text-white overflow-hidden shadow">
-                    <!-- 宮名、屋門標籤與洛書數 -->
-                    <div class="flex justify-between items-center text-[10px] sm:text-xs font-black border-b border-slate-800 pb-0.5 leading-none">
-                        <span class="text-amber-300">${pInfo.name} ${pInfo.gua}</span>
-                        <div class="flex items-center gap-1">
+                <div class="flex flex-col justify-between p-0.5 sm:p-1 bg-slate-950/95 border border-slate-800 rounded text-white overflow-hidden shadow">
+                    <div class="flex justify-between items-center text-[9px] sm:text-[10px] font-black border-b border-slate-800/80 pb-0.5 leading-none">
+                        <span class="text-amber-300 truncate">${pInfo.name} ${pInfo.gua}</span>
+                        <div class="flex items-center gap-0.5">
+                            <span class="text-amber-400 font-mono text-[9px]">${eNumZh}</span>
                             ${badgeHtml}
-                            <span class="text-amber-400 font-mono text-[10px] sm:text-xs font-black">${eNumZh}</span>
                         </div>
                     </div>
 
-                    <!-- 內容主體：八神 / 九星+天盤干 / 八門+地盤干 -->
-                    <div class="flex flex-col justify-around flex-grow py-0.5 text-xs sm:text-sm md:text-base font-black leading-tight w-full">
-                        <div class="flex justify-between items-center w-full">
-                            <span class="text-emerald-400 truncate">${god}</span>
+                    <div class="flex flex-col justify-around flex-grow my-auto py-0.5 text-[11px] sm:text-[13px] md:text-[14px] font-black leading-tight w-full">
+                        <span class="text-emerald-400 truncate w-full">${god}</span>
+                        <div class="flex items-center truncate w-full">
+                            <span class="text-yellow-300">${star}</span>
+                            <span class="text-cyan-300 ml-1 tracking-tight">${hStem}</span>
                         </div>
-                        <div class="flex justify-between items-center w-full">
-                            <span class="text-yellow-300 truncate">${star}</span>
-                            <span class="text-cyan-300 font-black ml-1 text-sm sm:text-base tracking-wider">${hStem}</span>
-                        </div>
-                        <div class="flex justify-between items-center w-full">
-                            <span class="text-red-400 truncate">${door}</span>
-                            <span class="text-orange-300 font-black ml-1 text-sm sm:text-base tracking-wider">${eStem}</span>
+                        <div class="flex items-center truncate w-full">
+                            <span class="text-red-400">${door}</span>
+                            <span class="text-orange-300 ml-1 tracking-tight">${eStem}</span>
                         </div>
                     </div>
                 </div>`;
