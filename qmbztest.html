@@ -247,29 +247,34 @@
     </div>
 </details>
 
-            <!-- 🌟 3. 折疊欄二：簡化為「📋 排盤資料」且預設展開 (加入 open) -->
-<details id="accordion-pan-info" class="group bg-indigo-50/80 border-l-4 border-indigo-500 rounded-r-lg rounded-l-none mb-1.5 shadow-sm hidden" open>
-                <summary class="py-1 px-3 cursor-pointer text-xs sm:text-sm font-bold text-indigo-900 flex justify-between items-center select-none">
-                    <span id="pan-summary-title">📋 排盤資料</span>
-                    <span class="transform group-open:rotate-180 transition-transform duration-200 text-[10px]">▼</span>
-                </summary>
-                
-                <div class="p-2.5 text-gray-800 border-t border-indigo-100 bg-white/60 space-y-1.5">
-                    <div class="text-xs sm:text-sm font-bold text-indigo-950" id="info-bazi"></div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-1 text-xs border-t border-indigo-100 pt-1.5">
-                        <div><span class="text-gray-500">現時節氣：</span><span id="info-jieqi" class="text-indigo-800 font-bold"></span></div>
-                        <div><span class="text-gray-500">下一節氣：</span><span id="info-next-jieqi" class="text-teal-800 font-bold"></span></div>
-                    </div>
-                    <div class="grid grid-cols-2 sm:grid-cols-5 gap-1 text-xs border-t border-indigo-100 pt-1.5">
-                        <div><span class="text-gray-500">局數：</span><span id="info-ju" class="text-red-600 font-bold"></span></div>
-                        <div><span class="text-gray-500">旬首：</span><span id="info-xunshou" class="font-bold"></span></div>
-                        <div><span class="text-gray-500">值符：</span><span id="info-zhifu" class="font-bold"></span></div>
-                        <div><span class="text-gray-500">值使：</span><span id="info-zhishi" class="font-bold"></span></div>
-                        <div><span class="text-gray-500">空亡：</span><span id="info-kongwang" class="font-bold"></span></div>
-                    </div>
-                    <div id="info-special" class="hidden text-xs pt-1 font-bold"></div>
-                </div>
-            </details>
+<!-- 🌟 折疊欄二：排盤資料 (字體全面放大 70%) -->
+<details id="accordion-pan-info" class="group bg-indigo-50/80 border-l-4 border-indigo-500 rounded-r-xl rounded-l-none mb-2 shadow-sm hidden" open>
+    <summary class="py-2.5 px-4 cursor-pointer text-lg sm:text-xl font-black text-indigo-950 flex justify-between items-center select-none">
+        <span id="pan-summary-title">📋 排盤資料</span>
+        <span class="transform group-open:rotate-180 transition-transform duration-200 text-base">▼</span>
+    </summary>
+    
+    <div class="p-3.5 text-gray-800 border-t border-indigo-100 bg-white/70 space-y-3">
+        <!-- 四柱八字大標題 (+70%) -->
+        <div class="text-xl sm:text-2xl md:text-3xl font-black text-indigo-950 leading-relaxed" id="info-bazi"></div>
+        
+        <!-- 節氣列 (+70%) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-base sm:text-lg md:text-xl border-t border-indigo-100 pt-2.5 font-bold">
+            <div><span class="text-gray-500">現時節氣：</span><span id="info-jieqi" class="text-indigo-900 font-black"></span></div>
+            <div><span class="text-gray-500">下一節氣：</span><span id="info-next-jieqi" class="text-teal-900 font-black"></span></div>
+        </div>
+
+        <!-- 局數/旬首/符使/空亡 (+70%) -->
+        <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 text-base sm:text-lg md:text-xl border-t border-indigo-100 pt-2.5 font-bold">
+            <div><span class="text-gray-500 text-sm sm:text-base block">局數</span><span id="info-ju" class="text-red-600 font-black text-lg sm:text-xl md:text-2xl"></span></div>
+            <div><span class="text-gray-500 text-sm sm:text-base block">旬首</span><span id="info-xunshou" class="text-gray-950 font-black text-lg sm:text-xl md:text-2xl"></span></div>
+            <div><span class="text-gray-500 text-sm sm:text-base block">值符</span><span id="info-zhifu" class="text-gray-950 font-black text-lg sm:text-xl md:text-2xl"></span></div>
+            <div><span class="text-gray-500 text-sm sm:text-base block">值使</span><span id="info-zhishi" class="text-gray-950 font-black text-lg sm:text-xl md:text-2xl"></span></div>
+            <div><span class="text-gray-500 text-sm sm:text-base block">空亡</span><span id="info-kongwang" class="text-gray-950 font-black text-lg sm:text-xl md:text-2xl"></span></div>
+        </div>
+        <div id="info-special" class="hidden text-base sm:text-xl pt-2 font-black"></div>
+    </div>
+</details>
 
 <!-- 🌟 4. 頂部常駐快調 Bar (日期時間字體加大 ~70%) -->
 <div id="quick-time-bar" class="hidden justify-between items-center bg-white/95 border border-indigo-200 rounded-xl py-1.5 px-3 shadow-sm mb-2 max-w-xl sm:max-w-2xl mx-auto">
@@ -742,27 +747,29 @@
         </div>
     </div>
 
-    <!-- 中間旋轉羅盤本體與朝向瞄準線 -->
+<!-- 中間旋轉羅盤本體與朝向瞄準線 (緊湊排版，消除上下巨大空隙) -->
     <div class="relative flex flex-col items-center justify-center flex-grow w-full my-auto overflow-hidden">
-        <!-- 朝向指示指針與紅線 -->
-        <div class="w-full flex flex-col items-center justify-end flex-grow z-20 pointer-events-none">
-            <div class="w-0 h-0 border-l-[7px] border-l-transparent border-r-[7px] border-r-transparent border-t-[12px] border-t-red-500 drop-shadow-[0_0_8px_rgba(239,68,68,0.9)] flex-shrink-0"></div>
-            <div class="text-[9px] text-red-400 font-black tracking-widest uppercase my-0.5 leading-none flex-shrink-0">朝向</div>
-            <div class="w-[2px] flex-grow bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.9)] min-h-[12px]"></div>
+        <!-- 朝向指示指針與紅線 (固定輕薄高度，不再擠壓羅盤尺寸) -->
+        <div class="flex flex-col items-center justify-end h-6 shrink-0 z-20 pointer-events-none mb-1">
+            <div class="w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[10px] border-t-red-500 drop-shadow-[0_0_6px_rgba(239,68,68,0.9)]"></div>
+            <div class="w-[2px] h-2.5 bg-red-500 shadow-[0_0_6px_rgba(239,68,68,0.9)]"></div>
         </div>
 
-<!-- 旋轉羅盤本體 (寬度拉大至 98vw 貼齊左右邊框，九宮格縮至 70% 讓出外圈空間) -->
-        <div id="compass-dial-container" class="relative rounded-full flex-shrink-0 flex items-center justify-center transition-transform duration-100 ease-out will-change-transform shadow-[0_0_50px_rgba(30,58,138,0.35)] border-2 border-amber-500/40 bg-slate-950" style="width: min(98vw, calc(100dvh - 185px), 480px); height: min(98vw, calc(100dvh - 185px), 480px);">
+        <!-- 旋轉羅盤本體 (寬高擴展至 98vw，貼齊手機左右兩側) -->
+        <div id="compass-dial-container" class="relative rounded-full flex-shrink-0 flex items-center justify-center transition-transform duration-100 ease-out will-change-transform shadow-[0_0_50px_rgba(30,58,138,0.35)] border-2 border-amber-500/40 bg-slate-950" style="width: min(98vw, calc(100dvh - 180px), 470px); height: min(98vw, calc(100dvh - 180px), 470px);">
             <!-- 外圈 24 山刻度 SVG -->
             <svg id="compass-svg-dial" class="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 440 440"></svg>
 
-            <!-- 內圈微縮九宮格 (緊湊比例 70%，內距微調留出字體延展空間) -->
-            <div id="compass-qimen-grid" class="grid grid-cols-3 gap-0.5 sm:gap-1 z-10 w-[70%] h-[70%] p-0.5 sm:p-1 rounded-lg bg-black/90 backdrop-blur-md border border-amber-500/30">
+
+
+<!-- 內圈微縮九宮格 (設為 68%：四角精準搭在艮巽坤乾，且完全不覆蓋丑寅/辰巳/未申/戌亥) -->
+            <div id="compass-qimen-grid" class="grid grid-cols-3 gap-0.5 sm:gap-1 z-10 w-[68%] h-[68%] p-0.5 sm:p-1 rounded-lg bg-black/90 backdrop-blur-md border border-amber-500/40">
             </div>
         </div>
 
-        <!-- 底部等距平衡佔位 -->
-        <div class="w-full flex-grow pointer-events-none"></div>
+
+        <!-- 底部微調佔位 -->
+        <div class="h-2 shrink-0 pointer-events-none"></div>
     </div>
 
     <!-- 底部提示欄與 iOS 授權按鈕 -->
@@ -3071,8 +3078,8 @@ function initSelectors() {
             
             let targetWarn = jqData.isCurrentTransition ? "⚠️" : "";
             let nextWarn = jqData.isNextTransition ? "⚠️" : "";
-            document.getElementById('info-jieqi').innerHTML = `${jieQi} <span class="text-[10px] text-gray-500 font-normal">(交節：${jqData.time}${targetWarn})</span>`;
-            document.getElementById('info-next-jieqi').innerHTML = `${jqData.nextName} <span class="text-[10px] text-gray-500 font-normal">(交節：${jqData.nextTime}${nextWarn})</span>`;
+document.getElementById('info-jieqi').innerHTML = `${jieQi} <span class="text-xs sm:text-sm text-gray-500 font-normal">(交節：${jqData.time}${targetWarn})</span>`;
+            document.getElementById('info-next-jieqi').innerHTML = `${jqData.nextName} <span class="text-xs sm:text-sm text-gray-500 font-normal">(交節：${jqData.nextTime}${nextWarn})</span>`;
             
 
 // 🌟 當前時辰遇節氣交接時，彈出警告對話框
@@ -3705,16 +3712,13 @@ function switchCompassPanMode(mode) {
             let tx = cx + textR * Math.sin(tRad);
             let ty = cy - textR * Math.cos(tRad);
             
-            let fontSize = m.isMajor ? "14" : "12";
+            let fontSize = m.isMajor ? "17" : "14";
             let fontWeight = m.isMajor ? "900" : "800";
             html += `<text x="${tx}" y="${ty}" fill="${m.color}" font-size="${fontSize}" font-weight="${fontWeight}" text-anchor="middle" dominant-baseline="central" transform="rotate(${dialAngle}, ${tx}, ${ty})">${m.name}</text>`;
         });
 
         svg.innerHTML = html;
     }
-
-
-
 
 function renderCompassQimen() {
     const grid = document.getElementById('compass-qimen-grid');
@@ -3745,47 +3749,56 @@ function renderCompassQimen() {
                 let s = data ? data.hStems[0] : "";
                 let b5 = panData.bazi5Info;
                 html += `
-                <div class="flex flex-col justify-between p-0.5 sm:p-1 bg-slate-900/95 border border-amber-500/40 rounded text-center text-white overflow-hidden shadow-inner">
-                    <div class="flex justify-between items-center text-[9px] sm:text-[10px] font-black border-b border-gray-700/60 pb-0.5 leading-none">
+                <div class="flex flex-col justify-between p-1 bg-slate-900/95 border border-amber-500/40 rounded text-center text-white overflow-hidden shadow-inner leading-none">
+                    <div class="flex justify-between items-center text-[9px] sm:text-[10px] font-black border-b border-gray-700/60 pb-0.5">
                         <span class="text-amber-300">中五</span>
                         <span class="bg-rose-900/90 text-rose-200 px-1 rounded text-[8px] sm:text-[9px] font-mono">${feixingStr}</span>
                     </div>
-                    <div class="flex flex-col justify-center items-center my-auto leading-tight space-y-0.5">
-                        <div class="text-[10px] sm:text-xs text-amber-200 font-black">${b5 ? b5.hS + b5.hB + '時' : ''}</div>
-                        <div class="text-[9px] sm:text-[10px] text-gray-300">符:${b5 ? b5.zf : ''}</div>
-                        <div class="text-[9px] sm:text-[10px] text-gray-300">使:${b5 ? b5.zs : ''}</div>
+                    <div class="flex flex-col justify-center items-center my-auto space-y-0.5">
+                        <div class="text-xs sm:text-sm text-amber-200 font-black">${b5 ? b5.hS + b5.hB + '時' : ''}</div>
+                        <div class="text-[9px] sm:text-[10px] text-gray-300 font-bold">符:${b5 ? b5.zf : ''}</div>
+                        <div class="text-[9px] sm:text-[10px] text-gray-300 font-bold">使:${b5 ? b5.zs : ''}</div>
                     </div>
-                    <div class="text-[11px] sm:text-xs text-right font-black text-amber-400 mt-auto leading-none">${s}</div>
+                    <div class="text-xs sm:text-sm text-right font-black text-amber-400 mt-auto">${s}</div>
                 </div>`;
             } else if (data) {
                 let pGua = PALACES_HOU[pNum].gua;
 
-                // 迫在首位，其後緊隨 驛馬 🐎 與 空亡 🈳
-                let tags = [];
-                if (data.isMenPo) tags.push('<span class="text-red-500 font-black">迫</span>');
-                if (data.isMa) tags.push('🐎');
-                if (data.isKong) tags.push('🈳');
-                let tagDisplay = tags.length ? `<span class="inline-flex items-center text-[9px] sm:text-[10px] ml-0.5">${tags.join('')}</span>` : '';
+                // 驛馬與空亡
+                let maKong = [];
+                if (data.isMa) maKong.push('🐎');
+                if (data.isKong) maKong.push('🈳');
+                let maKongHtml = maKong.join('');
 
                 html += `
-                <div class="flex flex-col justify-between p-0.5 sm:p-1 bg-slate-950/95 border border-slate-800 rounded text-white overflow-hidden shadow">
-                    <!-- 頂部：宮名、卦象、暗干與流年飛星 -->
-                    <div class="flex justify-between items-center text-[9px] sm:text-[10px] font-black border-b border-slate-800/80 pb-0.5 leading-none">
+                <div class="flex flex-col justify-between p-1 bg-slate-950/95 border border-slate-800 rounded text-white overflow-hidden shadow leading-none">
+                    <!-- 頂部資訊列：宮名、卦象、暗干與流年飛星 -->
+                    <div class="flex justify-between items-center text-[9px] sm:text-[10px] font-black border-b border-slate-800/80 pb-0.5">
                         <span class="text-amber-300 truncate">${data.name}${pGua} <span class="text-gray-400 font-normal text-[8px]">${data.anGan || ''}</span></span>
                         <span class="bg-rose-900/90 text-rose-200 px-1 rounded text-[8px] sm:text-[9px] font-mono">${feixingStr}</span>
                     </div>
 
-                    <!-- 中間核心：八神、九星+天盤干、八門+地盤干+(迫/馬/空) 盡用空間大字體 -->
-                    <div class="flex flex-col justify-around flex-grow my-auto py-0.5 text-[11px] sm:text-[13px] md:text-[14px] font-black leading-tight w-full">
-                        <span class="text-emerald-400 truncate w-full">${data.god}</span>
-                        <div class="flex items-center truncate w-full">
-                            <span class="text-yellow-300">${data.star}</span>
-                            <span class="text-cyan-300 ml-1 tracking-tight">${data.hStems.join('')}</span>
+                    <!-- 核心主體：字級放大至 12px～15px，天地盤干與馬空靠右貼齊邊框 -->
+                    <div class="flex flex-col justify-around flex-grow my-auto py-0.5 text-[12px] sm:text-[13.5px] md:text-[15px] font-black leading-tight w-full">
+                        <!-- 第一行：八神 (靠左) | 驛馬、空亡 (貼齊最右) -->
+                        <div class="flex justify-between items-center w-full">
+                            <span class="text-emerald-400 truncate">${data.god}</span>
+                            <span class="text-right inline-flex items-center text-[11px] sm:text-[12px] leading-none shrink-0">${maKongHtml}</span>
                         </div>
-                        <div class="flex items-center truncate w-full">
-                            <span class="text-red-400">${data.door}</span>
-                            <span class="text-orange-300 ml-1 tracking-tight">${data.eStems.join('')}</span>
-                            ${tagDisplay}
+
+                        <!-- 第二行：九星 (靠左) | 天盤干 (貼齊最右) -->
+                        <div class="flex justify-between items-center w-full">
+                            <span class="text-yellow-300 truncate">${data.star}</span>
+                            <span class="text-cyan-300 font-mono text-right shrink-0 tracking-tight">${data.hStems.join('')}</span>
+                        </div>
+
+                        <!-- 第三行：八門 + 門迫 (靠左) | 地盤干 (貼齊最右) -->
+                        <div class="flex justify-between items-center w-full">
+                            <div class="flex items-center truncate">
+                                <span class="text-red-400">${data.door}</span>
+                                ${data.isMenPo ? '<span class="text-red-500 font-black ml-0.5 text-[10px] sm:text-[11px]">迫</span>' : ''}
+                            </div>
+                            <span class="text-orange-300 font-mono text-right shrink-0 tracking-tight">${data.eStems.join('')}</span>
                         </div>
                     </div>
                 </div>`;
@@ -3808,17 +3821,17 @@ function renderCompassQimen() {
             if (pNum === 5) {
                 const eNumZh = wx.CHINESE_NUMS[wx.earthNum[5]];
                 html += `
-                <div class="flex flex-col justify-between p-0.5 sm:p-1 bg-slate-900/95 border border-indigo-500/50 rounded text-center text-white overflow-hidden shadow-inner">
-                    <div class="flex justify-between items-center text-[9px] sm:text-[10px] font-black border-b border-indigo-900 pb-0.5 leading-none">
+                <div class="flex flex-col justify-between p-1 bg-slate-900/95 border border-indigo-500/50 rounded text-center text-white overflow-hidden shadow-inner leading-none">
+                    <div class="flex justify-between items-center text-[9px] sm:text-[10px] font-black border-b border-indigo-900 pb-0.5">
                         <span class="text-indigo-300">中五</span>
                         <span class="bg-indigo-900 text-indigo-200 px-1 rounded text-[8px]">立極</span>
                     </div>
-                    <div class="flex flex-col justify-center items-center my-auto leading-tight space-y-0.5">
-                        <div class="text-[10px] sm:text-xs text-amber-300 font-bold">${wx.yun}運</div>
-                        <div class="text-[8px] sm:text-[9px] text-gray-400">符頭:${wx.fuTouStem}</div>
-                        <div class="text-[8px] sm:text-[9px] text-gray-400">符星:${wx.starLeader}</div>
+                    <div class="flex flex-col justify-center items-center my-auto space-y-0.5">
+                        <div class="text-xs sm:text-sm text-amber-300 font-bold">${wx.yun}運</div>
+                        <div class="text-[9px] sm:text-[10px] text-gray-400">符頭:${wx.fuTouStem}</div>
+                        <div class="text-[9px] sm:text-[10px] text-gray-400">符星:${wx.starLeader}</div>
                     </div>
-                    <div class="flex justify-between items-end mt-auto text-[10px] sm:text-xs font-mono font-bold leading-none">
+                    <div class="flex justify-between items-end mt-auto text-[10px] sm:text-xs font-mono font-bold">
                         <span class="text-amber-400">${eNumZh}</span>
                         <span class="text-orange-300">${wx.centerStem}</span>
                     </div>
@@ -3838,8 +3851,8 @@ function renderCompassQimen() {
                 const eStem = wx.earthStem[pNum];
 
                 html += `
-                <div class="flex flex-col justify-between p-0.5 sm:p-1 bg-slate-950/95 border border-slate-800 rounded text-white overflow-hidden shadow">
-                    <div class="flex justify-between items-center text-[9px] sm:text-[10px] font-black border-b border-slate-800/80 pb-0.5 leading-none">
+                <div class="flex flex-col justify-between p-1 bg-slate-950/95 border border-slate-800 rounded text-white overflow-hidden shadow leading-none">
+                    <div class="flex justify-between items-center text-[9px] sm:text-[10px] font-black border-b border-slate-800/80 pb-0.5">
                         <span class="text-amber-300 truncate">${pInfo.name} ${pInfo.gua}</span>
                         <div class="flex items-center gap-0.5">
                             <span class="text-amber-400 font-mono text-[9px]">${eNumZh}</span>
@@ -3847,15 +3860,17 @@ function renderCompassQimen() {
                         </div>
                     </div>
 
-                    <div class="flex flex-col justify-around flex-grow my-auto py-0.5 text-[11px] sm:text-[13px] md:text-[14px] font-black leading-tight w-full">
-                        <span class="text-emerald-400 truncate w-full">${god}</span>
-                        <div class="flex items-center truncate w-full">
-                            <span class="text-yellow-300">${star}</span>
-                            <span class="text-cyan-300 ml-1 tracking-tight">${hStem}</span>
+                    <div class="flex flex-col justify-around flex-grow my-auto py-0.5 text-[12px] sm:text-[13.5px] md:text-[15px] font-black leading-tight w-full">
+                        <div class="flex justify-between items-center w-full">
+                            <span class="text-emerald-400 truncate">${god}</span>
                         </div>
-                        <div class="flex items-center truncate w-full">
-                            <span class="text-red-400">${door}</span>
-                            <span class="text-orange-300 ml-1 tracking-tight">${eStem}</span>
+                        <div class="flex justify-between items-center w-full">
+                            <span class="text-yellow-300 truncate">${star}</span>
+                            <span class="text-cyan-300 font-mono text-right shrink-0 tracking-tight">${hStem}</span>
+                        </div>
+                        <div class="flex justify-between items-center w-full">
+                            <span class="text-red-400 truncate">${door}</span>
+                            <span class="text-orange-300 font-mono text-right shrink-0 tracking-tight">${eStem}</span>
                         </div>
                     </div>
                 </div>`;
