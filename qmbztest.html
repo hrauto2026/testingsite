@@ -163,6 +163,56 @@
         .chk-label input:checked + span { color: #d97706; font-weight: 900; }
         .chk-label input { accent-color: #f59e0b; width: 14px; height: 14px; }
         .chk-label-disabled { opacity: 0.5; cursor: not-allowed !important; background-color: #f9fafb !important; pointer-events: none; }
+
+/* 🧭 指南針黑白模式專屬樣式 */
+        #compass-modal.bw-mode {
+            background-color: #ffffff !important;
+            color: #000000 !important;
+        }
+        #compass-modal.bw-mode #compass-degree,
+        #compass-modal.bw-mode #compass-direction-text,
+        #compass-modal.bw-mode #compass-mountain,
+        #compass-modal.bw-mode #compass-status-hint,
+        #compass-modal.bw-mode .text-gray-300 {
+            color: #000000 !important;
+        }
+        #compass-modal.bw-mode #compass-sub-shijia,
+        #compass-modal.bw-mode #compass-sub-wuxiang {
+            background-color: #f8fafc !important;
+            border-color: #000000 !important;
+            color: #000000 !important;
+        }
+        #compass-modal.bw-mode #compass-sub-shijia *,
+        #compass-modal.bw-mode #compass-sub-wuxiang * {
+            color: #000000 !important;
+        }
+        #compass-modal.bw-mode #sel-compass-feixing-year,
+        #compass-modal.bw-mode #sel-compass-yun9-ju {
+            background-color: #ffffff !important;
+            border-color: #000000 !important;
+            color: #000000 !important;
+        }
+        #compass-modal.bw-mode #compass-dial-container {
+            background-color: #ffffff !important;
+            border-color: #000000 !important;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.12) !important;
+        }
+        #compass-modal.bw-mode #compass-qimen-grid {
+            background-color: #ffffff !important;
+            border-color: #000000 !important;
+        }
+        #compass-modal.bw-mode #btn-compass-bw {
+            background-color: #000000 !important;
+            color: #ffffff !important;
+            border-color: #000000 !important;
+        }
+        #compass-modal.bw-mode #btn-compass-lock {
+            background-color: #f1f5f9 !important;
+            color: #000000 !important;
+            border-color: #000000 !important;
+        }
+
+
     </style>
 </head>
 <body class="p-2 md:p-6">
@@ -707,12 +757,15 @@
                 <button id="btn-mode-wuxiang" onclick="switchCompassPanMode('wuxiang')" class="px-4 py-1.5 text-base sm:text-lg font-black rounded-lg text-gray-300 hover:text-white transition">屋向盤</button>
             </div>
 
-            <!-- 鎖定與關閉按鈕 (字體與按鈕放大 50%) -->
-            <div class="flex items-center gap-2">
-                <button id="btn-compass-lock" onclick="toggleCompassLock()" class="bg-gray-900 hover:bg-gray-800 text-gray-200 px-4 py-2 rounded-full border border-gray-700 text-base sm:text-lg font-bold transition flex items-center gap-1.5 shadow">
+<!-- 鎖定、黑白模式與關閉按鈕 -->
+            <div class="flex items-center gap-1.5 sm:gap-2">
+                <button id="btn-compass-bw" onclick="toggleCompassTheme()" class="bg-gray-900 hover:bg-gray-800 text-gray-200 px-3 py-1.5 sm:py-2 rounded-full border border-gray-700 text-sm sm:text-base font-bold transition flex items-center gap-1 shadow">
+                    <span>🌓</span> <span>黑白模式</span>
+                </button>
+                <button id="btn-compass-lock" onclick="toggleCompassLock()" class="bg-gray-900 hover:bg-gray-800 text-gray-200 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-gray-700 text-sm sm:text-base font-bold transition flex items-center gap-1.5 shadow">
                     <span id="compass-lock-icon">🔓</span> <span id="compass-lock-text">鎖定</span>
                 </button>
-                <button onclick="closeCompassMode()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-full font-black text-base sm:text-lg shadow border border-red-500 transition active:scale-95">
+                <button onclick="closeCompassMode()" class="bg-red-600 hover:bg-red-700 text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-black text-sm sm:text-base shadow border border-red-500 transition active:scale-95">
                     關閉
                 </button>
             </div>
@@ -1606,12 +1659,6 @@ function selectBaziDaYun(idx) {
     let useXianTian = false;
     let useEnergy = false;
     let useFeiXing = false;
-
-let useCompass = false;
-    let isCompassRunning = false;
-    let isCompassLocked = false;
-
-
 
 function handleToggleSwitch(activeId) {
     const allToggles = [
@@ -3666,14 +3713,40 @@ function switchCompassPanMode(mode) {
         return "正北";
     }
 
+let useCompass = false;
+    let isCompassRunning = false;
+    let isCompassLocked = false;
+    let isCompassBW = false;
+
+    function toggleCompassTheme() {
+        isCompassBW = !isCompassBW;
+        const modal = document.getElementById('compass-modal');
+        if (modal) {
+            if (isCompassBW) {
+                modal.classList.add('bw-mode');
+            } else {
+                modal.classList.remove('bw-mode');
+            }
+        }
+        renderCompassSvgDial();
+        renderCompassQimen();
+    }
+
     function renderCompassSvgDial() {
         const svg = document.getElementById('compass-svg-dial');
         if (!svg) return;
         const cx = 220, cy = 220, rOut = 216, rMid = 176, rIn = 162;
+        
+        let bgOut = isCompassBW ? "#ffffff" : "#050b14";
+        let bgMid = isCompassBW ? "#f8fafc" : "#0f172a";
+        let bgIn = isCompassBW ? "#ffffff" : "#020617";
+        let strokeMain = isCompassBW ? "#000000" : "#d97706";
+        let strokeMid = isCompassBW ? "#000000" : "#78350f";
+
         let html = `
-            <circle cx="${cx}" cy="${cy}" r="${rOut}" fill="#050b14" stroke="#d97706" stroke-width="2"/>
-            <circle cx="${cx}" cy="${cy}" r="${rMid}" fill="#0f172a" stroke="#78350f" stroke-width="1.5"/>
-            <circle cx="${cx}" cy="${cy}" r="${rIn}" fill="#020617" stroke="#d97706" stroke-width="1.5"/>
+            <circle cx="${cx}" cy="${cy}" r="${rOut}" fill="${bgOut}" stroke="${strokeMain}" stroke-width="2.5"/>
+            <circle cx="${cx}" cy="${cy}" r="${rMid}" fill="${bgMid}" stroke="${strokeMid}" stroke-width="1.5"/>
+            <circle cx="${cx}" cy="${cy}" r="${rIn}" fill="${bgIn}" stroke="${strokeMain}" stroke-width="2"/>
         `;
 
         for (let deg = 0; deg < 360; deg += 5) {
@@ -3690,7 +3763,7 @@ function switchCompassPanMode(mode) {
             let x2 = cx + (rOut - 2 - len) * Math.sin(rad);
             let y2 = cy - (rOut - 2 - len) * Math.cos(rad);
 
-            let strokeColor = isMajorCardinal ? '#f87171' : (is30 ? '#fbbf24' : (is10 ? '#94a3b8' : '#475569'));
+            let strokeColor = isCompassBW ? '#000000' : (isMajorCardinal ? '#f87171' : (is30 ? '#fbbf24' : (is10 ? '#94a3b8' : '#475569')));
             let strokeWidth = isMajorCardinal ? 2.5 : (is30 ? 1.5 : 1);
 
             html += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${strokeColor}" stroke-width="${strokeWidth}"/>`;
@@ -3705,7 +3778,9 @@ function switchCompassPanMode(mode) {
             let by1 = cy - rOut * Math.cos(bRad);
             let bx2 = cx + rIn * Math.sin(bRad);
             let by2 = cy - rIn * Math.cos(bRad);
-            html += `<line x1="${bx1}" y1="${by1}" x2="${bx2}" y2="${by2}" stroke="#78350f" stroke-width="1" opacity="0.6"/>`;
+            let lineStroke = isCompassBW ? "#000000" : "#78350f";
+            let lineOpacity = isCompassBW ? "1" : "0.6";
+            html += `<line x1="${bx1}" y1="${by1}" x2="${bx2}" y2="${by2}" stroke="${lineStroke}" stroke-width="1" opacity="${lineOpacity}"/>`;
 
             let tRad = dialAngle * Math.PI / 180;
             let textR = (rMid + rOut - 10) / 2 + 2;
@@ -3714,7 +3789,8 @@ function switchCompassPanMode(mode) {
             
             let fontSize = m.isMajor ? "17" : "14";
             let fontWeight = m.isMajor ? "900" : "800";
-            html += `<text x="${tx}" y="${ty}" fill="${m.color}" font-size="${fontSize}" font-weight="${fontWeight}" text-anchor="middle" dominant-baseline="central" transform="rotate(${dialAngle}, ${tx}, ${ty})">${m.name}</text>`;
+            let fontColor = isCompassBW ? "#000000" : m.color;
+            html += `<text x="${tx}" y="${ty}" fill="${fontColor}" font-size="${fontSize}" font-weight="${fontWeight}" text-anchor="middle" dominant-baseline="central" transform="rotate(${dialAngle}, ${tx}, ${ty})">${m.name}</text>`;
         });
 
         svg.innerHTML = html;
@@ -3748,57 +3824,72 @@ function renderCompassQimen() {
             if (pNum === 5) {
                 let s = data ? data.hStems[0] : "";
                 let b5 = panData.bazi5Info;
+                let bgCell = isCompassBW ? "bg-white border-black text-black" : "bg-slate-900/95 border-amber-500/40 text-white";
+                let topBorder = isCompassBW ? "border-black" : "border-gray-700/60";
+                let titleCol = isCompassBW ? "text-black" : "text-amber-300";
+                let tagCol = isCompassBW ? "bg-gray-100 text-black border border-black" : "bg-rose-900/90 text-rose-200";
+                let baziCol = isCompassBW ? "text-black" : "text-amber-200";
+                let infoCol = isCompassBW ? "text-black" : "text-gray-300";
+                let stemCol = isCompassBW ? "text-black" : "text-amber-400";
+
                 html += `
-                <div class="flex flex-col justify-between p-1 bg-slate-900/95 border border-amber-500/40 rounded text-center text-white overflow-hidden shadow-inner leading-none">
-                    <div class="flex justify-between items-center text-[9px] sm:text-[10px] font-black border-b border-gray-700/60 pb-0.5">
-                        <span class="text-amber-300">中五</span>
-                        <span class="bg-rose-900/90 text-rose-200 px-1 rounded text-[8px] sm:text-[9px] font-mono">${feixingStr}</span>
+                <div class="flex flex-col justify-between p-1 ${bgCell} border rounded text-center overflow-hidden shadow-inner leading-none">
+                    <div class="flex justify-between items-center text-[9px] sm:text-[10px] font-black border-b ${topBorder} pb-0.5">
+                        <span class="${titleCol}">中五</span>
+                        <span class="${tagCol} px-1 rounded text-[8px] sm:text-[9px] font-mono">${feixingStr}</span>
                     </div>
                     <div class="flex flex-col justify-center items-center my-auto space-y-0.5">
-                        <div class="text-xs sm:text-sm text-amber-200 font-black">${b5 ? b5.hS + b5.hB + '時' : ''}</div>
-                        <div class="text-[9px] sm:text-[10px] text-gray-300 font-bold">符:${b5 ? b5.zf : ''}</div>
-                        <div class="text-[9px] sm:text-[10px] text-gray-300 font-bold">使:${b5 ? b5.zs : ''}</div>
+                        <div class="text-xs sm:text-sm ${baziCol} font-black">${b5 ? b5.hS + b5.hB + '時' : ''}</div>
+                        <div class="text-[9px] sm:text-[10px] ${infoCol} font-bold">符:${b5 ? b5.zf : ''}</div>
+                        <div class="text-[9px] sm:text-[10px] ${infoCol} font-bold">使:${b5 ? b5.zs : ''}</div>
                     </div>
-                    <div class="text-xs sm:text-sm text-right font-black text-amber-400 mt-auto">${s}</div>
+                    <div class="text-xs sm:text-sm text-right font-black ${stemCol} mt-auto">${s}</div>
                 </div>`;
             } else if (data) {
                 let pGua = PALACES_HOU[pNum].gua;
 
-                // 驛馬與空亡
                 let maKong = [];
                 if (data.isMa) maKong.push('🐎');
                 if (data.isKong) maKong.push('🈳');
                 let maKongHtml = maKong.join('');
 
+                let bgCell = isCompassBW ? "bg-white border-black text-black" : "bg-slate-950/95 border-slate-800 text-white";
+                let topBorder = isCompassBW ? "border-black" : "border-slate-800/80";
+                let titleCol = isCompassBW ? "text-black" : "text-amber-300";
+                let anGanCol = isCompassBW ? "text-gray-600" : "text-gray-400";
+                let tagCol = isCompassBW ? "bg-gray-100 text-black border border-black" : "bg-rose-900/90 text-rose-200";
+
+                let godCol = isCompassBW ? "text-black" : "text-emerald-400";
+                let starCol = isCompassBW ? "text-black" : "text-yellow-300";
+                let doorCol = isCompassBW ? "text-black" : "text-red-400";
+                let hStemCol = isCompassBW ? "text-black" : "text-cyan-300";
+                let eStemCol = isCompassBW ? "text-black" : "text-orange-300";
+                let menPoCol = isCompassBW ? "text-black" : "text-red-500";
+
                 html += `
-                <div class="flex flex-col justify-between p-1 bg-slate-950/95 border border-slate-800 rounded text-white overflow-hidden shadow leading-none">
-                    <!-- 頂部資訊列：宮名、卦象、暗干與流年飛星 -->
-                    <div class="flex justify-between items-center text-[9px] sm:text-[10px] font-black border-b border-slate-800/80 pb-0.5">
-                        <span class="text-amber-300 truncate">${data.name}${pGua} <span class="text-gray-400 font-normal text-[8px]">${data.anGan || ''}</span></span>
-                        <span class="bg-rose-900/90 text-rose-200 px-1 rounded text-[8px] sm:text-[9px] font-mono">${feixingStr}</span>
+                <div class="flex flex-col justify-between p-1 ${bgCell} border rounded overflow-hidden shadow leading-none">
+                    <div class="flex justify-between items-center text-[9px] sm:text-[10px] font-black border-b ${topBorder} pb-0.5">
+                        <span class="${titleCol} truncate">${data.name}${pGua} <span class="${anGanCol} font-normal text-[8px]">${data.anGan || ''}</span></span>
+                        <span class="${tagCol} px-1 rounded text-[8px] sm:text-[9px] font-mono">${feixingStr}</span>
                     </div>
 
-                    <!-- 核心主體：字級放大至 12px～15px，天地盤干與馬空靠右貼齊邊框 -->
                     <div class="flex flex-col justify-around flex-grow my-auto py-0.5 text-[12px] sm:text-[13.5px] md:text-[15px] font-black leading-tight w-full">
-                        <!-- 第一行：八神 (靠左) | 驛馬、空亡 (貼齊最右) -->
                         <div class="flex justify-between items-center w-full">
-                            <span class="text-emerald-400 truncate">${data.god}</span>
+                            <span class="${godCol} truncate">${data.god}</span>
                             <span class="text-right inline-flex items-center text-[11px] sm:text-[12px] leading-none shrink-0">${maKongHtml}</span>
                         </div>
 
-                        <!-- 第二行：九星 (靠左) | 天盤干 (貼齊最右) -->
                         <div class="flex justify-between items-center w-full">
-                            <span class="text-yellow-300 truncate">${data.star}</span>
-                            <span class="text-cyan-300 font-mono text-right shrink-0 tracking-tight">${data.hStems.join('')}</span>
+                            <span class="${starCol} truncate">${data.star}</span>
+                            <span class="${hStemCol} font-mono text-right shrink-0 tracking-tight">${data.hStems.join('')}</span>
                         </div>
 
-                        <!-- 第三行：八門 + 門迫 (靠左) | 地盤干 (貼齊最右) -->
                         <div class="flex justify-between items-center w-full">
                             <div class="flex items-center truncate">
-                                <span class="text-red-400">${data.door}</span>
-                                ${data.isMenPo ? '<span class="text-red-500 font-black ml-0.5 text-[10px] sm:text-[11px]">迫</span>' : ''}
+                                <span class="${doorCol}">${data.door}</span>
+                                ${data.isMenPo ? `<span class="${menPoCol} font-black ml-0.5 text-[10px] sm:text-[11px]">迫</span>` : ''}
                             </div>
-                            <span class="text-orange-300 font-mono text-right shrink-0 tracking-tight">${data.eStems.join('')}</span>
+                            <span class="${eStemCol} font-mono text-right shrink-0 tracking-tight">${data.eStems.join('')}</span>
                         </div>
                     </div>
                 </div>`;
@@ -3820,28 +3911,37 @@ function renderCompassQimen() {
 
             if (pNum === 5) {
                 const eNumZh = wx.CHINESE_NUMS[wx.earthNum[5]];
+                let bgCell = isCompassBW ? "bg-white border-black text-black" : "bg-slate-900/95 border-indigo-500/50 text-white";
+                let topBorder = isCompassBW ? "border-black" : "border-indigo-900";
+                let titleCol = isCompassBW ? "text-black" : "text-indigo-300";
+                let tagCol = isCompassBW ? "bg-gray-100 text-black border border-black" : "bg-indigo-900 text-indigo-200";
+                let yunCol = isCompassBW ? "text-black" : "text-amber-300";
+                let tipCol = isCompassBW ? "text-black" : "text-gray-400";
+                let numCol = isCompassBW ? "text-black" : "text-amber-400";
+                let stemCol = isCompassBW ? "text-black" : "text-orange-300";
+
                 html += `
-                <div class="flex flex-col justify-between p-1 bg-slate-900/95 border border-indigo-500/50 rounded text-center text-white overflow-hidden shadow-inner leading-none">
-                    <div class="flex justify-between items-center text-[9px] sm:text-[10px] font-black border-b border-indigo-900 pb-0.5">
-                        <span class="text-indigo-300">中五</span>
-                        <span class="bg-indigo-900 text-indigo-200 px-1 rounded text-[8px]">立極</span>
+                <div class="flex flex-col justify-between p-1 ${bgCell} border rounded text-center overflow-hidden shadow-inner leading-none">
+                    <div class="flex justify-between items-center text-[9px] sm:text-[10px] font-black border-b ${topBorder} pb-0.5">
+                        <span class="${titleCol}">中五</span>
+                        <span class="${tagCol} px-1 rounded text-[8px]">立極</span>
                     </div>
                     <div class="flex flex-col justify-center items-center my-auto space-y-0.5">
-                        <div class="text-xs sm:text-sm text-amber-300 font-bold">${wx.yun}運</div>
-                        <div class="text-[9px] sm:text-[10px] text-gray-400">符頭:${wx.fuTouStem}</div>
-                        <div class="text-[9px] sm:text-[10px] text-gray-400">符星:${wx.starLeader}</div>
+                        <div class="text-xs sm:text-sm ${yunCol} font-bold">${wx.yun}運</div>
+                        <div class="text-[9px] sm:text-[10px] ${tipCol}">符頭:${wx.fuTouStem}</div>
+                        <div class="text-[9px] sm:text-[10px] ${tipCol}">符星:${wx.starLeader}</div>
                     </div>
                     <div class="flex justify-between items-end mt-auto text-[10px] sm:text-xs font-mono font-bold">
-                        <span class="text-amber-400">${eNumZh}</span>
-                        <span class="text-orange-300">${wx.centerStem}</span>
+                        <span class="${numCol}">${eNumZh}</span>
+                        <span class="${stemCol}">${wx.centerStem}</span>
                     </div>
                 </div>`;
             } else {
                 const isHouse = (pNum === housePalace);
                 const isDoor = (pNum === wx.doorPalace);
                 let badgeHtml = '';
-                if (isHouse) badgeHtml += `<span class="bg-red-600 text-[8px] text-white px-0.5 rounded font-black">屋</span>`;
-                if (isDoor) badgeHtml += `<span class="bg-blue-600 text-[8px] text-white px-0.5 rounded font-black">門</span>`;
+                if (isHouse) badgeHtml += `<span class="${isCompassBW ? 'bg-black text-white' : 'bg-red-600 text-white'} text-[8px] px-0.5 rounded font-black">屋</span>`;
+                if (isDoor) badgeHtml += `<span class="${isCompassBW ? 'border border-black text-black' : 'bg-blue-600 text-white'} text-[8px] px-0.5 rounded font-black">門</span>`;
 
                 const eNumZh = wx.CHINESE_NUMS[wx.earthNum[pNum]];
                 const god = wx.godPan[pNum];
@@ -3850,27 +3950,37 @@ function renderCompassQimen() {
                 const hStem = wx.heavenStemPan[pNum];
                 const eStem = wx.earthStem[pNum];
 
+                let bgCell = isCompassBW ? "bg-white border-black text-black" : "bg-slate-950/95 border-slate-800 text-white";
+                let topBorder = isCompassBW ? "border-black" : "border-slate-800/80";
+                let titleCol = isCompassBW ? "text-black" : "text-amber-300";
+                let numCol = isCompassBW ? "text-black" : "text-amber-400";
+                let godCol = isCompassBW ? "text-black" : "text-emerald-400";
+                let starCol = isCompassBW ? "text-black" : "text-yellow-300";
+                let doorCol = isCompassBW ? "text-black" : "text-red-400";
+                let hStemCol = isCompassBW ? "text-black" : "text-cyan-300";
+                let eStemCol = isCompassBW ? "text-black" : "text-orange-300";
+
                 html += `
-                <div class="flex flex-col justify-between p-1 bg-slate-950/95 border border-slate-800 rounded text-white overflow-hidden shadow leading-none">
-                    <div class="flex justify-between items-center text-[9px] sm:text-[10px] font-black border-b border-slate-800/80 pb-0.5">
-                        <span class="text-amber-300 truncate">${pInfo.name} ${pInfo.gua}</span>
+                <div class="flex flex-col justify-between p-1 ${bgCell} border rounded overflow-hidden shadow leading-none">
+                    <div class="flex justify-between items-center text-[9px] sm:text-[10px] font-black border-b ${topBorder} pb-0.5">
+                        <span class="${titleCol} truncate">${pInfo.name} ${pInfo.gua}</span>
                         <div class="flex items-center gap-0.5">
-                            <span class="text-amber-400 font-mono text-[9px]">${eNumZh}</span>
+                            <span class="${numCol} font-mono text-[9px]">${eNumZh}</span>
                             ${badgeHtml}
                         </div>
                     </div>
 
                     <div class="flex flex-col justify-around flex-grow my-auto py-0.5 text-[12px] sm:text-[13.5px] md:text-[15px] font-black leading-tight w-full">
                         <div class="flex justify-between items-center w-full">
-                            <span class="text-emerald-400 truncate">${god}</span>
+                            <span class="${godCol} truncate">${god}</span>
                         </div>
                         <div class="flex justify-between items-center w-full">
-                            <span class="text-yellow-300 truncate">${star}</span>
-                            <span class="text-cyan-300 font-mono text-right shrink-0 tracking-tight">${hStem}</span>
+                            <span class="${starCol} truncate">${star}</span>
+                            <span class="${hStemCol} font-mono text-right shrink-0 tracking-tight">${hStem}</span>
                         </div>
                         <div class="flex justify-between items-center w-full">
-                            <span class="text-red-400 truncate">${door}</span>
-                            <span class="text-orange-300 font-mono text-right shrink-0 tracking-tight">${eStem}</span>
+                            <span class="${doorCol} truncate">${door}</span>
+                            <span class="${eStemCol} font-mono text-right shrink-0 tracking-tight">${eStem}</span>
                         </div>
                     </div>
                 </div>`;
