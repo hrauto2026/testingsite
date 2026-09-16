@@ -765,10 +765,14 @@
                 <button id="btn-mode-wuxiang" onclick="switchCompassPanMode('wuxiang')" class="px-4 py-1.5 text-base sm:text-lg font-black rounded-lg text-gray-300 hover:text-white transition">屋向盤</button>
             </div>
 
-<!-- 鎖定、黑白模式與關閉按鈕 -->
+<!-- 鎖定、大小、黑白模式與關閉按鈕 -->
             <div class="flex items-center gap-1.5 sm:gap-2">
+                <!-- 新增：指南針大小切換 -->
+                <button id="btn-compass-size" onclick="cycleCompassSize()" class="bg-gray-900 hover:bg-gray-800 text-gray-200 px-2.5 py-1.5 sm:py-2 rounded-full border border-gray-700 text-sm sm:text-base font-bold transition flex items-center gap-1 shadow">
+                    🔍 1.0x
+                </button>
                 <button id="btn-compass-bw" onclick="toggleCompassTheme()" class="bg-gray-900 hover:bg-gray-800 text-gray-200 px-3 py-1.5 sm:py-2 rounded-full border border-gray-700 text-sm sm:text-base font-bold transition flex items-center gap-1 shadow">
-                    <span>🌓</span> <span>黑白模式</span>
+                    <span>🌓</span> <span class="hidden sm:inline">黑白模式</span>
                 </button>
                 <button id="btn-compass-lock" onclick="toggleCompassLock()" class="bg-gray-900 hover:bg-gray-800 text-gray-200 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-gray-700 text-sm sm:text-base font-bold transition flex items-center gap-1.5 shadow">
                     <span id="compass-lock-icon">🔓</span> <span id="compass-lock-text">鎖定</span>
@@ -788,23 +792,29 @@
             </div>
         </div>
 
-        <!-- 子工具列：九運十二局專用單一下拉選單 -->
-        <div id="compass-sub-wuxiang" class="hidden flex items-center justify-between gap-2.5 text-base sm:text-lg bg-slate-900/90 px-4 py-2 rounded-xl border border-indigo-500/60">
-            <span class="text-indigo-300 font-bold whitespace-nowrap">九運地盤：</span>
-            <select id="sel-compass-yun9-ju" onchange="renderCompassQimen()" class="bg-slate-950 border border-indigo-400/70 rounded-lg px-3 py-1 text-amber-300 font-bold outline-none text-sm sm:text-base cursor-pointer flex-grow">
-                <option value="子_1" selected>九運 · 門向子 屋向坎 (坎一宮)</option>
-                <option value="丑_8">九運 · 門向丑 屋向艮 (艮八宮)</option>
-                <option value="寅_8">九運 · 門向寅 屋向艮 (艮八宮)</option>
-                <option value="卯_3">九運 · 門向卯 屋向震 (震三宮)</option>
-                <option value="辰_4">九運 · 門向辰 屋向巽 (巽四宮)</option>
-                <option value="巳_4">九運 · 門向巳 屋向巽 (巽四宮)</option>
-                <option value="午_9">九運 · 門向午 屋向離 (離九宮)</option>
-                <option value="未_2">九運 · 門向未 屋向坤 (坤二宮)</option>
-                <option value="申_2">九運 · 門向申 屋向坤 (坤二宮)</option>
-                <option value="酉_7">九運 · 門向酉 屋向兌 (兌七宮)</option>
-                <option value="戌_6">九運 · 門向戌 屋向乾 (乾六宮)</option>
-                <option value="亥_6">九運 · 門向亥 屋向乾 (乾六宮)</option>
-            </select>
+<!-- 子工具列：九運十二局專用單一下拉選單與自動定盤 -->
+        <div id="compass-sub-wuxiang" class="hidden flex-wrap items-center justify-between gap-2 text-base sm:text-lg bg-slate-900/90 px-3 sm:px-4 py-2 rounded-xl border border-indigo-500/60">
+            <div class="flex items-center gap-1.5 flex-grow">
+                <span class="text-indigo-300 font-bold whitespace-nowrap text-sm sm:text-base">九運地盤：</span>
+                <select id="sel-compass-yun9-ju" onchange="renderCompassQimen()" class="bg-slate-950 border border-indigo-400/70 rounded-lg px-2 py-1 text-amber-300 font-bold outline-none text-xs sm:text-sm cursor-pointer flex-grow max-w-[200px] sm:max-w-none">
+                    <option value="子_1" selected>九運 · 門向子 屋向坎 (坎一宮)</option>
+                    <option value="丑_8">九運 · 門向丑 屋向艮 (艮八宮)</option>
+                    <option value="寅_8">九運 · 門向寅 屋向艮 (艮八宮)</option>
+                    <option value="卯_3">九運 · 門向卯 屋向震 (震三宮)</option>
+                    <option value="辰_4">九運 · 門向辰 屋向巽 (巽四宮)</option>
+                    <option value="巳_4">九運 · 門向巳 屋向巽 (巽四宮)</option>
+                    <option value="午_9">九運 · 門向午 屋向離 (離九宮)</option>
+                    <option value="未_2">九運 · 門向未 屋向坤 (坤二宮)</option>
+                    <option value="申_2">九運 · 門向申 屋向坤 (坤二宮)</option>
+                    <option value="酉_7">九運 · 門向酉 屋向兌 (兌七宮)</option>
+                    <option value="戌_6">九運 · 門向戌 屋向乾 (乾六宮)</option>
+                    <option value="亥_6">九運 · 門向亥 屋向乾 (乾六宮)</option>
+                </select>
+            </div>
+            <!-- 新增：自動定盤切換按鈕 -->
+            <button id="btn-auto-align" onclick="toggleAutoAlign()" class="bg-slate-700 hover:bg-slate-600 text-white border border-slate-600 px-3 py-1 rounded-lg text-sm font-bold whitespace-nowrap shadow transition-colors">
+                自動定盤: 關
+            </button>
         </div>
     </div>
 
@@ -3760,6 +3770,73 @@ let useCompass = false;
     let isCompassRunning = false;
     let isCompassLocked = false;
     let isCompassBW = false;
+    let compassScale = 1.0;     // 新增：紀錄當前放大倍率
+    let isAutoAlign = false;    // 新增：紀錄自動定盤狀態
+
+    // 新增：循環切換指南針大小 (1.0 -> 1.25 -> 1.5 -> 1.0)
+    function cycleCompassSize() {
+        if (compassScale === 1.0) compassScale = 1.25;
+        else if (compassScale === 1.25) compassScale = 1.5;
+        else compassScale = 1.0;
+        
+        document.getElementById('btn-compass-size').innerHTML = `🔍 ${compassScale}x`;
+        updateCompassHeading(smoothedHeading !== null ? smoothedHeading : 0);
+    }
+
+    // 新增：自動定盤開關邏輯
+    function toggleAutoAlign() {
+        isAutoAlign = !isAutoAlign;
+        const btn = document.getElementById('btn-auto-align');
+        const sel = document.getElementById('sel-compass-yun9-ju');
+        if (isAutoAlign) {
+            btn.innerText = "自動定盤: 開";
+            btn.classList.replace('bg-slate-700', 'bg-emerald-600');
+            btn.classList.replace('hover:bg-slate-600', 'hover:bg-emerald-500');
+            btn.classList.replace('border-slate-600', 'border-emerald-500');
+            if(sel) {
+                sel.disabled = true; // 鎖死下拉選單
+                sel.classList.add('opacity-50', 'cursor-not-allowed');
+            }
+            if(smoothedHeading !== null) applyAutoAlign(smoothedHeading);
+        } else {
+            btn.innerText = "自動定盤: 關";
+            btn.classList.replace('bg-emerald-600', 'bg-slate-700');
+            btn.classList.replace('hover:bg-emerald-500', 'hover:bg-slate-600');
+            btn.classList.replace('border-emerald-500', 'border-slate-600');
+            if(sel) {
+                sel.disabled = false; // 釋放下拉選單
+                sel.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
+        }
+    }
+
+    // 新增：根據 360 度找出對應的 12 地支選項 (每支跨距 30 度)
+    function getBranchFromHeading(deg) {
+        deg = (deg % 360 + 360) % 360;
+        if (deg >= 345 || deg < 15) return '子_1';
+        if (deg >= 15 && deg < 45) return '丑_8';
+        if (deg >= 45 && deg < 75) return '寅_8';
+        if (deg >= 75 && deg < 105) return '卯_3';
+        if (deg >= 105 && deg < 135) return '辰_4';
+        if (deg >= 135 && deg < 165) return '巳_4';
+        if (deg >= 165 && deg < 195) return '午_9';
+        if (deg >= 195 && deg < 225) return '未_2';
+        if (deg >= 225 && deg < 255) return '申_2';
+        if (deg >= 255 && deg < 285) return '酉_7';
+        if (deg >= 285 && deg < 315) return '戌_6';
+        if (deg >= 315 && deg < 345) return '亥_6';
+        return '子_1';
+    }
+
+    // 新增：執行自動切換地盤
+    function applyAutoAlign(heading) {
+        const targetVal = getBranchFromHeading(heading);
+        const sel = document.getElementById('sel-compass-yun9-ju');
+        if (sel && sel.value !== targetVal) {
+            sel.value = targetVal;
+            renderCompassQimen();
+        }
+    }
 
     function toggleCompassTheme() {
         isCompassBW = !isCompassBW;
@@ -4178,7 +4255,7 @@ function renderCompassQimen() {
         updateCompassHeading(smoothedHeading);
     }
 
-    function updateCompassHeading(heading) {
+function updateCompassHeading(heading) {
         heading = Math.round(heading) % 360;
         
         let targetRotation = (180 - heading + 360) % 360;
@@ -4187,7 +4264,8 @@ function renderCompassQimen() {
 
         const dial = document.getElementById('compass-dial-container');
         if (dial) {
-            dial.style.transform = `rotate(${currentContinuousRotation}deg)`;
+            // 更新：同時載入放大倍率 (scale) 與旋轉 (rotate)
+            dial.style.transform = `scale(${compassScale}) rotate(${currentContinuousRotation}deg)`;
         }
 
         const degEl = document.getElementById('compass-degree');
@@ -4199,6 +4277,11 @@ function renderCompassQimen() {
         const mInfo = get24Mountain(heading);
         const mEl = document.getElementById('compass-mountain');
         if (mEl) mEl.innerText = `${mInfo.gua}宮 · ${mInfo.name}山 (${mInfo.center}°)`;
+
+        // 🌟 新增：若開啟「自動定盤」且處於「屋向盤」模式，則根據方位更新陣局
+        if (isAutoAlign && compassPanMode === 'wuxiang') {
+            applyAutoAlign(heading);
+        }
     }
 
     window.onload = function() {
