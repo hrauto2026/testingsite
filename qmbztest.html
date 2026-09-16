@@ -209,21 +209,20 @@
 /* 未被選擇的盤、關閉的自動定盤、大小切換、與黑白模式按鈕本體，皆改為白底黑字 */
         #compass-modal.bw-mode #btn-compass-size,
         #compass-modal.bw-mode #btn-compass-bw,
-        #compass-modal.bw-mode .auto-align-off,
+        #compass-modal.bw-mode #compass-sub-wuxiang .auto-align-off,
         #compass-modal.bw-mode .unselected-pan {
             background-color: #ffffff !important;
             color: #000000 !important;
             border-color: #000000 !important;
         }
 
-        /* 被選擇的盤、開啟的自動定盤，改為黑底白字 */
+        /* 被選擇的盤、開啟的自動定盤，改為黑底白字 (增加父層 ID 提高權重，覆蓋原先的星號 * 選擇器) */
         #compass-modal.bw-mode .selected-pan,
-        #compass-modal.bw-mode .auto-align-on {
+        #compass-modal.bw-mode #compass-sub-wuxiang .auto-align-on {
             background-color: #000000 !important;
             color: #ffffff !important;
             border-color: #000000 !important;
         }
-
         #compass-modal.bw-mode #pan-mode-container {
             background-color: #ffffff !important;
             border-color: #000000 !important;
