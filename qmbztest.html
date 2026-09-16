@@ -206,11 +206,29 @@
             background-color: #ffffff !important;
             border-color: #000000 !important;
         }
-        #compass-modal.bw-mode #btn-compass-bw {
+/* 未被選擇的盤、關閉的自動定盤、大小切換、與黑白模式按鈕本體，皆改為白底黑字 */
+        #compass-modal.bw-mode #btn-compass-size,
+        #compass-modal.bw-mode #btn-compass-bw,
+        #compass-modal.bw-mode .auto-align-off,
+        #compass-modal.bw-mode .unselected-pan {
+            background-color: #ffffff !important;
+            color: #000000 !important;
+            border-color: #000000 !important;
+        }
+
+        /* 被選擇的盤、開啟的自動定盤，改為黑底白字 */
+        #compass-modal.bw-mode .selected-pan,
+        #compass-modal.bw-mode .auto-align-on {
             background-color: #000000 !important;
             color: #ffffff !important;
             border-color: #000000 !important;
         }
+
+        #compass-modal.bw-mode #pan-mode-container {
+            background-color: #ffffff !important;
+            border-color: #000000 !important;
+        }
+
         #compass-modal.bw-mode #btn-compass-lock {
             background-color: #f1f5f9 !important;
             color: #000000 !important;
@@ -759,10 +777,10 @@
                 </div>
             </div>
 
-            <!-- 盤面模式切換按鈕組 (字體與按鈕放大 50%) -->
-            <div class="flex items-center bg-slate-900 border border-amber-500/50 rounded-xl p-1 shadow-lg">
-                <button id="btn-mode-shijia" onclick="switchCompassPanMode('shijia')" class="px-4 py-1.5 text-base sm:text-lg font-black rounded-lg bg-amber-500 text-slate-950 transition">時家盤</button>
-                <button id="btn-mode-wuxiang" onclick="switchCompassPanMode('wuxiang')" class="px-4 py-1.5 text-base sm:text-lg font-black rounded-lg text-gray-300 hover:text-white transition">屋向盤</button>
+<!-- 盤面模式切換按鈕組 (加入 ID 以配合黑白模式) -->
+            <div id="pan-mode-container" class="flex items-center bg-slate-900 border border-amber-500/50 rounded-xl p-1 shadow-lg">
+                <button id="btn-mode-shijia" onclick="switchCompassPanMode('shijia')" class="px-4 py-1.5 text-base sm:text-lg font-black rounded-lg bg-amber-500 text-slate-950 transition selected-pan">時家盤</button>
+                <button id="btn-mode-wuxiang" onclick="switchCompassPanMode('wuxiang')" class="px-4 py-1.5 text-base sm:text-lg font-black rounded-lg text-gray-300 hover:text-white transition unselected-pan">屋向盤</button>
             </div>
 
 <!-- 鎖定、大小、黑白模式與關閉按鈕 -->
@@ -820,24 +838,27 @@
 
 <!-- 中間旋轉羅盤本體與朝向瞄準線 (緊湊排版，消除上下巨大空隙) -->
     <div class="relative flex flex-col items-center justify-center flex-grow w-full my-auto overflow-hidden">
-        <!-- 朝向指示指針與紅線 (固定輕薄高度，不再擠壓羅盤尺寸) -->
-        <div class="flex flex-col items-center justify-end h-6 shrink-0 z-20 pointer-events-none mb-1">
-            <div class="w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[10px] border-t-red-500 drop-shadow-[0_0_6px_rgba(239,68,68,0.9)]"></div>
-            <div class="w-[2px] h-2.5 bg-red-500 shadow-[0_0_6px_rgba(239,68,68,0.9)]"></div>
-        </div>
-
-        <!-- 旋轉羅盤本體 (寬高擴展至 98vw，貼齊手機左右兩側) -->
-        <div id="compass-dial-container" class="relative rounded-full flex-shrink-0 flex items-center justify-center transition-transform duration-100 ease-out will-change-transform shadow-[0_0_50px_rgba(30,58,138,0.35)] border-2 border-amber-500/40 bg-slate-950" style="width: min(98vw, calc(100dvh - 180px), 470px); height: min(98vw, calc(100dvh - 180px), 470px);">
-            <!-- 外圈 24 山刻度 SVG -->
-            <svg id="compass-svg-dial" class="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 440 440"></svg>
-
-
-
-<!-- 內圈微縮九宮格 (設為 68%：四角精準搭在艮巽坤乾，且完全不覆蓋丑寅/辰巳/未申/戌亥) -->
-            <div id="compass-qimen-grid" class="grid grid-cols-3 gap-0.5 sm:gap-1 z-10 w-[68%] h-[68%] p-0.5 sm:p-1 rounded-lg bg-black/90 backdrop-blur-md border border-amber-500/40">
+        
+        <!-- 新增: 縮放控制包裝層 (將紅標籤與羅盤本體包在一起，讓放大時紅標籤一起外擴) -->
+        <div id="compass-scale-wrapper" class="flex flex-col items-center justify-center transition-transform duration-300 ease-out will-change-transform w-full">
+            
+            <!-- 朝向指示指針與紅線 -->
+            <div class="flex flex-col items-center justify-end h-6 shrink-0 z-20 pointer-events-none mb-1">
+                <div class="w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[10px] border-t-red-500 drop-shadow-[0_0_6px_rgba(239,68,68,0.9)]"></div>
+                <div class="w-[2px] h-2.5 bg-red-500 shadow-[0_0_6px_rgba(239,68,68,0.9)]"></div>
             </div>
-        </div>
 
+            <!-- 旋轉羅盤本體 -->
+            <div id="compass-dial-container" class="relative rounded-full flex-shrink-0 flex items-center justify-center transition-transform duration-100 ease-out will-change-transform shadow-[0_0_50px_rgba(30,58,138,0.35)] border-2 border-amber-500/40 bg-slate-950" style="width: min(98vw, calc(100dvh - 180px), 470px); height: min(98vw, calc(100dvh - 180px), 470px);">
+                <!-- 外圈 24 山刻度 SVG -->
+                <svg id="compass-svg-dial" class="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 440 440"></svg>
+
+                <!-- 內圈微縮九宮格 -->
+                <div id="compass-qimen-grid" class="grid grid-cols-3 gap-0.5 sm:gap-1 z-10 w-[68%] h-[68%] p-0.5 sm:p-1 rounded-lg bg-black/90 backdrop-blur-md border border-amber-500/40">
+                </div>
+            </div>
+
+        </div>
 
         <!-- 底部微調佔位 -->
         <div class="h-2 shrink-0 pointer-events-none"></div>
@@ -3678,29 +3699,29 @@ if (jqData.isTransitionInHour) {
 
 
 function switchCompassPanMode(mode) {
-    compassPanMode = mode;
-    const btnShijia = document.getElementById('btn-mode-shijia');
-    const btnWuxiang = document.getElementById('btn-mode-wuxiang');
-    const subShijia = document.getElementById('compass-sub-shijia');
-    const subWuxiang = document.getElementById('compass-sub-wuxiang');
+        compassPanMode = mode;
+        const btnShijia = document.getElementById('btn-mode-shijia');
+        const btnWuxiang = document.getElementById('btn-mode-wuxiang');
+        const subShijia = document.getElementById('compass-sub-shijia');
+        const subWuxiang = document.getElementById('compass-sub-wuxiang');
 
-    if (mode === 'shijia') {
-        btnShijia.className = "px-4 py-1.5 text-base sm:text-lg font-black rounded-lg bg-amber-500 text-slate-950 transition";
-        btnWuxiang.className = "px-4 py-1.5 text-base sm:text-lg font-black rounded-lg text-gray-300 hover:text-white transition";
-        subShijia.classList.remove('hidden');
-        subShijia.classList.add('flex');
-        subWuxiang.classList.add('hidden');
-        subWuxiang.classList.remove('flex');
-    } else {
-        btnWuxiang.className = "px-4 py-1.5 text-base sm:text-lg font-black rounded-lg bg-indigo-600 text-white transition";
-        btnShijia.className = "px-4 py-1.5 text-base sm:text-lg font-black rounded-lg text-gray-300 hover:text-white transition";
-        subWuxiang.classList.remove('hidden');
-        subWuxiang.classList.add('flex');
-        subShijia.classList.add('hidden');
-        subShijia.classList.remove('flex');
+        if (mode === 'shijia') {
+            btnShijia.className = "px-4 py-1.5 text-base sm:text-lg font-black rounded-lg bg-amber-500 text-slate-950 transition selected-pan";
+            btnWuxiang.className = "px-4 py-1.5 text-base sm:text-lg font-black rounded-lg text-gray-300 hover:text-white transition unselected-pan";
+            subShijia.classList.remove('hidden');
+            subShijia.classList.add('flex');
+            subWuxiang.classList.add('hidden');
+            subWuxiang.classList.remove('flex');
+        } else {
+            btnWuxiang.className = "px-4 py-1.5 text-base sm:text-lg font-black rounded-lg bg-indigo-600 text-white transition selected-pan";
+            btnShijia.className = "px-4 py-1.5 text-base sm:text-lg font-black rounded-lg text-gray-300 hover:text-white transition unselected-pan";
+            subWuxiang.classList.remove('hidden');
+            subWuxiang.classList.add('flex');
+            subShijia.classList.add('hidden');
+            subShijia.classList.remove('flex');
+        }
+        renderCompassQimen();
     }
-    renderCompassQimen();
-}
 
 
 
@@ -3774,37 +3795,38 @@ let useCompass = false;
     let isAutoAlign = false;    // 新增：紀錄自動定盤狀態
 
     // 新增：循環切換指南針大小 (1.0 -> 1.25 -> 1.5 -> 1.0)
-    function cycleCompassSize() {
+function cycleCompassSize() {
         if (compassScale === 1.0) compassScale = 1.25;
         else if (compassScale === 1.25) compassScale = 1.5;
         else compassScale = 1.0;
         
         document.getElementById('btn-compass-size').innerHTML = `🔍 ${compassScale}x`;
-        updateCompassHeading(smoothedHeading !== null ? smoothedHeading : 0);
+        
+        // 套用縮放至外層 wrapper (紅標籤與羅盤共同的父層)
+        const wrapper = document.getElementById('compass-scale-wrapper');
+        if (wrapper) wrapper.style.transform = `scale(${compassScale})`;
     }
 
     // 新增：自動定盤開關邏輯
-    function toggleAutoAlign() {
+function toggleAutoAlign() {
         isAutoAlign = !isAutoAlign;
         const btn = document.getElementById('btn-auto-align');
         const sel = document.getElementById('sel-compass-yun9-ju');
         if (isAutoAlign) {
-            btn.innerText = "自動定盤: 開";
-            btn.classList.replace('bg-slate-700', 'bg-emerald-600');
-            btn.classList.replace('hover:bg-slate-600', 'hover:bg-emerald-500');
-            btn.classList.replace('border-slate-600', 'border-emerald-500');
+            btn.innerText = "自動定盤:關";
+            // 加上 auto-align-on
+            btn.className = "bg-emerald-600 hover:bg-emerald-500 text-white border border-emerald-500 px-3 py-1 rounded-lg text-sm font-bold whitespace-nowrap shadow transition-colors auto-align-on";
             if(sel) {
-                sel.disabled = true; // 鎖死下拉選單
+                sel.disabled = true;
                 sel.classList.add('opacity-50', 'cursor-not-allowed');
             }
             if(smoothedHeading !== null) applyAutoAlign(smoothedHeading);
         } else {
-            btn.innerText = "自動定盤: 關";
-            btn.classList.replace('bg-emerald-600', 'bg-slate-700');
-            btn.classList.replace('hover:bg-emerald-500', 'hover:bg-slate-600');
-            btn.classList.replace('border-emerald-500', 'border-slate-600');
+            btn.innerText = "自動定盤:開";
+            // 加上 auto-align-off
+            btn.className = "bg-slate-700 hover:bg-slate-600 text-white border border-slate-600 px-3 py-1 rounded-lg text-sm font-bold whitespace-nowrap shadow transition-colors auto-align-off";
             if(sel) {
-                sel.disabled = false; // 釋放下拉選單
+                sel.disabled = false;
                 sel.classList.remove('opacity-50', 'cursor-not-allowed');
             }
         }
@@ -4264,8 +4286,8 @@ function updateCompassHeading(heading) {
 
         const dial = document.getElementById('compass-dial-container');
         if (dial) {
-            // 更新：同時載入放大倍率 (scale) 與旋轉 (rotate)
-            dial.style.transform = `scale(${compassScale}) rotate(${currentContinuousRotation}deg)`;
+            // 這裡只需處理旋轉，縮放已經交由 compass-scale-wrapper 處理了！
+            dial.style.transform = `rotate(${currentContinuousRotation}deg)`;
         }
 
         const degEl = document.getElementById('compass-degree');
@@ -4278,7 +4300,6 @@ function updateCompassHeading(heading) {
         const mEl = document.getElementById('compass-mountain');
         if (mEl) mEl.innerText = `${mInfo.gua}宮 · ${mInfo.name}山 (${mInfo.center}°)`;
 
-        // 🌟 新增：若開啟「自動定盤」且處於「屋向盤」模式，則根據方位更新陣局
         if (isAutoAlign && compassPanMode === 'wuxiang') {
             applyAutoAlign(heading);
         }
