@@ -48,11 +48,14 @@
         padding: 4px 5px !important; 
         border-radius: 6px !important; 
     }
-    .branch-label { 
-        font-size: 0.85rem !important; 
+.branch-label { 
+        font-size: 1.2rem !important; /* 調整為與天將一致 */
+        line-height: 1 !important; 
     }
     .tian-jiang { 
-        font-size: 0.6rem !important; 
+        font-size: 1.2rem !important; /* 調整為與地支一致 */
+        line-height: 1 !important; 
+        margin-left: 2px !important;  /* 稍微縮減兩者的間距避免擠出邊界 */
     }
     .pos-left { left: -21px !important; }
     .pos-right { right: -21px !important; }
@@ -114,12 +117,13 @@
         .hour-stem { display: inline-block; background-color: #ffedd5; border: 1.5px solid #f97316; padding: 0 3px; border-radius: 4px; line-height: 1.1; }
         
         .emoji-container { position: absolute; top: 4px; right: 4px; display: flex; flex-direction: column; align-items: flex-end; gap: 1px; font-size: 1rem; line-height: 1; z-index: 10; }
-        .branch-label {
+.branch-label {
             position: absolute;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.05rem;
+            font-size: 1.78rem; /* 桌機版放大 70% (原 1.05 -> 1.78) */
+            line-height: 0.9;
             font-weight: 900;
             pointer-events: none;
             white-space: nowrap;
@@ -127,9 +131,10 @@
         }
 
         .tian-jiang {
-            font-size: 0.7rem;
+            font-size: 1.19rem; /* 桌機版放大 70% (原 0.7 -> 1.19) */
             color: #7e22ce; 
-            margin-left: 3px;
+            margin-left: 1px; /* 縮小與地支的間距，避免越界 */
+            line-height: 0.9;
         }
 
         .vertical-label {
@@ -414,14 +419,7 @@
                 </label>
             </div>
 
-            <!-- 7. 按宮看格局 -->
-            <div class="flex items-center gap-2 bg-white/90 px-3 py-1 rounded-full shadow-sm border border-blue-100">
-                <span class="text-xs font-bold text-gray-700">按宮看格局</span>
-                <label class="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" id="toggle-palacemodal" class="sr-only peer" checked onchange="handleToggleSwitch('toggle-palacemodal')">    
-                    <div class="w-9 h-5 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-500 shadow-inner"></div>
-                </label>
-            </div>
+            <!-- 已刪除的7. 按宮看格局 -->
 
             <!-- 8. 流年飛星 -->
             <div class="flex items-center gap-2 bg-white/90 px-3 py-1 rounded-full shadow-sm border border-rose-100">
@@ -431,6 +429,16 @@
                     <div class="w-9 h-5 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-rose-600 shadow-inner"></div>
                 </label>
                 <select id="sel-feixing-year" class="hidden text-xs p-1 border border-rose-200 rounded bg-rose-50 font-bold text-rose-900 outline-none" onchange="generatePan()"></select>
+            </div>
+
+<!-- 9. 貴人歌訣切換 (獨立運作) -->
+            <div class="flex items-center gap-2 bg-white/90 px-3 py-1 rounded-full shadow-sm border border-emerald-100">
+                <span class="text-xs font-bold text-gray-700" id="guiren-label">天乙貴人</span>
+                <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="toggle-guiren" class="sr-only peer" onchange="handleGuiRenToggle()">
+                    <!-- 預設(未勾選)為橙色 bg-orange-500，勾選後為綠色 bg-emerald-500 -->
+                    <div class="w-9 h-5 bg-orange-500 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500 shadow-inner"></div>
+                </label>
             </div>
         </div>
     </details>
@@ -1551,7 +1559,8 @@ function selectBaziDaYun(idx) {
 
     const TIAN_JIANG_LIST = ['貴人', '螣蛇', '朱雀', '六合', '勾陳', '青龍', '天空', '白虎', '太常', '玄武', '太陰', '天后'];
     const ZQ_MAP = {"雨水": "亥", "春分": "戌", "谷雨": "酉", "穀雨": "酉", "小满": "申", "小滿": "申", "夏至": "未", "大暑": "午", "处暑": "巳", "處暑": "巳", "秋分": "辰", "霜降": "卯", "小雪": "寅", "冬至": "丑", "大寒": "子"};
-    const GUI_REN_MAP = {
+// 預設：傳統天乙貴人歌訣
+    const GUI_REN_MAP_ORIGINAL = {
         '甲': { day: '丑', night: '未' },
         '乙': { day: '子', night: '申' },
         '丙': { day: '亥', night: '酉' },
@@ -1561,6 +1570,20 @@ function selectBaziDaYun(idx) {
         '庚': { day: '丑', night: '未' },
         '辛': { day: '午', night: '寅' },
         '壬': { day: '巳', night: '卯' },
+        '癸': { day: '巳', night: '卯' }
+    };
+
+    // 新增：陰陽貴人訣 (依您提供的圖檔設定)
+    const GUI_REN_MAP_YINYANG = {
+        '甲': { day: '丑', night: '未' },
+        '乙': { day: '申', night: '子' },
+        '丙': { day: '酉', night: '亥' },
+        '丁': { day: '亥', night: '酉' },
+        '戊': { day: '丑', night: '未' },
+        '己': { day: '子', night: '申' },
+        '庚': { day: '丑', night: '未' },
+        '辛': { day: '寅', night: '午' },
+        '壬': { day: '卯', night: '巳' },
         '癸': { day: '巳', night: '卯' }
     };
 
@@ -1655,22 +1678,34 @@ function selectBaziDaYun(idx) {
     let isBaziMode = false; 
     let isFilterPanelOpen = false;
 
-    // Toggle switch variables
+// Toggle switch variables
     let useXianTian = false;
     let useEnergy = false;
     let useFeiXing = false;
+    let useYinYangGuiRen = false; // 新增全域變數
+
+// 新增獨立處理貴人切換的函數
+function handleGuiRenToggle() {
+    const el = document.getElementById('toggle-guiren');
+    useYinYangGuiRen = el ? el.checked : false;
+    
+    const grLabel = document.getElementById('guiren-label');
+    if (grLabel) grLabel.innerText = useYinYangGuiRen ? "陰陽貴人" : "天乙貴人";
+    
+    generatePan(); // 獨立觸發重新排盤
+}
 
 function handleToggleSwitch(activeId) {
+    // 從排他清單中移除 'toggle-guiren' 和 'toggle-palacemodal'
     const allToggles = [
         'toggle-bagua', 
         'toggle-energy', 
         'toggle-neiwai', 
-        'toggle-palacemodal', 
         'toggle-feixing',
         'toggle-compass'
     ];
     
-    const activeEl = document.getElementById(activeId);
+const activeEl = document.getElementById(activeId);
     
     if (activeEl && activeEl.checked) {
         allToggles.forEach(id => {
@@ -1684,9 +1719,11 @@ function handleToggleSwitch(activeId) {
     useXianTian = document.getElementById('toggle-bagua').checked;
     useEnergy = document.getElementById('toggle-energy').checked;
     useNeiWai = document.getElementById('toggle-neiwai').checked;
-    enablePalaceModal = document.getElementById('toggle-palacemodal').checked;
+    enablePalaceModal = true; // 強制開啟宮位詳細資料
     useFeiXing = document.getElementById('toggle-feixing').checked;
     useCompass = document.getElementById('toggle-compass').checked;
+
+    document.getElementById('bagua-label').innerText = useXianTian ? "後天八卦數" : "先天八卦數";
 
     const fxSel = document.getElementById('sel-feixing-year');
     if (fxSel) {
@@ -1700,7 +1737,10 @@ function handleToggleSwitch(activeId) {
         }
     }
 
-    document.getElementById('bagua-label').innerText = useXianTian ? "後天八卦數" : "先天八卦數";
+document.getElementById('bagua-label').innerText = useXianTian ? "後天八卦數" : "先天八卦數";
+    // 新增：動態修改貴人按鈕文字
+    const grLabel = document.getElementById('guiren-label');
+    if (grLabel) grLabel.innerText = useYinYangGuiRen ? "陰陽貴人" : "天乙貴人";
 
     if (useCompass) {
         openCompassMode();
@@ -3005,9 +3045,12 @@ function initSelectors() {
             let zqName = prevQi.getName();
             let yueJiangBranchCalculated = ZQ_MAP[zqName] || "亥";
             
-            let timeBranchIdxForDayNight = BRANCHES.indexOf(timeBranch);
+let timeBranchIdxForDayNight = BRANCHES.indexOf(timeBranch);
             let isDay = (timeBranchIdxForDayNight >= 3 && timeBranchIdxForDayNight <= 8);
-            let guiRenBaseBranch = GUI_REN_MAP[dayStem][isDay ? 'day' : 'night'];
+            
+            // 新增：根據切換狀態，決定使用哪一套字典
+            let currentGuiRenMap = useYinYangGuiRen ? GUI_REN_MAP_YINYANG : GUI_REN_MAP_ORIGINAL;
+            let guiRenBaseBranch = currentGuiRenMap[dayStem][isDay ? 'day' : 'night'];
             
             let yjIdx = BRANCHES.indexOf(yueJiangBranchCalculated);
             let tbIdx = BRANCHES.indexOf(timeBranch);
@@ -3366,8 +3409,8 @@ if (jqData.isTransitionInHour) {
                             <span class="text-palace-name text-${ACTIVE_PALACES[i].type}">${palaceLabel}</span>
                             <span class="text-sm sm:text-base leading-none mt-0.5 font-normal">${guaDisplay}</span>
                         </div>
-                        <div class="flex flex-col items-start leading-none space-y-1 w-full my-0.5">
-                            <span class="text-main text-${godColor} w-full">${godPan[i]}</span>
+<div class="flex flex-col items-start leading-none space-y-1 w-full my-0.5">
+                            <span class="text-main text-${godColor} w-full tracking-wide">${godPan[i]}</span>
                             <span class="text-main text-${STAR_COLORS[pStars[0]] || 'black'} w-full tracking-wide">${starTextDisplay}</span>
                             <div class="flex items-center leading-none w-full">
                                 <span class="text-main text-${doorColor} tracking-wide">${pDoorDisplay}</span>
