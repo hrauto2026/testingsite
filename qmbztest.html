@@ -518,7 +518,7 @@
         </div>
     </div>
 
-    <div id="filter-panel" class="hidden lg:col-span-4 bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl p-5 border border-amber-200 slide-panel overflow-y-auto max-h-[90vh]">
+<div id="filter-panel" class="hidden lg:col-span-4 lg:sticky lg:top-4 lg:self-start bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl p-5 border border-amber-200 slide-panel overflow-y-auto max-h-[90vh]">
         <div class="flex justify-between items-center mb-4 pb-2 border-b-2 border-amber-100">
             <h3 class="text-xl font-black text-amber-900 flex items-center gap-1.5">
                 <span>🔍 條件篩選</span>
@@ -828,6 +828,7 @@
                     <option value="亥_6">九運 · 門向亥 屋向乾 (乾六宮)</option>
                 </select>
             </div>
+            <!-- 新增：自動定盤切換按鈕 -->
 <!-- 新增：自動定盤切換按鈕 -->
             <button id="btn-auto-align" onclick="toggleAutoAlign()" class="bg-slate-700 hover:bg-slate-600 text-white border border-slate-600 px-3 py-1 rounded-lg text-sm font-bold whitespace-nowrap shadow transition-colors auto-align-off">
                 自動定盤: 開
@@ -2987,9 +2988,10 @@ function initSelectors() {
             if (matchedResults.length === 0) {
                 resultsList.innerHTML = '<div class="p-4 text-center text-gray-500 text-sm bg-gray-50 rounded-lg border border-dashed border-gray-200">在此 180 天的範圍內，未找到符合全部所選條件的時辰。</div>';
             } else {
-                matchedResults.forEach(item => {
+matchedResults.forEach(item => {
                     const btn = document.createElement('button');
-                    btn.className = "w-full text-left p-3 border border-amber-200/60 rounded-xl hover:bg-amber-50 focus:bg-amber-100 active:scale-[0.99] transition duration-150 shadow-sm text-sm bg-white block mb-2";
+                    // 加入 filter-result-btn 類別以供後續尋找與重置狀態
+                    btn.className = "filter-result-btn w-full text-left p-3 border border-amber-200/60 rounded-xl hover:bg-amber-50 focus:bg-amber-100 active:scale-[0.99] transition duration-150 shadow-sm text-sm bg-white block mb-2";
                     btn.innerHTML = `
                         <div class="flex justify-between items-center mb-1">
                             <span class="font-bold text-amber-900">${item.dStr}</span>
@@ -2998,6 +3000,16 @@ function initSelectors() {
                         <div class="text-gray-500 font-bold text-xs">四柱：${item.bazi} ${item.ziMark ? '<span class="text-orange-600 font-black">['+item.ziMark+']</span>' : ''}</div>
                     `;
                     btn.onclick = () => {
+                        // 1. 先清除所有結果按鈕的高亮狀態，復原為白底
+                        document.querySelectorAll('.filter-result-btn').forEach(el => {
+                            el.classList.remove('bg-amber-100', 'border-amber-400', 'shadow-md', 'ring-2', 'ring-amber-300');
+                            el.classList.add('bg-white', 'border-amber-200/60');
+                        });
+                        
+                        // 2. 為當下點擊的這筆結果加上高亮底色與顯眼邊框
+                        btn.classList.remove('bg-white', 'border-amber-200/60');
+                        btn.classList.add('bg-amber-100', 'border-amber-400', 'shadow-md', 'ring-2', 'ring-amber-300');
+
                         applyBaziResult(item.y, item.m, item.d, item.h, item.min);
                         if (window.innerWidth < 1024) {
                             toggleFilterPanel();
