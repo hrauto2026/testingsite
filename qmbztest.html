@@ -1898,9 +1898,10 @@ document.getElementById('bagua-label').innerText = useXianTian ? "後天八卦�
         }
     }
 
-    function toggleFilterPanel() {
+function toggleFilterPanel() {
         const filterPanel = document.getElementById('filter-panel');
         const mainPanel = document.getElementById('main-panel');
+        const jumpBtn = document.getElementById('btn-jump-filter'); // 抓取浮動按鈕
 
         const dateInput = document.getElementById('filter-start-date');
         if (!dateInput.value) {
@@ -1924,6 +1925,9 @@ document.getElementById('bagua-label').innerText = useXianTian ? "後天八卦�
             filterPanel.classList.add('hidden');
             mainPanel.classList.replace('lg:col-span-8', 'lg:col-span-12');
             document.getElementById('btn-toggle-filter').classList.replace('bg-amber-700', 'bg-amber-500');
+            
+            // 🌟 確保手動關閉表單時，隱藏浮動按鈕
+            if (jumpBtn) jumpBtn.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
         }
     }
 
@@ -2999,7 +3003,7 @@ matchedResults.forEach(item => {
                         </div>
                         <div class="text-gray-500 font-bold text-xs">四柱：${item.bazi} ${item.ziMark ? '<span class="text-orange-600 font-black">['+item.ziMark+']</span>' : ''}</div>
                     `;
-                    btn.onclick = () => {
+btn.onclick = () => {
                         // 1. 先清除所有結果按鈕的高亮狀態，復原為白底
                         document.querySelectorAll('.filter-result-btn').forEach(el => {
                             el.classList.remove('bg-amber-100', 'border-amber-400', 'shadow-md', 'ring-2', 'ring-amber-300');
@@ -3011,10 +3015,16 @@ matchedResults.forEach(item => {
                         btn.classList.add('bg-amber-100', 'border-amber-400', 'shadow-md', 'ring-2', 'ring-amber-300');
 
                         applyBaziResult(item.y, item.m, item.d, item.h, item.min);
+                        
                         if (window.innerWidth < 1024) {
-                            toggleFilterPanel();
+                            // 🌟 關鍵修改：移除 toggleFilterPanel()，讓表單保持開啟
                             setTimeout(() => {
+                                // 向上平滑捲動到盤面
                                 document.getElementById('app-workspace').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                                
+                                // 顯示右下角的「⬇️ 篩選列表」浮動按鈕
+                                const jumpBtn = document.getElementById('btn-jump-filter');
+                                if (jumpBtn) jumpBtn.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
                             }, 150);
                         }
                     };
@@ -4325,5 +4335,9 @@ function updateCompassHeading(heading) {
 </script>
 <script data-goatcounter="https://qimenchart.goatcounter.com/count"
         async src="//gc.zgo.at/count.js"></script>
+<!-- 🌟 新增：手機版專用，快速跳轉回篩選列表的浮動按鈕 -->
+<button id="btn-jump-filter" onclick="document.getElementById('filter-panel').scrollIntoView({ behavior: 'smooth', block: 'start' }); this.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');" class="lg:hidden fixed bottom-8 right-5 z-[60] bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 px-5 rounded-full shadow-2xl transition-all duration-300 translate-y-20 opacity-0 pointer-events-none flex items-center gap-1.5 border-2 border-white">
+    <span>⬇️ 篩選列表</span>
+</button>
 </body>
 </html>
