@@ -225,7 +225,7 @@ async function renderCaseList(searchTerm = "") {
             
             // 判斷是否為舊版，若是則加上紅色外框與警告
             const borderClass = c.isOldVersion ? 'border-red-400 shadow-md ring-1 ring-red-200 bg-red-50/20' : 'border-indigo-100 hover:border-indigo-300';
-            const highlightActive = (activeCase && activeCase.id === c.id) ? 'ring-2 ring-indigo-500 bg-indigo-50' : '';
+            const highlightActive = (activeCase && activeCase.id === c.id) ? 'bg-green-50 border-green-300' : '';
             const oldBadge = c.isOldVersion ? `<span class="text-[10px] bg-red-100 text-red-700 px-1.5 py-0.5 rounded border border-red-200 ml-2 font-black">⚠️ 歷史舊版</span>` : '';
 
             html += `
@@ -241,10 +241,10 @@ async function renderCaseList(searchTerm = "") {
                         <span class="text-[10px] px-1.5 py-0.5 rounded border font-bold ${sc}">${c.status}</span>
                     </div>
                     <div class="text-[11px] text-gray-500 font-bold mb-1.5">更新於 ${dateStr}</div>
-                    <div class="text-[11px] text-gray-600 bg-gray-50 p-1.5 rounded mb-2 font-bold leading-relaxed border border-gray-100 truncate">
-                        ${c.ju} | ${c.baziStr}
-                    </div>
-                    ${c.notes ? `<div class="text-xs text-gray-800 mb-3 whitespace-pre-wrap font-bold bg-amber-50/50 p-2 rounded line-clamp-3">${c.notes}</div>` : ''}
+<div class="text-[11px] text-gray-600 bg-gray-50 p-1.5 rounded mb-2 font-bold leading-relaxed border border-gray-100 break-words">
+    ${c.ju} | ${c.baziStr}
+</div>
+${c.notes ? `<div class="text-xs text-gray-800 mb-3 whitespace-pre-wrap font-bold bg-amber-50/50 p-2 rounded">${c.notes}</div>` : ''}
                     
                     <div class="flex justify-end gap-1.5 border-t border-gray-100 pt-2.5">
                         <button onclick="deleteCase(${c.id})" class="text-[11px] text-red-600 hover:text-red-800 font-bold px-2.5 py-1 rounded border border-red-100 hover:bg-red-50 transition">刪除</button>
