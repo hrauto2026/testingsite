@@ -211,7 +211,7 @@ async function renderCaseList(searchTerm = "") {
             return;
         }
 
-        let html = '';
+let html = '';
         displayList.forEach(c => {
             const date = new Date(c.updatedAt);
             const dateStr = `${date.getFullYear()}/${date.getMonth()+1}/${date.getDate()} ${date.getHours().toString().padStart(2,'0')}:${date.getMinutes().toString().padStart(2,'0')}`;
@@ -223,10 +223,9 @@ async function renderCaseList(searchTerm = "") {
             };
             const sc = statusColors[c.status] || statusColors['等待反饋'];
             
-            // 判斷是否為舊版，若是則加上紅色外框與警告
             const borderClass = c.isOldVersion ? 'border-red-400 shadow-md ring-1 ring-red-200 bg-red-50/20' : 'border-indigo-100 hover:border-indigo-300';
             const highlightActive = (activeCase && activeCase.id === c.id) ? 'bg-green-50 border-green-300' : '';
-            const oldBadge = c.isOldVersion ? `<span class="text-[10px] bg-red-100 text-red-700 px-1.5 py-0.5 rounded border border-red-200 ml-2 font-black">⚠️ 歷史舊版</span>` : '';
+            const oldBadge = c.isOldVersion ? `<span class="text-[18px] bg-red-100 text-red-700 px-1.5 py-0.5 rounded border border-red-200 ml-2 font-black">⚠️ 歷史舊版</span>` : '';
 
             html += `
             <div id="case-card-${c.id}" class="bg-white border rounded-xl p-4 shadow-sm mb-3 text-left transition-all ${borderClass} ${highlightActive}">
@@ -235,42 +234,41 @@ async function renderCaseList(searchTerm = "") {
                 <div id="case-view-${c.id}">
                     <div class="flex justify-between items-start mb-2">
                         <div>
-                            <h4 class="font-black text-base text-indigo-950">${c.clientName} ${oldBadge}</h4>
-                            <div class="text-[10px] text-gray-400 font-mono mt-0.5">${c.caseId}</div>
+                            <h4 class="font-black text-[29px] text-indigo-950">${c.clientName} ${oldBadge}</h4>
+                            <div class="text-[18px] text-gray-400 font-mono mt-0.5">${c.caseId}</div>
                         </div>
-                        <span class="text-[10px] px-1.5 py-0.5 rounded border font-bold ${sc}">${c.status}</span>
+                        <span class="text-[18px] px-1.5 py-0.5 rounded border font-bold ${sc}">${c.status}</span>
                     </div>
-                    <div class="text-[11px] text-gray-500 font-bold mb-1.5">更新於 ${dateStr}</div>
-<div class="text-[11px] text-gray-600 bg-gray-50 p-1.5 rounded mb-2 font-bold leading-relaxed border border-gray-100 break-words">
-    ${c.ju} | ${c.baziStr}
-</div>
-${c.notes ? `<div class="text-xs text-gray-800 mb-3 whitespace-pre-wrap font-bold bg-amber-50/50 p-2 rounded">${c.notes}</div>` : ''}
+                    <div class="text-[20px] text-gray-500 font-bold mb-1.5">更新於 ${dateStr}</div>
+                    <div class="text-[20px] text-gray-600 bg-gray-50 p-1.5 rounded mb-2 font-bold leading-relaxed border border-gray-100 break-words">
+                        ${c.ju} | ${c.baziStr}
+                    </div>
+                    ${c.notes ? `<div class="text-[22px] text-gray-800 mb-3 whitespace-pre-wrap font-bold bg-amber-50/50 p-2 rounded">${c.notes}</div>` : ''}
                     
                     <div class="flex justify-end gap-1.5 border-t border-gray-100 pt-2.5">
-                        <button onclick="deleteCase(${c.id})" class="text-[11px] text-red-600 hover:text-red-800 font-bold px-2.5 py-1 rounded border border-red-100 hover:bg-red-50 transition">刪除</button>
-                        <button onclick="openInlineEdit(${c.id})" class="text-[11px] text-indigo-600 hover:text-indigo-800 font-bold px-2.5 py-1 rounded border border-indigo-100 hover:bg-indigo-50 transition">✏️ 編輯</button>
-                        <button onclick="loadCase(${c.id})" class="text-[11px] text-white bg-indigo-600 hover:bg-indigo-700 font-bold px-3 py-1 rounded shadow transition">🔄 載入盤面</button>
+                        <button onclick="deleteCase(${c.id})" class="text-[20px] text-red-600 hover:text-red-800 font-bold px-2.5 py-1 rounded border border-red-100 hover:bg-red-50 transition">刪除</button>
+                        <button onclick="openInlineEdit(${c.id})" class="text-[20px] text-indigo-600 hover:text-indigo-800 font-bold px-2.5 py-1 rounded border border-indigo-100 hover:bg-indigo-50 transition">✏️ 編輯</button>
+                        <button onclick="loadCase(${c.id})" class="text-[20px] text-white bg-indigo-600 hover:bg-indigo-700 font-bold px-3 py-1 rounded shadow transition">🔄 載入盤面</button>
                     </div>
                 </div>
 
                 <!-- 編輯模式 (預設隱藏) -->
                 <div id="case-edit-${c.id}" class="hidden space-y-2">
-                    <input type="text" id="edit-name-${c.id}" value="${c.clientName}" class="w-full p-1.5 text-sm border border-indigo-300 rounded font-bold outline-none focus:ring-1 focus:ring-indigo-500">
-                    <select id="edit-status-${c.id}" class="w-full p-1.5 text-sm border border-indigo-300 rounded font-bold outline-none">
+                    <input type="text" id="edit-name-${c.id}" value="${c.clientName}" class="w-full p-1.5 text-[25px] border border-indigo-300 rounded font-bold outline-none focus:ring-1 focus:ring-indigo-500">
+                    <select id="edit-status-${c.id}" class="w-full p-1.5 text-[25px] border border-indigo-300 rounded font-bold outline-none">
                         <option value="等待反饋" ${c.status === '等待反饋' ? 'selected' : ''}>🟡 等待反饋</option>
                         <option value="完全應驗" ${c.status === '完全應驗' ? 'selected' : ''}>🟢 完全應驗</option>
                         <option value="待覆盤" ${c.status === '待覆盤' ? 'selected' : ''}>🔴 有待覆盤</option>
                     </select>
-                    <textarea id="edit-notes-${c.id}" rows="4" class="w-full p-1.5 text-sm border border-indigo-300 rounded font-bold outline-none resize-none focus:ring-1 focus:ring-indigo-500">${c.notes || ''}</textarea>
+                    <textarea id="edit-notes-${c.id}" rows="4" class="w-full p-1.5 text-[25px] border border-indigo-300 rounded font-bold outline-none resize-none focus:ring-1 focus:ring-indigo-500">${c.notes || ''}</textarea>
                     <div class="flex justify-end gap-2 pt-1">
-                        <button onclick="cancelInlineEdit(${c.id})" class="text-xs bg-gray-200 text-gray-700 font-bold px-3 py-1.5 rounded transition">取消</button>
-                        <button onclick="saveInlineEdit(${c.id})" class="text-xs bg-teal-600 text-white font-bold px-4 py-1.5 rounded shadow transition">💾 儲存修改</button>
+                        <button onclick="cancelInlineEdit(${c.id})" class="text-[22px] bg-gray-200 text-gray-700 font-bold px-3 py-1.5 rounded transition">取消</button>
+                        <button onclick="saveInlineEdit(${c.id})" class="text-[22px] bg-teal-600 text-white font-bold px-4 py-1.5 rounded shadow transition">💾 儲存修改</button>
                     </div>
                 </div>
             </div>`;
         });
-        container.innerHTML = html;
-    };
+        container.innerHTML = html;    };
 }
 
 function openInlineEdit(id) {
