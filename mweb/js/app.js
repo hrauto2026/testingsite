@@ -456,7 +456,7 @@ function sharePan() {
 // ==========================================
 // AI 大師解盤模組 (Cloudflare Workers AI 直連)
 // ==========================================
-const CLOUDFLARE_WORKER_URL = "https://qmai.hrauto2026.workers.dev"; // 
+const CLOUDFLARE_WORKER_URL = "/api/qmai"; // 
 function openAiModal() {
     if (!panData || !panData.ju) {
         showToast("⚠️ 請先起盤後再進行 AI 分析！");
