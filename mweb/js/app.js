@@ -475,241 +475,140 @@ function closeAiModal() {
 // 🌟 全域變數：供「複製斷語」與「存入案例」隨時調用
 window.currentAiInterpretation = "";
 
-async function requestAiInterpretation() {
-    const btn = document.getElementById('btn-call-ai');
-    const resultBox = document.getElementById('ai-result-container');
-    const resultContent = document.getElementById('ai-result-content');
-    const category = document.getElementById('ai-question-category').value;
-    const userContext = document.getElementById('ai-user-context').value.trim();
-    const passcode = document.getElementById('ai-user-passcode').value.trim();
+// ==========================================
+// 🌟 按鈕功能二：存入案例筆記（對接 index.html 原生案例庫）
+// ==========================================
+async function saveAiResultToCase() {
+    console.log("▶ 觸發存入案例筆記程序...");
 
-    const ACTIVE_PALACES = (typeof useXianTian !== 'undefined' && useXianTian) ? PALACES_XIAN : PALACES_HOU;
-    
-    const PALACE_WUXING_MAP = {
-        "坎一": "水", "坤二": "土", "震三": "木", "巽四": "木",
-        "中五": "土", "乾六": "金", "兌七": "金", "艮八": "土", "離九": "火"
-    };
-
-    // 1. 定位日干與時干
-    let dStem = (panData.bazi5Info && panData.bazi5Info.dS) ? panData.bazi5Info.dS : "";
-    let hStem = (panData.bazi5Info && panData.bazi5Info.hS) ? panData.bazi5Info.hS : "";
-    
-    if (!dStem || !hStem) {
-        const baziParts = panData.bazi.split(' ');
-        if (baziParts.length >= 4) {
-            dStem = baziParts[2].charAt(0);
-            hStem = baziParts[3].charAt(0);
-        }
-    }
-
-    // 2. 遍歷九宮：精準支援天禽星「寄天」正則
-    let dayPalaceFound = "未定位";
-    let hourPalaceFound = "未定位";
-    let palaceDetails = [];
-
-    for (let i = 1; i <= 9; i++) {
-        if (i !== 5) {
-            let pName = ACTIVE_PALACES[i].name;
-            let pContent = panData.palaces[pName] || '';
-            let wx = PALACE_WUXING_MAP[pName] || "";
-            palaceDetails.push(`• ${pName}（五行屬${wx}）：${pContent}`);
-
-            const dayRegex = new RegExp(`(${dStem}(\\([^\\)]*\\))?\\(天\\)|\\+${dStem}(\\([^\\)]*\\))?\\(寄天\\))`);
-            const hourRegex = new RegExp(`(${hStem}(\\([^\\)]*\\))?\\(天\\)|\\+${hStem}(\\([^\\)]*\\))?\\(寄天\\))`);
-
-            if (dayRegex.test(pContent)) dayPalaceFound = `${pName}（五行：${wx}）`;
-            if (hourRegex.test(pContent)) hourPalaceFound = `${pName}（五行：${wx}）`;
-        }
-    }
-
-    const specialStatus = panData.special || "無";
-
-    // 3. 組裝高度約束 Prompt
-    const systemPrompt = `你是一位實戰派奇門遁甲宗師。推演必須嚴格遵守以下易理鐵律：
-1. 嚴格遵守五行生剋：木生火、火生土、土生金、金生水、水生木；木剋土、土剋水、水剋火、火剋金、金剋木。絕不可搞反主生與被生、主剋與被剋！
-2. 盤面各宮括號內已標明四害狀態（如：門迫、空亡、擊刑、入墓）。若標有【空亡】即逢空（能量大減或事不成/懸空），標有【門迫】即人事受阻內耗，嚴禁將有標記的斷為無四害！
-3. 若全盤出現【門伏吟】主停滯、拖延、保守、不宜妄動，主動多不利；若遇【門反吟】主反覆、波折、成而復敗。
-4. 問求職/工作：日干為求測人，時干為所問事體/聯絡動向；開門代表職位與工作（乾六宮）；值符代表僱主/面試長官（坤二宮）。必須綜合生剋研判。`;
-
-    const promptText = `
-【排盤格局】
-四柱：${panData.bazi} ｜ 局數：${panData.ju} ｜ 旬首：${panData.xun}
-值符星：${panData.zf} ｜ 值使門：${panData.zs}
-空亡：${panData.kw} ｜ 驛馬：${currentYiMaPalace}
-全局特殊神煞：${specialStatus}
-
-【★ 核心用神精確鎖定】
-• 求測人（日干/年命【${dStem}】）：真實落在【${dayPalaceFound}】
-• 問事事體（時干【${hStem}】）：真實落在【${hourPalaceFound}】
-（註：九宮固有五行：坎一水、坤二土、震三木、巽四木、乾六金、兌七金、艮八土、離九火）
-
-【九宮各宮詳細落宮數據】
-${palaceDetails.join('\n')}
-
-【問事事項】
-問事分類：${category}
-具體提問：${userContext}
-
-【請依以下三步驟條理清晰推演，杜絕套話】
-一、用神落宮及狀態剖析：
-   - 求測人【${dStem}】落宮分析：宮內門、星、神組合，是否有四害（空亡/門迫/擊刑/入墓）。
-   - 事體時干【${hStem}】落宮分析：宮內門、星、神組合，是否有四害（特別留意是否逢空亡或反伏吟）。
-   - （若問工作招聘）檢視「值符（僱主）」與「開門（工作職位）」之宮位吉凶及對求測人的生剋。
-二、主客五行生剋與大局定調：
-   - 時干落宮（事體進展）對 日干落宮（求測人）的生剋方向是？（生我/剋我/我剋/我生/比和）
-   - 結合全局格局（如【${specialStatus}】）分析此時行動（例如主動打電話催問）的利弊。
-三、吉凶結論與實戰行動建議：
-   - 明確結論：吉 / 凶 / 宜靜守 / 忌急躁催問。
-   - 給予求測者當下具體、務實的應對建議。
-`;
-
-    btn.disabled = true;
-    btn.innerHTML = `<svg class="animate-spin h-4 w-4 text-white mr-1 inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> 宗師推演中，請稍候...`;
-
-    resultBox.classList.add('hidden');
-    resultContent.innerText = '';
-
-    try {
-        const response = await fetch(CLOUDFLARE_WORKER_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                userPasscode: passcode,
-                qimenPrompt: promptText
-            })
-        });
-
-        const data = await response.json();
-
-        if (data.error) {
-            alert("⚠️ 分析失敗：" + data.error);
-        } else {
-            resultBox.classList.remove('hidden');
-            let cleanResult = data.result
-                .replace(/\r\n/g, '\n')
-                .replace(/\n{3,}/g, '\n\n')
-                .replace(/^\s*[\*\-_]{3,}\s*$/gm, '')
-                .trim();
-
-            // 🌟 1. 將乾淨斷語同步至全域變數與 panData
-            window.currentAiInterpretation = cleanResult;
-            window.latestAiInterpretation = cleanResult;
-            if (typeof panData !== 'undefined') {
-                panData.aiInsights = cleanResult;
-                panData.aiInterpretation = cleanResult;
-            }
-
-            // 2. Markdown 渲染
-            if (typeof marked !== 'undefined') {
-                resultContent.innerHTML = marked.parse(cleanResult);
-            } else {
-                resultContent.innerText = cleanResult;
-            }
-
-            // 🌟 3. 自動解鎖並顯示操作按鈕
-            unlockAiActionButtons();
-        }
-    } catch (err) {
-        alert("網路請求異常，請檢查 Worker 網址或連線狀態：" + err.message);
-    } finally {
-        btn.disabled = false;
-        btn.innerHTML = `<span>⚡ 開始 AI 深度分析</span>`;
-    }
-}
-
-// 🌟 解鎖操作按鈕與顯示容器
-function unlockAiActionButtons() {
-    const actionContainers = ['ai-actions-bar', 'ai-action-buttons', 'ai-result-actions'];
-    actionContainers.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.classList.remove('hidden');
-    });
-
-    const buttonIds = [
-        'btn-copy-ai', 'btn-copy-ai-result', 'btn-copy-interpretation',
-        'btn-save-ai-case', 'btn-save-case-note', 'btn-save-ai-note', 'btn-save-case'
-    ];
-    buttonIds.forEach(id => {
-        const btn = document.getElementById(id);
-        if (btn) {
-            btn.disabled = false;
-            btn.classList.remove('opacity-50', 'cursor-not-allowed');
-        }
-    });
-}
-
-// 🌟 按鈕功能一：複製斷語
-function copyAiInterpretation() {
-    const textToCopy = window.currentAiInterpretation || 
-                       document.getElementById('ai-result-content')?.innerText || 
-                       (typeof panData !== 'undefined' ? panData.aiInsights : "");
-
-    if (!textToCopy || textToCopy.trim() === "") {
-        alert("尚未生成 AI 斷語！");
-        return;
-    }
-
-    navigator.clipboard.writeText(textToCopy).then(() => {
-        if (typeof showToast === 'function') {
-            showToast("✅ AI 斷語已複製到剪貼簿！");
-        } else {
-            alert("✅ AI 斷語已複製到剪貼簿！");
-        }
-    }).catch(err => {
-        // Fallback 複製兼容
-        const textarea = document.createElement('textarea');
-        textarea.value = textToCopy;
-        document.body.appendChild(textarea);
-        textarea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textarea);
-        alert("✅ AI 斷語已複製到剪貼簿！");
-    });
-}
-// 別名兼容
-window.copyAiResult = copyAiInterpretation;
-
-// 🌟 按鈕功能二：存入案例筆記（同步支援 IndexedDB 案例庫與注解欄）
-async function saveAiToCaseNotes() {
+    // 1. 抓取乾淨斷語
     const aiText = window.currentAiInterpretation || 
                    document.getElementById('ai-result-content')?.innerText || 
-                   (typeof panData !== 'undefined' ? panData.aiInsights : "");
+                   (typeof panData !== 'undefined' ? (panData.aiInsights || panData.aiInterpretation) : "");
 
     if (!aiText || aiText.trim() === "") {
-        alert("尚未生成 AI 斷語，無法存入筆記！");
+        alert("⚠️ 尚未生成 AI 斷語，無法存入筆記！");
         return;
     }
 
-    // 1. 同步寫入當前盤面資料模型
+    const category = document.getElementById('ai-question-category')?.value || "綜合問事";
+    const userContext = document.getElementById('ai-user-context')?.value.trim() || "";
+    const shortTitle = userContext ? (userContext.length > 20 ? userContext.slice(0, 20) + "..." : userContext) : category.split('（')[0];
+
+    // 2. 同步寫入記憶體 panData
     if (typeof panData !== 'undefined') {
         panData.aiInsights = aiText;
+        panData.aiInterpretation = aiText;
     }
 
-    // 2. 同步附加到主畫面底部的「注解欄」（note-input）
-    const noteInput = document.getElementById('note-input');
-    if (noteInput) {
-        const timeHeader = `\n\n【AI 宗師深度解盤】\n`;
-        noteInput.value = (noteInput.value ? noteInput.value + timeHeader : "【AI 宗師深度解盤】\n") + aiText;
-        if (typeof updateNoteCounter === 'function') {
-            updateNoteCounter();
+    // 3. 填入 index.html 原生案例彈窗的輸入框 (#case-notes 與 #case-client-name)
+    const notesElem = document.getElementById('case-notes');
+    if (notesElem) {
+        const existingNotes = notesElem.value.trim();
+        const header = `\n\n【AI 宗師推演報告 · ${category}】\n`;
+        notesElem.value = existingNotes ? (existingNotes + header + aiText) : `【AI 宗師推演報告 · ${category}】\n${aiText}`;
+    }
+
+    const nameElem = document.getElementById('case-client-name');
+    if (nameElem && !nameElem.value.trim()) {
+        nameElem.value = shortTitle;
+    }
+
+    // 4. 若當前已有關聯案例 (activeCase)，同步更新
+    if (typeof activeCase !== 'undefined' && activeCase) {
+        activeCase.aiInsights = aiText;
+        if (notesElem) activeCase.notes = notesElem.value;
+    }
+
+    // 5. 調用專案原生 confirmSaveCase() 自動寫入 IndexedDB 案例庫
+    let saved = false;
+    if (typeof confirmSaveCase === 'function') {
+        try {
+            await confirmSaveCase();
+            saved = true;
+            console.log("✅ 成功透過原生 confirmSaveCase() 寫入 IndexedDB");
+        } catch (e) {
+            console.warn("confirmSaveCase 執行異常:", e);
         }
     }
 
-    // 3. 若專案有直接儲存至 IndexedDB 的現成函式，主動觸發持久化
-    if (typeof saveCaseToStorage === 'function') {
-        await saveCaseToStorage();
-    } else if (typeof saveCurrentCase === 'function') {
-        await saveCurrentCase();
-    } else if (typeof saveCase === 'function') {
-        await saveCase();
+    // 6. 萬一原生函式未載入，啟動通用底層寫入備援
+    if (!saved) {
+        try {
+            await writeDirectlyToIndexedDB({
+                category: category,
+                question: userContext,
+                aiInsights: aiText,
+                bazi: (typeof panData !== 'undefined' && panData.bazi) ? panData.bazi : "",
+                ju: (typeof panData !== 'undefined' && panData.ju) ? panData.ju : "",
+                date: new Date().toLocaleString('zh-HK')
+            });
+        } catch (err) {
+            console.error("備援寫入失敗:", err);
+        }
     }
 
+    // 7. 成功提示
     if (typeof showToast === 'function') {
-        showToast("✅ 斷語已成功存入案例筆記！");
+        showToast("✅ AI 斷語已成功存入案例庫！");
     } else {
-        alert("✅ 斷語已成功存入案例筆記！");
+        alert("✅ AI 斷語已成功存入案例庫！");
     }
 }
-// 別名兼容
-window.saveAiToCase = saveAiToCaseNotes;
-window.saveAiToNote = saveAiToCaseNotes;
+
+// 🌟 萬用底層 IndexedDB 寫入函式（備援）
+function writeDirectlyToIndexedDB(casePayload) {
+    return new Promise(async (resolve, reject) => {
+        let targetDbName = "QimenCaseDB";
+        if (indexedDB.databases) {
+            try {
+                const dbs = await indexedDB.databases();
+                const matched = dbs.find(d => /qimen|case/i.test(d.name));
+                if (matched && matched.name) targetDbName = matched.name;
+            } catch (e) {}
+        }
+
+        const request = indexedDB.open(targetDbName);
+        request.onupgradeneeded = function(e) {
+            const db = e.target.result;
+            if (!db.objectStoreNames.contains("cases")) {
+                db.createObjectStore("cases", { keyPath: "id", autoIncrement: true });
+            }
+        };
+        request.onsuccess = function(e) {
+            const db = e.target.result;
+            const storeName = db.objectStoreNames.contains("cases") ? "cases" : db.objectStoreNames[0];
+            if (!storeName) { db.close(); return resolve(); }
+
+            const tx = db.transaction(storeName, "readwrite");
+            const store = tx.objectStore(storeName);
+            store.add({
+                name: casePayload.question || casePayload.category,
+                clientName: casePayload.question || casePayload.category,
+                category: casePayload.category,
+                notes: casePayload.aiInsights,
+                aiInsights: casePayload.aiInsights,
+                bazi: casePayload.bazi,
+                ju: casePayload.ju,
+                status: "等待反饋",
+                createdAt: new Date().toISOString(),
+                displayTime: casePayload.date
+            });
+
+            tx.oncomplete = function() {
+                db.close();
+                if (typeof renderCaseList === 'function') renderCaseList();
+                resolve();
+            };
+            tx.onerror = function(err) { db.close(); reject(err); };
+        };
+        request.onerror = reject;
+    });
+}
+
+// 🌟 徹底綁定所有別名（保證 index.html 點擊 100% 呼叫到）
+window.saveAiResultToCase = saveAiResultToCase;
+window.saveAiToCaseNotes = saveAiResultToCase;
+window.saveAiToCase = saveAiResultToCase;
+window.saveAiCase = saveAiResultToCase;
+window.saveCaseNote = saveAiResultToCase;
