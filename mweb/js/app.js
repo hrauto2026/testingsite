@@ -1,7 +1,19 @@
 // ==========================================
 // js/app.js
-// 介面交互、初始化與 DOM 渲染控制
+// 介面交互、初始化、DOM 渲染與 AI 宗師模組 (完整版)
 // ==========================================
+
+// 全域變數防護宣告
+if (typeof window.currentDate === 'undefined') window.currentDate = new Date();
+if (typeof window.isBaziMode === 'undefined') window.isBaziMode = false;
+if (typeof window.enablePalaceModal === 'undefined') window.enablePalaceModal = true;
+if (typeof window.useXianTian === 'undefined') window.useXianTian = false;
+if (typeof window.useEnergy === 'undefined') window.useEnergy = false;
+if (typeof window.useNeiWai === 'undefined') window.useNeiWai = false;
+if (typeof window.useFeiXing === 'undefined') window.useFeiXing = false;
+if (typeof window.useCompass === 'undefined') window.useCompass = false;
+if (typeof window.useYinYangGuiRen === 'undefined') window.useYinYangGuiRen = false;
+window.currentAiInterpretation = "";
 
 function getTrueSolarTime(baseDate, cityKey) {
     if (cityKey === "none" || typeof CITY_COORDINATES === 'undefined' || !CITY_COORDINATES[cityKey]) {
@@ -41,11 +53,14 @@ function showToast(msg) {
     t.className = 'fixed bottom-10 left-1/2 transform -translate-x-1/2 bg-gray-900/90 backdrop-blur-sm text-white px-5 py-3 rounded-xl shadow-2xl z-[100] transition-opacity duration-300 font-bold border border-gray-700 whitespace-nowrap';
     t.innerText = msg;
     document.body.appendChild(t);
-    setTimeout(() => { t.style.opacity = '0'; setTimeout(()=>t.remove(),300); }, 2500);
+    setTimeout(() => { 
+        t.style.opacity = '0'; 
+        setTimeout(() => t.remove(), 300); 
+    }, 2500);
 }
 
 function colorizeGanZhi(str) {
-    return str.split('').map(char => WUXING_COLORS[char] ? `<span style="color: ${WUXING_COLORS[char]}; text-shadow: 0 0 1px rgba(0,0,0,0.1);">${char}</span>` : char).join('');
+    return str.split('').map(char => (typeof WUXING_COLORS !== 'undefined' && WUXING_COLORS[char]) ? `<span style="color: ${WUXING_COLORS[char]}; text-shadow: 0 0 1px rgba(0,0,0,0.1);">${char}</span>` : char).join('');
 }
 
 function highlightPalace(el) {
@@ -53,7 +68,7 @@ function highlightPalace(el) {
     let idMatch = el.id.match(/palace-(\d)/);
     if (idMatch && idMatch[1]) {
         let activePNum = parseInt(idMatch[1]);
-        if (activePNum !== 5) {
+        if (activePNum !== 5 && typeof showPalaceDetails === 'function') {
             showPalaceDetails(activePNum);
         }
     }
@@ -69,66 +84,82 @@ function toggleInputMode() {
     const locSels = document.getElementById('location-selectors');
 
     if (isBaziMode) {
-        btn.innerText = "時間方式";
-        btn.classList.replace('bg-indigo-100', 'bg-amber-100');
-        btn.classList.replace('text-indigo-800', 'text-amber-900');
-        btn.classList.replace('hover:bg-indigo-200', 'hover:bg-amber-200');
-        btn.classList.replace('border-indigo-200', 'border-amber-300');
-        dateSels.classList.add('hidden');
-        baziSels.classList.remove('hidden'); baziSels.classList.add('flex');
-        nowBtn.classList.add('hidden'); jqBtn.classList.add('hidden');
+        if (btn) {
+            btn.innerText = "時間方式";
+            btn.classList.replace('bg-indigo-100', 'bg-amber-100');
+            btn.classList.replace('text-indigo-800', 'text-amber-900');
+            btn.classList.replace('hover:bg-indigo-200', 'hover:bg-amber-200');
+            btn.classList.replace('border-indigo-200', 'border-amber-300');
+        }
+        if (dateSels) dateSels.classList.add('hidden');
+        if (baziSels) { baziSels.classList.remove('hidden'); baziSels.classList.add('flex'); }
+        if (nowBtn) nowBtn.classList.add('hidden'); 
+        if (jqBtn) jqBtn.classList.add('hidden');
         if (locSels) locSels.classList.add('hidden'); 
     } else {
-        btn.innerText = "四柱方式";
-        btn.classList.replace('bg-amber-100', 'bg-indigo-100');
-        btn.classList.replace('text-amber-900', 'text-indigo-800');
-        btn.classList.replace('hover:bg-amber-200', 'hover:bg-indigo-200');
-        btn.classList.replace('border-amber-300', 'border-indigo-200');
-        baziSels.classList.add('hidden'); baziSels.classList.remove('flex');
-        dateSels.classList.remove('hidden');
-        nowBtn.classList.remove('hidden'); jqBtn.classList.remove('hidden');
+        if (btn) {
+            btn.innerText = "四柱方式";
+            btn.classList.replace('bg-amber-100', 'bg-indigo-100');
+            btn.classList.replace('text-amber-900', 'text-indigo-800');
+            btn.classList.replace('hover:bg-amber-200', 'hover:bg-indigo-200');
+            btn.classList.replace('border-amber-300', 'border-indigo-200');
+        }
+        if (baziSels) { baziSels.classList.add('hidden'); baziSels.classList.remove('flex'); }
+        if (dateSels) dateSels.classList.remove('hidden');
+        if (nowBtn) nowBtn.classList.remove('hidden'); 
+        if (jqBtn) jqBtn.classList.remove('hidden');
         if (locSels) locSels.classList.remove('hidden');
     }
 }
 
 function handleGenerateBtn() {
-    // 若為主動起盤，先解除目前的案例關聯狀態
     if (typeof clearActiveCase === 'function') clearActiveCase();
-    
-    if (isBaziMode) executeBaziSearch();
-    else generatePan();
+    if (isBaziMode) {
+        if (typeof executeBaziSearch === 'function') executeBaziSearch();
+    } else {
+        if (typeof generatePan === 'function') generatePan();
+    }
 }
 
 function toggleFilterPanel() {
     const dateInput = document.getElementById('filter-start-date');
-    if (!dateInput.value) {
+    if (dateInput && !dateInput.value) {
         const t = new Date();
         dateInput.value = `${t.getFullYear()}/${(t.getMonth()+1).toString().padStart(2,'0')}/${t.getDate().toString().padStart(2,'0')}`;
     }
     
     const panel = document.getElementById('right-side-panel');
-    if (panel.classList.contains('hidden')) {
-        openRightPanelTab('filter');
-    } else {
-        closeRightPanel();
+    if (panel) {
+        if (panel.classList.contains('hidden')) {
+            if (typeof openRightPanelTab === 'function') openRightPanelTab('filter');
+        } else {
+            if (typeof closeRightPanel === 'function') closeRightPanel();
+        }
     }
 }
+
 function handleFilterPalaceChange(idx) {
-    const pNum = document.getElementById(`filter-target-palace-${idx}`).value;
+    const targetEl = document.getElementById(`filter-target-palace-${idx}`);
+    if (!targetEl) return;
+    const pNum = targetEl.value;
     if (idx === 2) {
         const c2Elems = document.getElementById('condition-2-elements');
         const logicOp = document.getElementById('logic-op-container');
         if (pNum === "0") {
-            c2Elems.classList.add('hidden'); logicOp.classList.add('hidden');
+            if (c2Elems) c2Elems.classList.add('hidden'); 
+            if (logicOp) logicOp.classList.add('hidden');
         } else {
-            c2Elems.classList.remove('hidden'); logicOp.classList.remove('hidden');
+            if (c2Elems) c2Elems.classList.remove('hidden'); 
+            if (logicOp) logicOp.classList.remove('hidden');
         }
     }
     if (pNum !== "0") syncSpecialConditions(idx);
 }
 
 function syncSpecialConditions(idx) {
-    const pNum = document.getElementById(`filter-target-palace-${idx}`).value;
+    const targetEl = document.getElementById(`filter-target-palace-${idx}`);
+    if (!targetEl) return;
+    const pNum = targetEl.value;
     if (pNum === "0") return;
 
     const pairs = [
@@ -148,19 +179,23 @@ function syncSpecialConditions(idx) {
         if (!pair.allowed) {
             posEl.checked = false; negEl.checked = false;
             posEl.disabled = true; negEl.disabled = true;
-            posEl.parentElement.classList.add('chk-label-disabled');
-            negEl.parentElement.classList.add('chk-label-disabled');
+            if (posEl.parentElement) posEl.parentElement.classList.add('chk-label-disabled');
+            if (negEl.parentElement) negEl.parentElement.classList.add('chk-label-disabled');
         } else {
             if (posEl.checked) {
-                negEl.disabled = true; negEl.parentElement.classList.add('chk-label-disabled');
-                posEl.disabled = false; posEl.parentElement.classList.remove('chk-label-disabled');
+                negEl.disabled = true; 
+                if (negEl.parentElement) negEl.parentElement.classList.add('chk-label-disabled');
+                posEl.disabled = false; 
+                if (posEl.parentElement) posEl.parentElement.classList.remove('chk-label-disabled');
             } else if (negEl.checked) {
-                posEl.disabled = true; posEl.parentElement.classList.add('chk-label-disabled');
-                negEl.disabled = false; negEl.parentElement.classList.remove('chk-label-disabled');
+                posEl.disabled = true; 
+                if (posEl.parentElement) posEl.parentElement.classList.add('chk-label-disabled');
+                negEl.disabled = false; 
+                if (negEl.parentElement) negEl.parentElement.classList.remove('chk-label-disabled');
             } else {
                 posEl.disabled = false; negEl.disabled = false;
-                posEl.parentElement.classList.remove('chk-label-disabled');
-                negEl.parentElement.classList.remove('chk-label-disabled');
+                if (posEl.parentElement) posEl.parentElement.classList.remove('chk-label-disabled');
+                if (negEl.parentElement) negEl.parentElement.classList.remove('chk-label-disabled');
             }
         }
     });
@@ -171,7 +206,7 @@ function handleGuiRenToggle() {
     useYinYangGuiRen = el ? el.checked : false;
     const grLabel = document.getElementById('guiren-label');
     if (grLabel) grLabel.innerText = useYinYangGuiRen ? "陰陽貴人" : "天乙貴人";
-    generatePan();
+    if (typeof generatePan === 'function') generatePan();
 }
 
 function handleToggleSwitch(activeId) {
@@ -186,14 +221,15 @@ function handleToggleSwitch(activeId) {
         });
     }
 
-    useXianTian = document.getElementById('toggle-bagua').checked;
-    useEnergy = document.getElementById('toggle-energy').checked;
-    useNeiWai = document.getElementById('toggle-neiwai').checked;
+    useXianTian = document.getElementById('toggle-bagua')?.checked || false;
+    useEnergy = document.getElementById('toggle-energy')?.checked || false;
+    useNeiWai = document.getElementById('toggle-neiwai')?.checked || false;
     enablePalaceModal = true;
-    useFeiXing = document.getElementById('toggle-feixing').checked;
-    useCompass = document.getElementById('toggle-compass').checked;
+    useFeiXing = document.getElementById('toggle-feixing')?.checked || false;
+    useCompass = document.getElementById('toggle-compass')?.checked || false;
 
-    document.getElementById('bagua-label').innerText = useXianTian ? "後天八卦數" : "先天八卦數";
+    const baguaLabel = document.getElementById('bagua-label');
+    if (baguaLabel) baguaLabel.innerText = useXianTian ? "後天八卦數" : "先天八卦數";
 
     const grLabel = document.getElementById('guiren-label');
     if (grLabel) grLabel.innerText = useYinYangGuiRen ? "陰陽貴人" : "天乙貴人";
@@ -202,17 +238,22 @@ function handleToggleSwitch(activeId) {
     if (fxSel) {
         if (useFeiXing) {
             fxSel.classList.remove('hidden');
-            if (!fxSel.value) fxSel.value = document.getElementById('sel-year').value;
+            if (!fxSel.value) fxSel.value = document.getElementById('sel-year')?.value || "2026";
         } else {
             fxSel.classList.add('hidden');
         }
     }
 
-    if (useCompass) openCompassMode();
-    else { closeCompassMode(); generatePan(); }
+    if (useCompass) {
+        if (typeof openCompassMode === 'function') openCompassMode();
+    } else {
+        if (typeof closeCompassMode === 'function') closeCompassMode();
+        if (typeof generatePan === 'function') generatePan();
+    }
 }
 
 function getBranchHTML(i) {
+    if (typeof BRANCH_POSITIONS_TEMPLATE === 'undefined') return "";
     let text = BRANCH_POSITIONS_TEMPLATE[i];
     let html = "";
     if (!text) return "";
@@ -226,12 +267,12 @@ function getBranchHTML(i) {
         '戌': { class: 'pos-right', vertical: true }, '亥': { class: 'pos-bottom', vertical: false }
     };
 
-    const currentMonthBranch = panData.monthBranch || "";
+    const currentMonthBranch = (typeof panData !== 'undefined' && panData.monthBranch) ? panData.monthBranch : "";
 
-    for(let b of text) {
-        let wColor = WUXING_COLORS[b];
-        let conf = branchConfig[b];
-        let tjText = (panData.branchToTianJiang && panData.branchToTianJiang[b]) ? panData.branchToTianJiang[b] : "";
+    for (let b of text) {
+        let wColor = (typeof WUXING_COLORS !== 'undefined' && WUXING_COLORS[b]) ? WUXING_COLORS[b] : "#1a202c";
+        let conf = branchConfig[b] || { class: 'pos-bottom', vertical: false };
+        let tjText = (typeof panData !== 'undefined' && panData.branchToTianJiang && panData.branchToTianJiang[b]) ? panData.branchToTianJiang[b] : "";
         let tjHtml = tjText ? `<span class="tian-jiang">${tjText}</span>` : "";
         let baseClasses = `branch-label ${conf.class}`;
         if (conf.vertical) baseClasses += ` vertical-label`;
@@ -249,30 +290,28 @@ function renderPalace5Html(s, anGan, centerLabel, bazi5) {
     if (bazi5) {
         baziContent = `
         <div class="flex flex-col items-center justify-center w-full select-none z-10 my-auto">
-            <!-- ✨ 新增：流派標示 -->
-            <div class="text-[11px] sm:text-xs md:text-[13px] text-red-700 font-black tracking-widest mb-0.5">${bazi5.methodLabel}</div>
+            <div class="text-[11px] sm:text-xs md:text-[13px] text-red-700 font-black tracking-widest mb-0.5">${bazi5.methodLabel || "時家拆補法"}</div>
             
             <div class="flex justify-center items-center gap-x-1.5 sm:gap-x-2 font-black text-lg sm:text-xl md:text-2xl leading-none">
                 <div class="flex flex-col items-center gap-y-0.5 leading-none">
-                    <span style="color:${WUXING_COLORS[bazi5.hS] || '#1a202c'}">${bazi5.hS}</span>
-                    <span style="color:${WUXING_COLORS[bazi5.hB] || '#1a202c'}">${bazi5.hB}</span>
+                    <span style="color:${(typeof WUXING_COLORS !== 'undefined' && WUXING_COLORS[bazi5.hS]) ? WUXING_COLORS[bazi5.hS] : '#1a202c'}">${bazi5.hS}</span>
+                    <span style="color:${(typeof WUXING_COLORS !== 'undefined' && WUXING_COLORS[bazi5.hB]) ? WUXING_COLORS[bazi5.hB] : '#1a202c'}">${bazi5.hB}</span>
                 </div>
                 <div class="flex flex-col items-center gap-y-0.5 leading-none">
-                    <span style="color:${WUXING_COLORS[bazi5.dS] || '#1a202c'}">${bazi5.dS}</span>
-                    <span style="color:${WUXING_COLORS[bazi5.dB] || '#1a202c'}">${bazi5.dB}</span>
+                    <span style="color:${(typeof WUXING_COLORS !== 'undefined' && WUXING_COLORS[bazi5.dS]) ? WUXING_COLORS[bazi5.dS] : '#1a202c'}">${bazi5.dS}</span>
+                    <span style="color:${(typeof WUXING_COLORS !== 'undefined' && WUXING_COLORS[bazi5.dB]) ? WUXING_COLORS[bazi5.dB] : '#1a202c'}">${bazi5.dB}</span>
                 </div>
                 <div class="flex flex-col items-center gap-y-0.5 leading-none">
-                    <span style="color:${WUXING_COLORS[bazi5.mS] || '#1a202c'}">${bazi5.mS}</span>
-                    <span style="color:${WUXING_COLORS[bazi5.mB] || '#1a202c'}">${bazi5.mB}</span>
+                    <span style="color:${(typeof WUXING_COLORS !== 'undefined' && WUXING_COLORS[bazi5.mS]) ? WUXING_COLORS[bazi5.mS] : '#1a202c'}">${bazi5.mS}</span>
+                    <span style="color:${(typeof WUXING_COLORS !== 'undefined' && WUXING_COLORS[bazi5.mB]) ? WUXING_COLORS[bazi5.mB] : '#1a202c'}">${bazi5.mB}</span>
                 </div>
                 <div class="flex flex-col items-center gap-y-0.5 leading-none">
-                    <span style="color:${WUXING_COLORS[bazi5.yS] || '#1a202c'}">${bazi5.yS}</span>
-                    <span style="color:${WUXING_COLORS[bazi5.yB] || '#1a202c'}">${bazi5.yB}</span>
+                    <span style="color:${(typeof WUXING_COLORS !== 'undefined' && WUXING_COLORS[bazi5.yS]) ? WUXING_COLORS[bazi5.yS] : '#1a202c'}">${bazi5.yS}</span>
+                    <span style="color:${(typeof WUXING_COLORS !== 'undefined' && WUXING_COLORS[bazi5.yB]) ? WUXING_COLORS[bazi5.yB] : '#1a202c'}">${bazi5.yB}</span>
                 </div>
             </div>
             <div class="text-[9px] sm:text-[10px] text-gray-400 font-bold tracking-widest mt-0.5">時日月年</div>
             
-            <!-- ✨ 修改：大幅縮小行距與字級，騰出上方空間 -->
             <div class="flex flex-col items-start w-full text-[10px] sm:text-[11px] md:text-xs text-gray-700 font-bold leading-tight space-y-0 mt-1 px-1">
                 <div class="whitespace-nowrap flex items-center">旬首：<span class="text-gray-950 font-black ml-0.5">${bazi5.xun}</span></div>
                 <div class="whitespace-nowrap flex items-center">值符：<span class="text-gray-950 font-black ml-0.5">${bazi5.zf}</span></div>
@@ -281,8 +320,8 @@ function renderPalace5Html(s, anGan, centerLabel, bazi5) {
         </div>`;
     }
     
-    let stemColor = WUXING_COLORS[s] || "#1a202c";
-    let highlightClass = (s === panData.targetHighlightStem) ? "hour-stem" : (s === panData.dayHighlightStem ? "day-stem" : "");
+    let stemColor = (typeof WUXING_COLORS !== 'undefined' && WUXING_COLORS[s]) ? WUXING_COLORS[s] : "#1a202c";
+    let highlightClass = (typeof panData !== 'undefined' && s === panData.targetHighlightStem) ? "hour-stem" : ((typeof panData !== 'undefined' && s === panData.dayHighlightStem) ? "day-stem" : "");
     let mainStemHtml = highlightClass ? `<span class="${highlightClass} font-bold" style="color: ${stemColor} !important;">${s}</span>` : `<span class="font-bold" style="color: ${stemColor};">${s}</span>`;
     let anGanHtml = `<span class="text-gray-400 text-sm sm:text-base">${anGan}</span>`;
 
@@ -303,10 +342,23 @@ function renderPalace5Html(s, anGan, centerLabel, bazi5) {
 }
 
 function updateJieQiYearBtn() { 
-    document.getElementById('btn-jieqi-year').innerText = document.getElementById('sel-year').value; 
+    const yearElem = document.getElementById('sel-year');
+    const btnSpan = document.getElementById('btn-jieqi-year');
+    if (yearElem && btnSpan) btnSpan.innerText = yearElem.value; 
 }
-function resetToNow() { currentDate = new Date(); updateSelectorsFromDate(currentDate); generatePan(); }
-function shiftHour(dir) { currentDate.setHours(currentDate.getHours() + (dir * 2)); updateSelectorsFromDate(currentDate); generatePan(); }
+
+function resetToNow() { 
+    currentDate = new Date(); 
+    updateSelectorsFromDate(currentDate); 
+    if (typeof generatePan === 'function') generatePan(); 
+}
+
+function shiftHour(dir) { 
+    if (!currentDate) currentDate = new Date();
+    currentDate.setHours(currentDate.getHours() + (dir * 2)); 
+    updateSelectorsFromDate(currentDate); 
+    if (typeof generatePan === 'function') generatePan(); 
+}
 
 function initSelectors() {
     const ySel = document.getElementById('sel-year');
@@ -317,8 +369,19 @@ function initSelectors() {
     const fxSel = document.getElementById('sel-feixing-year');
     const locSel = document.getElementById('sel-location');
     
+    if (!ySel || !mSel || !dSel || !hSel || !minSel) return;
+
+    // 清空現有選項，避免重複疊加
+    ySel.innerHTML = "";
+    mSel.innerHTML = "";
+    dSel.innerHTML = "";
+    hSel.innerHTML = "";
+    minSel.innerHTML = "";
+    if (fxSel) fxSel.innerHTML = "";
+    
     // 初始化地區選單
     if (locSel && typeof CITY_COORDINATES !== 'undefined') {
+        locSel.innerHTML = "";
         for (let key in CITY_COORDINATES) {
             locSel.add(new Option(CITY_COORDINATES[key].name, key));
         }
@@ -326,6 +389,7 @@ function initSelectors() {
     }
     
     const compassFxSel = document.getElementById('sel-compass-feixing-year');
+    if (compassFxSel) compassFxSel.innerHTML = "";
     
     for (let i = 1930; i <= 2050; i++) {
         ySel.add(new Option(i, i));
@@ -338,14 +402,13 @@ function initSelectors() {
     for (let i = 0; i <= 59; i++) minSel.add(new Option(i.toString().padStart(2, '0'), i));
     
     const urlParams = new URLSearchParams(window.location.search);
-if (urlParams.has('y') && urlParams.has('m') && urlParams.has('d') && urlParams.has('h') && urlParams.has('min')) {
-        document.getElementById('sel-year').value = urlParams.get('y');
-        document.getElementById('sel-month').value = urlParams.get('m');
-        document.getElementById('sel-day').value = urlParams.get('d');
-        document.getElementById('sel-hour24').value = urlParams.get('h');
-        document.getElementById('sel-minute').value = urlParams.get('min');
+    if (urlParams.has('y') && urlParams.has('m') && urlParams.has('d') && urlParams.has('h') && urlParams.has('min')) {
+        ySel.value = urlParams.get('y');
+        mSel.value = urlParams.get('m');
+        dSel.value = urlParams.get('d');
+        hSel.value = urlParams.get('h');
+        minSel.value = urlParams.get('min');
         
-        // ✨ 新增：讀取分享連結中的流派設定
         if (urlParams.has('method')) {
             const methodSel = document.getElementById('sel-qimen-method');
             if (methodSel) methodSel.value = urlParams.get('method');
@@ -353,14 +416,16 @@ if (urlParams.has('y') && urlParams.has('m') && urlParams.has('d') && urlParams.
 
         currentDate = new Date(urlParams.get('y'), urlParams.get('m') - 1, urlParams.get('d'), urlParams.get('h'), urlParams.get('min'));
         updateJieQiYearBtn();
-        generatePan();
+        if (typeof generatePan === 'function') generatePan();
     } else {
+        if (!currentDate || isNaN(currentDate.getTime())) currentDate = new Date();
         updateSelectorsFromDate(currentDate);
-        generatePan();
+        if (typeof generatePan === 'function') generatePan();
     }
 }
 
 function initBaziSelectors() {
+    if (typeof JIA_ZI_ARRAY === 'undefined' || typeof STEMS === 'undefined') return;
     const sortedJiaZi = [...JIA_ZI_ARRAY].sort((a, b) => {
         const stemA = STEMS.indexOf(a[0]);
         const stemB = STEMS.indexOf(b[0]);
@@ -370,55 +435,74 @@ function initBaziSelectors() {
 
     ['sel-bazi-y', 'sel-bazi-m', 'sel-bazi-d', 'sel-bazi-h'].forEach(id => {
         let sel = document.getElementById(id);
-        sortedJiaZi.forEach(gz => sel.add(new Option(gz, gz)));
+        if (sel) {
+            sel.innerHTML = "";
+            sortedJiaZi.forEach(gz => sel.add(new Option(gz, gz)));
+        }
     });
     
     try {
-        const nowLunar = Solar.fromDate(new Date()).getLunar();
-        const noonLunar = Solar.fromYmdHms(new Date().getFullYear(), new Date().getMonth()+1, new Date().getDate(), 12, 0, 0).getLunar();
-        document.getElementById('sel-bazi-y').value = nowLunar.getYearInGanZhiExact();
-        document.getElementById('sel-bazi-m').value = nowLunar.getMonthInGanZhiExact();
-        document.getElementById('sel-bazi-d').value = noonLunar.getDayInGanZhiExact();
-        
-        let hIdx = Math.floor((new Date().getHours() + 1) % 24 / 2);
-        let timeBranch = BRANCHES[hIdx];
-        let dayStem = noonLunar.getDayInGanZhiExact().charAt(0);
-        let dayStemIdx = STEMS.indexOf(dayStem);
-        let hStemIdx = ((dayStemIdx % 5) * 2 + hIdx) % 10;
-        document.getElementById('sel-bazi-h').value = STEMS[hStemIdx] + timeBranch;
+        if (typeof Solar !== 'undefined') {
+            const nowLunar = Solar.fromDate(new Date()).getLunar();
+            const noonLunar = Solar.fromYmdHms(new Date().getFullYear(), new Date().getMonth()+1, new Date().getDate(), 12, 0, 0).getLunar();
+            const yEl = document.getElementById('sel-bazi-y');
+            const mEl = document.getElementById('sel-bazi-m');
+            const dEl = document.getElementById('sel-bazi-d');
+            const hEl = document.getElementById('sel-bazi-h');
+            if (yEl) yEl.value = nowLunar.getYearInGanZhiExact();
+            if (mEl) mEl.value = nowLunar.getMonthInGanZhiExact();
+            if (dEl) dEl.value = noonLunar.getDayInGanZhiExact();
+            
+            let hIdx = Math.floor((new Date().getHours() + 1) % 24 / 2);
+            let timeBranch = BRANCHES[hIdx];
+            let dayStem = noonLunar.getDayInGanZhiExact().charAt(0);
+            let dayStemIdx = STEMS.indexOf(dayStem);
+            let hStemIdx = ((dayStemIdx % 5) * 2 + hIdx) % 10;
+            if (hEl) hEl.value = STEMS[hStemIdx] + timeBranch;
+        }
     } catch(e) {}
 }
 
 function updateSelectorsFromDate(d) {
     if (!d || isNaN(d.getTime())) return;
-    document.getElementById('sel-year').value = d.getFullYear();
-    document.getElementById('sel-month').value = d.getMonth() + 1;
-    document.getElementById('sel-day').value = d.getDate();
-    document.getElementById('sel-hour24').value = d.getHours();
-    document.getElementById('sel-minute').value = d.getMinutes();
+    const ySel = document.getElementById('sel-year');
+    const mSel = document.getElementById('sel-month');
+    const dSel = document.getElementById('sel-day');
+    const hSel = document.getElementById('sel-hour24');
+    const minSel = document.getElementById('sel-minute');
+    if (ySel) ySel.value = d.getFullYear();
+    if (mSel) mSel.value = d.getMonth() + 1;
+    if (dSel) dSel.value = d.getDate();
+    if (hSel) hSel.value = d.getHours();
+    if (minSel) minSel.value = d.getMinutes();
     
     const fxSel = document.getElementById('sel-feixing-year');
     if (fxSel && !useFeiXing) fxSel.value = d.getFullYear();
     updateJieQiYearBtn();
 }
 
-window.onload = function() {
+// 確保無論何種時機加載均能執行初始化
+function bootstrapApp() {
     initSelectors();
     initBaziSelectors();
     handleFilterPalaceChange(1);
     handleFilterPalaceChange(2);
-};
+}
 
-// ====== ✨ 升級版：複製與分享功能 (包含流派) ======
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bootstrapApp);
+} else {
+    bootstrapApp();
+}
+
 function copyPan() {
     const ACTIVE_PALACES = (typeof useXianTian !== 'undefined' && useXianTian) ? PALACES_XIAN : PALACES_HOU;
-    if (!panData) return;
+    if (typeof panData === 'undefined' || !panData) return;
     
-    // 動態抓取目前盤面的流派標籤
     const methodTitle = (panData.bazi5Info && panData.bazi5Info.methodLabel) ? panData.bazi5Info.methodLabel : "【奇門遁甲】";
-    
     const baziLine = panData.bazi + (panData.special ? " " + panData.special : "") + (panData.stemStatus ? " " + panData.stemStatus : "");
-    let text = `${methodTitle} 排盤\n時間：${baziLine}\n局數：${panData.ju}\n旬首：${panData.xun}\n值符：${panData.zf} | 值使：${panData.zs}\n空亡：${panData.kw} | 驛馬：${currentYiMaPalace}\n----------------------\n`;
+    const yima = (typeof currentYiMaPalace !== 'undefined') ? currentYiMaPalace : "";
+    let text = `${methodTitle} 排盤\n時間：${baziLine}\n局數：${panData.ju}\n旬首：${panData.xun}\n值符：${panData.zf} | 值使：${panData.zs}\n空亡：${panData.kw} | 驛馬：${yima}\n----------------------\n`;
     
     for (let i = 1; i <= 9; i++) {
         if(i !== 5) {
@@ -433,19 +517,17 @@ function copyPan() {
 }
 
 function sharePan() {
-    const y = document.getElementById('sel-year').value;
-    const m = document.getElementById('sel-month').value;
-    const d = document.getElementById('sel-day').value;
-    const h = document.getElementById('sel-hour24').value;
-    const min = document.getElementById('sel-minute').value;
-    
-    // 抓取目前的流派
+    const y = document.getElementById('sel-year')?.value;
+    const m = document.getElementById('sel-month')?.value;
+    const d = document.getElementById('sel-day')?.value;
+    const h = document.getElementById('sel-hour24')?.value;
+    const min = document.getElementById('sel-minute')?.value;
     const qimenMethod = document.getElementById('sel-qimen-method') ? document.getElementById('sel-qimen-method').value : 'chaibu';
     
     const url = new URL(window.location.href);
     url.searchParams.set('y', y); url.searchParams.set('m', m);
     url.searchParams.set('d', d); url.searchParams.set('h', h); url.searchParams.set('min', min);
-    url.searchParams.set('method', qimenMethod); // 寫入流派參數
+    url.searchParams.set('method', qimenMethod);
     
     navigator.clipboard.writeText(url.toString()).then(() => showToast("🔗 分享連結已複製！")).catch(() => {
         let t = document.createElement("textarea"); 
@@ -456,32 +538,10 @@ function sharePan() {
 // ==========================================
 // AI 大師解盤模組 (Cloudflare Workers AI 直連)
 // ==========================================
-const CLOUDFLARE_WORKER_URL = "/api/qmai"; // 
-function openAiModal() {
-    if (!panData || !panData.ju) {
-        showToast("⚠️ 請先起盤後再進行 AI 分析！");
-        return;
-    }
-    if (activeCase && activeCase.notes) {
-        document.getElementById('ai-user-context').value = activeCase.notes;
-    }
-    document.getElementById('ai-modal').classList.remove('hidden');
-}
-
-function closeAiModal() {
-    document.getElementById('ai-modal').classList.add('hidden');
-}
-
-// 🌟 全域變數：供「複製斷語」與「存入案例」隨時調用
-window.currentAiInterpretation = "";
-
-// ==========================================
-// AI 大師解盤模組 (Cloudflare Workers AI 直連)
-// ==========================================
 const CLOUDFLARE_WORKER_URL = "/api/qmai";
 
 function openAiModal() {
-    if (!panData || !panData.ju) {
+    if (typeof panData === 'undefined' || !panData || !panData.ju) {
         showToast("⚠️ 請先起盤後再進行 AI 分析！");
         return;
     }
@@ -497,9 +557,6 @@ function closeAiModal() {
     const modal = document.getElementById('ai-modal');
     if (modal) modal.classList.add('hidden');
 }
-
-// 全域變數保存 AI 斷語
-window.currentAiInterpretation = "";
 
 async function requestAiInterpretation() {
     const btn = document.getElementById('btn-call-ai');
@@ -644,7 +701,7 @@ ${palaceDetails.join('\n')}
     }
 }
 
-// 🌟 按鈕功能一：複製斷語 (對接 index.html 的 copyAiResult)
+// 按鈕功能一：複製斷語 (對接 index.html onclick="copyAiResult()")
 function copyAiResult() {
     const textToCopy = window.currentAiInterpretation || 
                        document.getElementById('ai-result-content')?.innerText || 
@@ -656,11 +713,7 @@ function copyAiResult() {
     }
 
     navigator.clipboard.writeText(textToCopy).then(() => {
-        if (typeof showToast === 'function') {
-            showToast("✅ AI 斷語已複製到剪貼簿！");
-        } else {
-            alert("✅ AI 斷語已複製到剪貼簿！");
-        }
+        showToast("✅ AI 斷語已複製到剪貼簿！");
     }).catch(() => {
         const textarea = document.createElement('textarea');
         textarea.value = textToCopy;
@@ -668,15 +721,11 @@ function copyAiResult() {
         textarea.select();
         document.execCommand('copy');
         document.body.removeChild(textarea);
-        if (typeof showToast === 'function') {
-            showToast("✅ AI 斷語已複製到剪貼簿！");
-        } else {
-            alert("✅ AI 斷語已複製到剪貼簿！");
-        }
+        showToast("✅ AI 斷語已複製到剪貼簿！");
     });
 }
 
-// 🌟 按鈕功能二：存入案例筆記 (對接 index.html 的 saveAiResultToCase)
+// 按鈕功能二：存入案例筆記 (對接 index.html onclick="saveAiResultToCase()")
 async function saveAiResultToCase() {
     const aiText = window.currentAiInterpretation || 
                    document.getElementById('ai-result-content')?.innerText || 
@@ -737,11 +786,7 @@ async function saveAiResultToCase() {
         }
     }
 
-    if (typeof showToast === 'function') {
-        showToast("✅ AI 斷語已成功存入案例庫！");
-    } else {
-        alert("✅ AI 斷語已成功存入案例庫！");
-    }
+    showToast("✅ AI 斷語已成功存入案例庫！");
 }
 
 // 萬用底層 IndexedDB 寫入函式（備援）
@@ -794,7 +839,7 @@ function writeDirectlyToIndexedDB(casePayload) {
     });
 }
 
-// 🌟 全面綁定全域變數，確保 index.html 的 onclick 必定能找到函式
+// 全面綁定全域變數，保證 HTML 所有按鈕 100% 呼叫得到
 window.openAiModal = openAiModal;
 window.closeAiModal = closeAiModal;
 window.requestAiInterpretation = requestAiInterpretation;
@@ -802,3 +847,5 @@ window.copyAiResult = copyAiResult;
 window.copyAiInterpretation = copyAiResult;
 window.saveAiResultToCase = saveAiResultToCase;
 window.saveAiToCaseNotes = saveAiResultToCase;
+window.saveAiToCase = saveAiResultToCase;
+window.saveAiCase = saveAiResultToCase;
