@@ -472,6 +472,8 @@ function closeAiModal() {
     document.getElementById('ai-modal').classList.add('hidden');
 }
 
+// 🌟 全域變數：供「複製斷語」與「存入案例」隨時調用
+window.currentAiInterpretation = "";
 
 async function requestAiInterpretation() {
     const btn = document.getElementById('btn-call-ai');
@@ -500,7 +502,7 @@ async function requestAiInterpretation() {
         }
     }
 
-    // 2. 遍歷九宮：支援天禽星「寄天」正則
+    // 2. 遍歷九宮：精準支援天禽星「寄天」正則
     let dayPalaceFound = "未定位";
     let hourPalaceFound = "未定位";
     let palaceDetails = [];
@@ -512,22 +514,17 @@ async function requestAiInterpretation() {
             let wx = PALACE_WUXING_MAP[pName] || "";
             palaceDetails.push(`• ${pName}（五行屬${wx}）：${pContent}`);
 
-            // 🌟 關鍵修復：同時匹配單獨天干與天禽星寄宮 "+干(寄天)"
             const dayRegex = new RegExp(`(${dStem}(\\([^\\)]*\\))?\\(天\\)|\\+${dStem}(\\([^\\)]*\\))?\\(寄天\\))`);
             const hourRegex = new RegExp(`(${hStem}(\\([^\\)]*\\))?\\(天\\)|\\+${hStem}(\\([^\\)]*\\))?\\(寄天\\))`);
 
-            if (dayRegex.test(pContent)) {
-                dayPalaceFound = `${pName}（五行：${wx}）`;
-            }
-            if (hourRegex.test(pContent)) {
-                hourPalaceFound = `${pName}（五行：${wx}）`;
-            }
+            if (dayRegex.test(pContent)) dayPalaceFound = `${pName}（五行：${wx}）`;
+            if (hourRegex.test(pContent)) hourPalaceFound = `${pName}（五行：${wx}）`;
         }
     }
 
     const specialStatus = panData.special || "無";
 
-    // 3. 組裝高度約束、防幻覺 Prompt
+    // 3. 組裝高度約束 Prompt
     const systemPrompt = `你是一位實戰派奇門遁甲宗師。推演必須嚴格遵守以下易理鐵律：
 1. 嚴格遵守五行生剋：木生火、火生土、土生金、金生水、水生木；木剋土、土剋水、水剋火、火剋金、金剋木。絕不可搞反主生與被生、主剋與被剋！
 2. 盤面各宮括號內已標明四害狀態（如：門迫、空亡、擊刑、入墓）。若標有【空亡】即逢空（能量大減或事不成/懸空），標有【門迫】即人事受阻內耗，嚴禁將有標記的斷為無四害！
@@ -541,7 +538,7 @@ async function requestAiInterpretation() {
 空亡：${panData.kw} ｜ 驛馬：${currentYiMaPalace}
 全局特殊神煞：${specialStatus}
 
-【★ 核心用神精確鎖定（已由系統演算法驗證，務必嚴格以此推演）】
+【★ 核心用神精確鎖定】
 • 求測人（日干/年命【${dStem}】）：真實落在【${dayPalaceFound}】
 • 問事事體（時干【${hStem}】）：真實落在【${hourPalaceFound}】
 （註：九宮固有五行：坎一水、坤二土、震三木、巽四木、乾六金、兌七金、艮八土、離九火）
@@ -594,11 +591,23 @@ ${palaceDetails.join('\n')}
                 .replace(/^\s*[\*\-_]{3,}\s*$/gm, '')
                 .trim();
 
+            // 🌟 1. 將乾淨斷語同步至全域變數與 panData
+            window.currentAiInterpretation = cleanResult;
+            window.latestAiInterpretation = cleanResult;
+            if (typeof panData !== 'undefined') {
+                panData.aiInsights = cleanResult;
+                panData.aiInterpretation = cleanResult;
+            }
+
+            // 2. Markdown 渲染
             if (typeof marked !== 'undefined') {
                 resultContent.innerHTML = marked.parse(cleanResult);
             } else {
                 resultContent.innerText = cleanResult;
             }
+
+            // 🌟 3. 自動解鎖並顯示操作按鈕
+            unlockAiActionButtons();
         }
     } catch (err) {
         alert("網路請求異常，請檢查 Worker 網址或連線狀態：" + err.message);
@@ -607,3 +616,100 @@ ${palaceDetails.join('\n')}
         btn.innerHTML = `<span>⚡ 開始 AI 深度分析</span>`;
     }
 }
+
+// 🌟 解鎖操作按鈕與顯示容器
+function unlockAiActionButtons() {
+    const actionContainers = ['ai-actions-bar', 'ai-action-buttons', 'ai-result-actions'];
+    actionContainers.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.remove('hidden');
+    });
+
+    const buttonIds = [
+        'btn-copy-ai', 'btn-copy-ai-result', 'btn-copy-interpretation',
+        'btn-save-ai-case', 'btn-save-case-note', 'btn-save-ai-note', 'btn-save-case'
+    ];
+    buttonIds.forEach(id => {
+        const btn = document.getElementById(id);
+        if (btn) {
+            btn.disabled = false;
+            btn.classList.remove('opacity-50', 'cursor-not-allowed');
+        }
+    });
+}
+
+// 🌟 按鈕功能一：複製斷語
+function copyAiInterpretation() {
+    const textToCopy = window.currentAiInterpretation || 
+                       document.getElementById('ai-result-content')?.innerText || 
+                       (typeof panData !== 'undefined' ? panData.aiInsights : "");
+
+    if (!textToCopy || textToCopy.trim() === "") {
+        alert("尚未生成 AI 斷語！");
+        return;
+    }
+
+    navigator.clipboard.writeText(textToCopy).then(() => {
+        if (typeof showToast === 'function') {
+            showToast("✅ AI 斷語已複製到剪貼簿！");
+        } else {
+            alert("✅ AI 斷語已複製到剪貼簿！");
+        }
+    }).catch(err => {
+        // Fallback 複製兼容
+        const textarea = document.createElement('textarea');
+        textarea.value = textToCopy;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        alert("✅ AI 斷語已複製到剪貼簿！");
+    });
+}
+// 別名兼容
+window.copyAiResult = copyAiInterpretation;
+
+// 🌟 按鈕功能二：存入案例筆記（同步支援 IndexedDB 案例庫與注解欄）
+async function saveAiToCaseNotes() {
+    const aiText = window.currentAiInterpretation || 
+                   document.getElementById('ai-result-content')?.innerText || 
+                   (typeof panData !== 'undefined' ? panData.aiInsights : "");
+
+    if (!aiText || aiText.trim() === "") {
+        alert("尚未生成 AI 斷語，無法存入筆記！");
+        return;
+    }
+
+    // 1. 同步寫入當前盤面資料模型
+    if (typeof panData !== 'undefined') {
+        panData.aiInsights = aiText;
+    }
+
+    // 2. 同步附加到主畫面底部的「注解欄」（note-input）
+    const noteInput = document.getElementById('note-input');
+    if (noteInput) {
+        const timeHeader = `\n\n【AI 宗師深度解盤】\n`;
+        noteInput.value = (noteInput.value ? noteInput.value + timeHeader : "【AI 宗師深度解盤】\n") + aiText;
+        if (typeof updateNoteCounter === 'function') {
+            updateNoteCounter();
+        }
+    }
+
+    // 3. 若專案有直接儲存至 IndexedDB 的現成函式，主動觸發持久化
+    if (typeof saveCaseToStorage === 'function') {
+        await saveCaseToStorage();
+    } else if (typeof saveCurrentCase === 'function') {
+        await saveCurrentCase();
+    } else if (typeof saveCase === 'function') {
+        await saveCase();
+    }
+
+    if (typeof showToast === 'function') {
+        showToast("✅ 斷語已成功存入案例筆記！");
+    } else {
+        alert("✅ 斷語已成功存入案例筆記！");
+    }
+}
+// 別名兼容
+window.saveAiToCase = saveAiToCaseNotes;
+window.saveAiToNote = saveAiToCaseNotes;
