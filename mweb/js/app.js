@@ -483,17 +483,15 @@ async function requestAiInterpretation() {
 
     const ACTIVE_PALACES = (typeof useXianTian !== 'undefined' && useXianTian) ? PALACES_XIAN : PALACES_HOU;
     
-    // 九宮固定五行字典
     const PALACE_WUXING_MAP = {
         "坎一": "水", "坤二": "土", "震三": "木", "巽四": "木",
         "中五": "土", "乾六": "金", "兌七": "金", "艮八": "土", "離九": "火"
     };
 
-    // 1. 自動從盤面精確定位四柱天干
+    // 1. 定位日干與時干
     let dStem = (panData.bazi5Info && panData.bazi5Info.dS) ? panData.bazi5Info.dS : "";
     let hStem = (panData.bazi5Info && panData.bazi5Info.hS) ? panData.bazi5Info.hS : "";
     
-    // 備援抓取：若 bazi5Info 不存在，從 bazi 字串擷取
     if (!dStem || !hStem) {
         const baziParts = panData.bazi.split(' ');
         if (baziParts.length >= 4) {
@@ -502,7 +500,7 @@ async function requestAiInterpretation() {
         }
     }
 
-    // 2. 遍歷九宮，由程式精確鎖定「天盤日干」與「天盤時干」落宮
+    // 2. 遍歷九宮：支援天禽星「寄天」正則
     let dayPalaceFound = "未定位";
     let hourPalaceFound = "未定位";
     let palaceDetails = [];
@@ -514,57 +512,58 @@ async function requestAiInterpretation() {
             let wx = PALACE_WUXING_MAP[pName] || "";
             palaceDetails.push(`• ${pName}（五行屬${wx}）：${pContent}`);
 
-            // 精確比對天盤干標籤 (天)
-            const isDayOnTian = new RegExp(`${dStem}(\\([^\\)]*\\))?\\(天\\)`).test(pContent);
-            const isHourOnTian = new RegExp(`${hStem}(\\([^\\)]*\\))?\\(天\\)`).test(pContent);
+            // 🌟 關鍵修復：同時匹配單獨天干與天禽星寄宮 "+干(寄天)"
+            const dayRegex = new RegExp(`(${dStem}(\\([^\\)]*\\))?\\(天\\)|\\+${dStem}(\\([^\\)]*\\))?\\(寄天\\))`);
+            const hourRegex = new RegExp(`(${hStem}(\\([^\\)]*\\))?\\(天\\)|\\+${hStem}(\\([^\\)]*\\))?\\(寄天\\))`);
 
-            if (isDayOnTian) {
+            if (dayRegex.test(pContent)) {
                 dayPalaceFound = `${pName}（五行：${wx}）`;
             }
-            if (isHourOnTian) {
+            if (hourRegex.test(pContent)) {
                 hourPalaceFound = `${pName}（五行：${wx}）`;
             }
         }
     }
 
-// 3. 組裝高約束力的結構化 Prompt
-    const isFanYin = panData.special && panData.special.includes("反吟") ? "【全盤反吟：主反覆、波折、遲緩、主動易悔】" : "無";
-    
-    const systemPrompt = `你是一位實戰派奇門遁甲宗師。推演必須嚴守以下鐵律：
-1. 嚴格遵守五行生剋定律：木生火、火生土、土生金、金生水、水生木；木剋土、土剋水、水剋火、火剋金、金剋木。絕不可寫反生剋方向！
-2. 必須如實讀取盤面括號內標記的四害（如門迫、擊刑、入墓、空亡）。若標記有門迫，絕不能謊稱無門迫！
-3. 若遇反吟局，斷事多主事有反覆、阻隔變卦，宜靜不宜急進。
-4. 解答必須嚴謹、直擊要害，禁止胡亂堆砌吉祥空話。`;
+    const specialStatus = panData.special || "無";
+
+    // 3. 組裝高度約束、防幻覺 Prompt
+    const systemPrompt = `你是一位實戰派奇門遁甲宗師。推演必須嚴格遵守以下易理鐵律：
+1. 嚴格遵守五行生剋：木生火、火生土、土生金、金生水、水生木；木剋土、土剋水、水剋火、火剋金、金剋木。絕不可搞反主生與被生、主剋與被剋！
+2. 盤面各宮括號內已標明四害狀態（如：門迫、空亡、擊刑、入墓）。若標有【空亡】即逢空（能量大減或事不成/懸空），標有【門迫】即人事受阻內耗，嚴禁將有標記的斷為無四害！
+3. 若全盤出現【門伏吟】主停滯、拖延、保守、不宜妄動，主動多不利；若遇【門反吟】主反覆、波折、成而復敗。
+4. 問求職/工作：日干為求測人，時干為所問事體/聯絡動向；開門代表職位與工作（乾六宮）；值符代表僱主/面試長官（坤二宮）。必須綜合生剋研判。`;
 
     const promptText = `
-【起局盤面】
-四柱：${panData.bazi}
-局數：${panData.ju} ｜ 旬首：${panData.xun}
-值符：${panData.zf} ｜ 值使：${panData.zs}
-空亡落宮：${panData.kw} ｜ 驛馬落宮：${currentYiMaPalace}
-特殊全局格局：${isFanYin}
+【排盤格局】
+四柱：${panData.bazi} ｜ 局數：${panData.ju} ｜ 旬首：${panData.xun}
+值符星：${panData.zf} ｜ 值使門：${panData.zs}
+空亡：${panData.kw} ｜ 驛馬：${currentYiMaPalace}
+全局特殊神煞：${specialStatus}
 
-【核心用神定位（嚴格以此為準）】
-• 求測人/年命/日干【${dStem}】：真實落在【${dayPalaceFound}】
-• 問事事體/時干【${hStem}】：真實落在【${hourPalaceFound}】
+【★ 核心用神精確鎖定（已由系統演算法驗證，務必嚴格以此推演）】
+• 求測人（日干/年命【${dStem}】）：真實落在【${dayPalaceFound}】
+• 問事事體（時干【${hStem}】）：真實落在【${hourPalaceFound}】
+（註：九宮固有五行：坎一水、坤二土、震三木、巽四木、乾六金、兌七金、艮八土、離九火）
 
-【全盤九宮各宮數據（請務必看清括號內的四害標籤）】
+【九宮各宮詳細落宮數據】
 ${palaceDetails.join('\n')}
 
 【問事事項】
-分類：${category}
-具體提問：${userContext || "無補充"}
+問事分類：${category}
+具體提問：${userContext}
 
-【推演指示（請按步驟精確作答）】
-一、用神宮位現狀檢視：
-   - 求測人宮位：星、門、神、奇儀組合，檢視是否有（門迫/擊刑/入墓/空亡）。
-   - 事體宮位：星、門、神、奇儀組合，檢視是否有（門迫/擊刑/入墓/空亡）。
-二、主客五行生剋推演：
-   - 事體落宮（客）與 求測人落宮（主）的五行生剋方向（例如：木生火，還是木剋土，誰生誰、誰剋誰請明確寫出）。
-   - 結合全盤格局（如反吟、伏吟）對事情進展速度與穩定性的影響。
-三、具體吉凶定性與實戰策略：
-   - 明確定性（大吉 / 小吉 / 平 / 凶 / 忌主動）。
-   - 針對「${userContext}」給出具體指引（例如應否此時致電、該採取何種應對姿態）。
+【請依以下三步驟條理清晰推演，杜絕套話】
+一、用神落宮及狀態剖析：
+   - 求測人【${dStem}】落宮分析：宮內門、星、神組合，是否有四害（空亡/門迫/擊刑/入墓）。
+   - 事體時干【${hStem}】落宮分析：宮內門、星、神組合，是否有四害（特別留意是否逢空亡或反伏吟）。
+   - （若問工作招聘）檢視「值符（僱主）」與「開門（工作職位）」之宮位吉凶及對求測人的生剋。
+二、主客五行生剋與大局定調：
+   - 時干落宮（事體進展）對 日干落宮（求測人）的生剋方向是？（生我/剋我/我剋/我生/比和）
+   - 結合全局格局（如【${specialStatus}】）分析此時行動（例如主動打電話催問）的利弊。
+三、吉凶結論與實戰行動建議：
+   - 明確結論：吉 / 凶 / 宜靜守 / 忌急躁催問。
+   - 給予求測者當下具體、務實的應對建議。
 `;
 
     btn.disabled = true;
@@ -589,20 +588,16 @@ ${palaceDetails.join('\n')}
             alert("⚠️ 分析失敗：" + data.error);
         } else {
             resultBox.classList.remove('hidden');
-            if (typeof marked !== 'undefined') {
-let cleanResult = data.result
-    .replace(/\r\n/g, '\n')
-    .replace(/\n{3,}/g, '\n\n')            // 將 3 個以上連續換行壓成標準雙換行
-    .replace(/^\s*[\*\-_]{3,}\s*$/gm, '')   // 移除滿屏的 ********************
-    .trim();
+            let cleanResult = data.result
+                .replace(/\r\n/g, '\n')
+                .replace(/\n{3,}/g, '\n\n')
+                .replace(/^\s*[\*\-_]{3,}\s*$/gm, '')
+                .trim();
 
-if (typeof marked !== 'undefined') {
-    resultContent.innerHTML = marked.parse(cleanResult);
-} else {
-    resultContent.innerText = cleanResult;
-}
+            if (typeof marked !== 'undefined') {
+                resultContent.innerHTML = marked.parse(cleanResult);
             } else {
-                resultContent.innerText = data.result;
+                resultContent.innerText = cleanResult;
             }
         }
     } catch (err) {
@@ -611,50 +606,4 @@ if (typeof marked !== 'undefined') {
         btn.disabled = false;
         btn.innerHTML = `<span>⚡ 開始 AI 深度分析</span>`;
     }
-}
-
-function copyAiResult() {
-    const text = document.getElementById('ai-result-content').innerText;
-    if (!text) return;
-    navigator.clipboard.writeText(text).then(() => showToast("📋 AI 斷語報告已複製！"));
-}
-
-async function saveAiResultToCase() {
-    const rawText = document.getElementById('ai-result-content').innerText;
-    if (!rawText || rawText.trim() === "") {
-        showToast("⚠️ 暫無可儲存的分析內容");
-        return;
-    }
-
-    const category = document.getElementById('ai-question-category').value.split('（')[0].trim();
-    const userContext = document.getElementById('ai-user-context').value.trim();
-    
-    // 整理乾淨的案例筆記內容
-    const formattedNotes = `【AI 宗師推演報告 · ${category}】\n` + 
-                           (userContext ? `問事背景：${userContext}\n\n` : "") + 
-                           rawText.trim();
-
-    const clientName = userContext ? `${userContext.slice(0, 15)} (${category})` : `${category} AI解盤`;
-
-    // 1. 關閉 AI 彈窗
-    closeAiModal();
-
-    // 2. ✨ 直接呼叫 storage.js 將完整 notes 寫入 IndexedDB！
-    if (typeof saveCurrentCase === 'function') {
-        await saveCurrentCase(true, {
-            clientName: clientName,
-            notes: formattedNotes,
-            status: "等待反饋"
-        });
-    }
-
-    // 3. 自動滑出右側案例庫，直接看到帶有斷語的卡片
-    if (typeof openRightPanelTab === 'function') {
-        openRightPanelTab('cases');
-    }
-    if (typeof renderCaseList === 'function') {
-        renderCaseList();
-    }
-
-    showToast("✅ AI 斷語已直接存入案例庫！");
 }
