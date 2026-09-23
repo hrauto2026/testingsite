@@ -30,7 +30,7 @@ export async function onRequestPost(context) {
     const systemPrompt = "你是一位精通奇門遁甲的玄學宗師。必須嚴格使用繁體中文（香港/台灣習慣用語）回答。請針對盤面用神、五行生剋與四害（空亡、擊刑、入墓、門迫）進行條理嚴密的吉凶推演，最後給出清晰定性與行動建議。";
 
     // 調用 Cloudflare Workers AI
-    const aiResponse = await env.AI.run("@cf/meta/llama-3.2-11b-vision-instruct", {
+    const aiResponse = await env.AI.run("@cf/meta/llama-3.1-8b-instruct-fp8", {
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: qimenPrompt }
