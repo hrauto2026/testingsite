@@ -23,17 +23,17 @@
 
 /* 1. 全局背景：鎖定 images/qm04.png */
 body { 
-    font-family: 'Noto Serif TC', 'BiauKai', 'Songti TC', serif; 
+font-family: 'Noto Serif TC', 'BiauKai', 'Songti TC', serif; 
     background-color: #F5EFE4; 
-    background-image: url('images/qm04.png') !important;
+    /* 建議檢查 GitHub 檔名大小寫，若是大寫請改為 ./images/QM04.png */
+    background-image: url('/images/qm04.png?v=1') !important;
     background-repeat: no-repeat !important;
     background-position: center top !important;
     background-size: cover !important;
     background-attachment: fixed !important;
     min-height: 100vh; 
     font-weight: bold; 
-    color: #26211C; 
-    transition: all 0.3s ease; 
+    color: #26211C;
 }
 
 /* 移除白底大外框，讓背景全幅展現 */
@@ -42,6 +42,20 @@ body {
     border: none !important;
     box-shadow: none !important;
     backdrop-filter: none !important;
+}
+
+.emoji-container { 
+    position: absolute !important; 
+    top: 5px !important; 
+    right: 6px !important; 
+    display: flex !important; 
+    flex-direction: column !important; 
+    align-items: flex-end !important; 
+    gap: 2px !important; 
+    font-size: 0.95rem !important; 
+    line-height: 1 !important; 
+    z-index: 15 !important; 
+    pointer-events: none; /* 避免遮擋點擊 */
 }
 
 /* 2. 標題：墨韻古風 */
@@ -103,7 +117,7 @@ select:focus, input:focus, textarea:focus {
 
 /* 宮位主體：半透明毛玻璃，透出底層山水，邊框帶淡金線 */
 .palace { 
-    position: relative; 
+    position: relative !important; 
     border-radius: 8px; 
     padding: 6px 8px; 
     min-height: 185px; 
@@ -112,7 +126,6 @@ select:focus, input:focus, textarea:focus {
     backdrop-filter: blur(4px);
     box-shadow: 0 4px 12px rgba(60, 45, 20, 0.05); 
     border: 1.5px solid rgba(200, 175, 125, 0.6); 
-    transition: all 0.25s ease; 
     cursor: pointer; 
 }
 .palace:hover {
