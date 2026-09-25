@@ -342,7 +342,7 @@ const MOUNTAINS_24 = [
 // 真太陽時：世界主要城市經度與時區資料庫
 // ==========================================
 const CITY_COORDINATES = {
-    "none": { name: "不校正 (標準鐘錶時間)", lon: 120, tz: 8, group: "標準" },
+    "none": { name: "開盤地區(如有)", lon: 120, tz: 8, group: "標準" },
 
     // --- 港澳台 ---
     "hk": { name: "香港", lon: 114.15, tz: 8, group: "港澳台" },
