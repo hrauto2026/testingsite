@@ -4,24 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>奇門遁甲 - 專業排盤系統</title>
-    <!-- iOS Home Screen Icon -->
     <link rel="apple-touch-icon" href="icon.png">
-    <!-- Desktop / Chrome Tab Icon -->
     <link rel="icon" type="image/png" href="icon.png">
-    <!-- Tailwind CSS -->
+    
+    <!-- 依賴載入 -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
-    
-    <!-- 🌟 將 CSS 放回這裡，避開 OneDrive 與本地路徑阻擋問題 -->
-    <style>
+    <!-- 宋韻水墨思源宋體 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;900&display=swap" rel="stylesheet">  
 
+    <style>
 /* ==========================================
-   ✨ 仙鶴水墨宣紙風 (qm04.png 專用版)
-   底圖透光 ｜ 保留五行辨識 ｜ 牌匾式摺疊欄
+   ✨ 仙鶴水墨宣紙風 (完整修復版)
    ========================================== */
 
-/* 🌟 1. 同步為 html 與 body 綁定水墨背景，確保全屏覆蓋 */
+/* 全屏覆蓋水墨背景 */
 html, body { 
     font-family: 'Noto Serif TC', 'BiauKai', 'Songti TC', serif; 
     background-color: #F5EFE4 !important; 
@@ -35,7 +34,6 @@ html, body {
     color: #26211C; 
 }
 
-/* 確保包裹層 100% 透明，絕不反白遮擋 */
 .main-container { 
     background-color: transparent !important;
     border: none !important;
@@ -43,7 +41,7 @@ html, body {
     backdrop-filter: none !important;
 }
 
-/* 🌟 2. 徹底修復：驛馬 🐎 與 空亡 🈳 浮動置頂於右上角，絕不推開「巽四 / 震三」標題 */
+/* 驛馬與空亡浮動右上角，不擠壓宮位標題 */
 .emoji-container { 
     position: absolute !important; 
     top: 6px !important; 
@@ -58,7 +56,7 @@ html, body {
     pointer-events: none !important;
 }
 
-/* 宮位主體：72% 半透明五行色 + 微毛玻璃，透出底層山水 */
+/* 宮位主體 */
 .palace { 
     position: relative !important; 
     border-radius: 8px; 
@@ -71,48 +69,73 @@ html, body {
     border: 1.5px solid rgba(200, 175, 125, 0.6); 
     cursor: pointer; 
 }
-/* 2. 標題：墨韻古風 */
-#app-title {
-    color: #3C2A1E !important;
-    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+
+/* 🌟 密碼鎖轉盤風格滾輪 (Combination Lock Tumbler) */
+.combo-lock {
+    background: #FAF6EE;
+    border: 1.5px solid #C5A06A;
+    box-shadow: inset 0 2px 4px rgba(60, 45, 20, 0.08), 0 2px 6px rgba(0,0,0,0.04);
+}
+.lock-tumbler {
+    background: linear-gradient(180deg, #EBE3D3 0%, #FFFFFF 50%, #EBE3D3 100%);
+    border-top: 1px solid #C5A06A;
+    border-bottom: 1px solid #C5A06A;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.1), inset 0 -1px 2px rgba(0,0,0,0.1);
+}
+.combo-lock select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background: transparent;
+    text-align: center;
+    text-align-last: center;
+    cursor: pointer;
+    padding: 1px 4px;
+    border: none !important;
+    outline: none !important;
+}
+.combo-lock select::-ms-expand { display: none; }
+
+/* 資訊列印章標籤 */
+.info-tag {
+    background-color: #9E2A2B;
+    color: #F9F6F0;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.85rem;
     font-weight: 900;
+    letter-spacing: 0.05em;
+    display: inline-flex;
+    align-items: center;
+    box-shadow: 0 1px 3px rgba(158, 42, 43, 0.25);
 }
 
-/* 3. 頂部 Accordion 摺疊欄：提高通透感，讓底層仙鶴山水更明顯 */
+#info-special {
+    display: flex !important;
+}
+
+/* 頂部 Accordion 摺疊欄 */
 details#accordion-controls,
 details#accordion-pan-info,
 details#accordion-tools {
-    background: rgba(255, 253, 248, 0.42) !important; /* 降低不透明度至 42% */
-    backdrop-filter: blur(2px) !important;             /* 降低模糊度，讓背景圖案清晰 */
+    background: rgba(255, 253, 248, 0.45) !important;
+    backdrop-filter: blur(3px) !important;
     border: 1px solid rgba(197, 160, 106, 0.45) !important;
     border-radius: 12px !important;
     box-shadow: 0 4px 15px rgba(60, 45, 25, 0.03) !important;
     overflow: hidden;
 }
 
-/* 摺疊標題列：淡金微透 */
 details#accordion-controls summary,
 details#accordion-pan-info summary,
 details#accordion-tools summary {
-    background: rgba(248, 241, 227, 0.5) !important;  /* 降低標題列不透明度至 50% */
+    background: rgba(248, 241, 227, 0.55) !important;
     border-bottom: 1px solid rgba(197, 160, 106, 0.3) !important;
     color: #4A3319 !important;
     font-weight: 900;
 }
 
-/* 下拉選單與輸入框：柔和宣紙底色，取代刺眼現代邊框 */
-select, input[type="text"], input[type="password"], textarea {
-    background-color: rgba(255, 255, 255, 0.85) !important;
-    border: 1px solid #D1C2A5 !important;
-    color: #3C2A1E !important;
-    border-radius: 6px !important;
-}
-select:focus, input:focus, textarea:focus {
-    border-color: #9E2A2B !important;
-    outline: none !important;
-}
-
-/* 4. 九宮格幾何骨架（精確維持 640px 與外緣標籤定位） */
+/* 九宮格骨架 */
 .grid-wrapper { 
     padding: 26px 36px 36px 36px; 
     overflow: visible !important; 
@@ -131,67 +154,30 @@ select:focus, input:focus, textarea:focus {
 .palace:hover {
     border-color: #9E2A2B !important;
     box-shadow: 0 6px 18px rgba(158, 42, 43, 0.15) !important;
-    transform: translateY(-1px);
 }
 
-/* 🌟 核心保留：五行半透明雅色（保留 B 款色彩索引，不再刺眼） */
-.bg-water { background-color: rgba(240, 249, 255, 0.72) !important; border-color: rgba(186, 230, 253, 0.85) !important; } 
+/* 五行色系 */
+.bg-water { background-color: rgba(240, 249, 255, 0.75) !important; border-color: rgba(186, 230, 253, 0.85) !important; } 
 .text-water { color: #0369a1 !important; }
-
-.bg-brown { background-color: rgba(253, 248, 242, 0.75) !important; border-color: rgba(220, 205, 190, 0.85) !important; } 
+.bg-brown { background-color: rgba(253, 248, 242, 0.78) !important; border-color: rgba(220, 205, 190, 0.85) !important; } 
 .text-brown { color: #78350f !important; }
-
-.bg-wood { background-color: rgba(240, 253, 244, 0.72) !important; border-color: rgba(187, 247, 208, 0.85) !important; } 
+.bg-wood { background-color: rgba(240, 253, 244, 0.75) !important; border-color: rgba(187, 247, 208, 0.85) !important; } 
 .text-wood { color: #15803d !important; }
-
-.bg-fire { background-color: rgba(254, 242, 242, 0.75) !important; border-color: rgba(254, 202, 202, 0.85) !important; } 
+.bg-fire { background-color: rgba(254, 242, 242, 0.78) !important; border-color: rgba(254, 202, 202, 0.85) !important; } 
 .text-fire { color: #b91c1c !important; }
-
-.bg-metal { background-color: rgba(255, 251, 235, 0.75) !important; border-color: rgba(253, 230, 138, 0.85) !important; } 
+.bg-metal { background-color: rgba(255, 251, 235, 0.78) !important; border-color: rgba(253, 230, 138, 0.85) !important; } 
 .text-metal { color: #b45309 !important; }
+.bg-white-palace { background-color: rgba(255, 255, 255, 0.85) !important; border-color: rgba(210, 195, 175, 0.85) !important; }
 
-.bg-white-palace { background-color: rgba(255, 255, 255, 0.82) !important; border-color: rgba(210, 195, 175, 0.85) !important; }
-
-/* 5. 文字排版層級 */
 .text-main { font-size: clamp(1.4rem, 5vw, 1.95rem); font-weight: 900; letter-spacing: 0.08em; line-height: 1.15; }
 .text-palace-name { font-size: clamp(0.78rem, 1.9vw, 0.95rem); font-weight: 900; }
 .text-tiandi-stem { font-size: clamp(1.2rem, 4.0vw, 1.55rem); font-weight: 900; line-height: 1.05; }
 
-/* 用神標籤：硃砂與泥金印記 */
-.day-stem { 
-    display: inline-block; 
-    background-color: #FDF2F0; 
-    border: 1.5px solid #9E2A2B; 
-    padding: 0 3px; 
-    border-radius: 4px; 
-    line-height: 1.1; 
-}
-.hour-stem { 
-    display: inline-block; 
-    background-color: #FEF7E8; 
-    border: 1.5px solid #C88A2A; 
-    padding: 0 3px; 
-    border-radius: 4px; 
-    line-height: 1.1; 
-}
+.day-stem { display: inline-block; background-color: #FDF2F0; border: 1.5px solid #9E2A2B; padding: 0 3px; border-radius: 4px; line-height: 1.1; }
+.hour-stem { display: inline-block; background-color: #FEF7E8; border: 1.5px solid #C88A2A; padding: 0 3px; border-radius: 4px; line-height: 1.1; }
 
-/* 6. 外圍十二地支天將（維持絕對定位與微卡片質感） */
 .branch-label { 
-    position: absolute; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    font-size: 0.88rem; 
-    line-height: 0.9; 
-    font-weight: 800; 
-    pointer-events: none; 
-    white-space: nowrap; 
-    z-index: 20; 
-    background: rgba(255, 253, 248, 0.8);
-    padding: 2px 4px;
-    border-radius: 4px;
-    border: 1px solid rgba(200, 180, 140, 0.4);
-    box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    position: absolute; display: flex; align-items: center; justify-content: center; font-size: 0.88rem; line-height: 0.9; font-weight: 800; pointer-events: none; white-space: nowrap; z-index: 20; background: rgba(255, 253, 248, 0.85); padding: 2px 4px; border-radius: 4px; border: 1px solid rgba(200, 180, 140, 0.4); box-shadow: 0 1px 3px rgba(0,0,0,0.03);
 }
 .tian-jiang { font-size: 1.15rem; color: #5B3B70; margin-left: 2px; line-height: 0.9; }
 .vertical-label { flex-direction: column; line-height: 1.1; }
@@ -202,41 +188,22 @@ select:focus, input:focus, textarea:focus {
 .pos-left { top: 50%; left: -30px; transform: translateY(-50%); } 
 .pos-right { top: 50%; right: -30px; transform: translateY(-50%); }
 
-/* 手機版微調 */
 @media (max-width: 640px) {
     .grid-wrapper { padding: 22px 24px 28px 24px !important; }
     .grid-qimen { gap: 5px !important; }
     .palace { min-height: 165px !important; padding: 4px 5px !important; }
-    .pos-left { left: -21px !important; } 
-    .pos-right { right: -21px !important; } 
-    .pos-top { top: -22px !important; } 
-    .pos-bottom { bottom: -22px !important; }
+    .pos-left { left: -21px !important; } .pos-right { right: -21px !important; } .pos-top { top: -22px !important; } .pos-bottom { bottom: -22px !important; }
 }
 
-/* 7. 按鈕水墨化 */
-.btn-ink-primary {
-    background-color: #2D2319 !important;
-    color: #F8F4EC !important;
-    border: 1px solid #5A4733 !important;
-    letter-spacing: 0.05em;
-}
+.btn-ink-primary { background-color: #2D2319 !important; color: #F8F4EC !important; border: 1px solid #5A4733 !important; }
 .btn-ink-primary:hover { background-color: #443526 !important; }
 
-/* AI 斷語內容緊湊優化 */
 #ai-result-content { white-space: normal !important; }
 #ai-result-content p { margin-top: 0.25rem !important; margin-bottom: 0.35rem !important; line-height: 1.6 !important; }
-#ai-result-content h1, #ai-result-content h2, #ai-result-content h3 {
-    color: #3C2A1E;
-    font-size: 0.95rem;
-    font-weight: 900;
-    margin-top: 0.75rem;
-    margin-bottom: 0.25rem;
-    border-bottom: 1px dashed #C8B89E;
-    padding-bottom: 3px;
-}
+#ai-result-content h1, #ai-result-content h2, #ai-result-content h3 { color: #3C2A1E; font-size: 0.95rem; font-weight: 900; margin-top: 0.75rem; margin-bottom: 0.25rem; border-bottom: 1px dashed #C8B89E; padding-bottom: 3px; }
 #ai-result-content strong { color: #9E2A2B; }
 #ai-result-content hr, #ai-result-content blockquote { display: none; }
-</style>
+    </style>
 </head>
 <body class="p-2 md:p-6">
 
@@ -244,37 +211,53 @@ select:focus, input:focus, textarea:focus {
     <div id="main-panel" class="lg:col-span-12 space-y-4 transition-all duration-500">
         <div class="p-1 sm:p-3 md:p-4 main-container">
             
-            <h1 id="app-title" class="text-xl sm:text-2xl md:text-3xl text-center mb-2.5 text-indigo-900 tracking-widest">
+            <h1 id="app-title" class="text-xl sm:text-2xl md:text-3xl text-center mb-2.5 text-indigo-900 tracking-widest hidden">
                 奇門遁甲專業排盤系統
             </h1>
 
-<!-- 折疊欄一：起盤時間與參數設定 -->
-            <details id="accordion-controls" class="group border border-indigo-200 rounded-xl mb-2 shadow-sm" open>
-                <summary class="py-2 px-3.5 cursor-pointer text-base sm:text-lg font-black text-indigo-950 rounded-xl group-open:rounded-b-none group-open:border-b border-indigo-200 flex justify-between items-center select-none">
-                    <span class="flex items-center gap-1.5">⚙️ 起盤時間與參數設定</span>
+            <!-- ============================================== -->
+            <!-- 折疊欄一：起盤時間與參數設定 -->
+            <!-- ============================================== -->
+            <details id="accordion-controls" class="group border border-[#C5A06A]/60 rounded-xl mb-2 shadow-sm" open>
+                <summary class="py-2.5 px-4 cursor-pointer text-lg sm:text-xl font-black text-[#4A3319] bg-[rgba(248,241,227,0.55)] rounded-xl group-open:rounded-b-none group-open:border-b border-[#C5A06A]/40 flex justify-between items-center select-none">
+                    <span>起盤時間與參數設定</span>
                     <span class="transform group-open:rotate-180 transition-transform duration-200 text-sm">▼</span>
                 </summary>
                 
                 <div class="p-3 bg-transparent space-y-3">
                     <div class="flex flex-wrap justify-center items-center gap-2">
-                        <!-- 1. 流派選單 (已刪除「流派」文字標籤) -->
-                        <select id="sel-qimen-method" onchange="generatePan()" class="p-1.5 border border-amber-300/80 rounded-lg text-sm sm:text-base font-bold bg-white/90 text-amber-950 outline-none cursor-pointer shadow-sm">
-                            <option value="chaibu" selected>時家拆補法</option>
-                            <option value="zhirun">時家置閏法</option>
-                            <option value="yinpan">道家陰盤</option>
-                        </select>
+                        
+                        <!-- 密碼鎖風格連體選單 -->
+                        <div class="combo-lock flex items-center rounded-xl divide-x divide-[#D1C2A5] py-1 px-1">
+                            <!-- 1. 開盤地區 -->
+                            <div class="px-1.5 flex items-center lock-tumbler rounded-l-lg py-0.5">
+                                <select id="sel-location" class="text-sm sm:text-base font-bold text-[#3C2A1E] max-w-[125px]">
+                                    <!-- 由 JS 動態注入 -->
+                                </select>
+                            </div>
 
-                        <!-- 2. 日期選單群 -->
-                        <div id="date-selectors" class="flex flex-wrap justify-center items-center gap-1.5">
-                            <div class="flex items-center gap-0.5"><select id="sel-year" class="p-1.5 border border-gray-300 rounded-lg bg-white/90 text-base sm:text-lg font-bold outline-none" onchange="updateJieQiYearBtn()"></select><span class="text-gray-700 text-sm sm:text-base font-bold">年</span></div>
-                            <div class="flex items-center gap-0.5"><select id="sel-month" class="p-1.5 border border-gray-300 rounded-lg bg-white/90 text-base sm:text-lg font-bold outline-none"></select><span class="text-gray-700 text-sm sm:text-base font-bold">月</span></div>
-                            <div class="flex items-center gap-0.5"><select id="sel-day" class="p-1.5 border border-gray-300 rounded-lg bg-white/90 text-base sm:text-lg font-bold outline-none"></select><span class="text-gray-700 text-sm sm:text-base font-bold">日</span></div>
-                            <div class="flex items-center gap-0.5"><select id="sel-hour24" class="p-1.5 border border-gray-300 rounded-lg bg-white/90 text-base sm:text-lg font-bold outline-none"></select><span class="text-gray-700 text-sm sm:text-base font-bold">時</span></div>
-                            <div class="flex items-center gap-0.5"><select id="sel-minute" class="p-1.5 border border-gray-300 rounded-lg bg-white/90 text-base sm:text-lg font-bold outline-none"></select><span class="text-gray-700 text-sm sm:text-base font-bold">分</span></div>
+                            <!-- 2. 年月日時分組合滾輪 -->
+                            <div id="date-selectors" class="flex items-center px-1 text-sm sm:text-base font-bold text-[#3C2A1E]">
+                                <div class="lock-tumbler px-1 py-0.5 mx-0.5 rounded flex items-center">
+                                    <select id="sel-year" class="text-[#9E2A2B] font-black"></select><span class="text-[#8C887B] text-xs sm:text-sm">年</span>
+                                </div>
+                                <div class="lock-tumbler px-1 py-0.5 mx-0.5 rounded flex items-center">
+                                    <select id="sel-month" class="text-[#9E2A2B] font-black"></select><span class="text-[#8C887B] text-xs sm:text-sm">月</span>
+                                </div>
+                                <div class="lock-tumbler px-1 py-0.5 mx-0.5 rounded flex items-center">
+                                    <select id="sel-day" class="text-[#9E2A2B] font-black"></select><span class="text-[#8C887B] text-xs sm:text-sm">日</span>
+                                </div>
+                                <div class="lock-tumbler px-1 py-0.5 mx-0.5 rounded flex items-center">
+                                    <select id="sel-hour24" class="text-[#9E2A2B] font-black"></select><span class="text-[#8C887B] text-xs sm:text-sm">時</span>
+                                </div>
+                                <div class="lock-tumbler px-1 py-0.5 mx-0.5 rounded flex items-center">
+                                    <select id="sel-minute" class="text-[#9E2A2B] font-black"></select><span class="text-[#8C887B] text-xs sm:text-sm">分</span>
+                                </div>
+                            </div>
                         </div>
 
-                        <!-- 3. 「四柱方式」按鈕：移在「分」選單之後 -->
-                        <button id="btn-mode-toggle" onclick="toggleInputMode()" class="bg-amber-100 hover:bg-amber-200 text-amber-900 font-black py-1.5 px-3.5 rounded-lg shadow-sm text-sm sm:text-base transition-colors border border-amber-300">四柱方式</button>
+                        <!-- 3. 四柱方式按鈕 -->
+                        <button id="btn-mode-toggle" onclick="toggleInputMode()" class="bg-[#F5EFE4] hover:bg-[#EAE1D0] text-[#3C2A1E] font-black py-1.5 px-3.5 rounded-lg shadow-sm text-sm sm:text-base transition-colors border border-[#D1C2A5]">四柱方式</button>
 
                         <div id="bazi-selectors" class="hidden justify-center items-center gap-2 flex-wrap">
                             <div class="flex items-center gap-0.5"><select id="sel-bazi-y" class="p-1.5 border border-amber-300 rounded-lg bg-amber-50 text-base sm:text-lg font-bold outline-none"></select><span class="text-gray-700 text-sm sm:text-base font-bold">年</span></div>
@@ -284,54 +267,71 @@ select:focus, input:focus, textarea:focus {
                         </div>
                     </div>
 
-                    <!-- 4. 開盤地區選單 (無標籤、長度裁短 60% 居中展現) -->
-                    <div id="location-selectors" class="flex justify-center items-center mt-1">
-                        <select id="sel-location" class="p-1.5 w-40 sm:w-44 border border-amber-300/80 rounded-lg text-xs sm:text-sm font-bold bg-white/90 text-amber-950 outline-none focus:ring-1 focus:ring-amber-500 shadow-sm cursor-pointer text-center">
-                            <!-- 選項由 JS 動態載入 -->
+                    <!-- 按鈕操作列 -->
+                    <div class="w-full flex flex-wrap justify-center items-center gap-2 pt-1.5 border-t border-[#C5A06A]/40" id="action-buttons-group">
+                        <select id="sel-qimen-method" class="hidden" onchange="generatePan()">
+                            <option value="chaibu">時家拆補法</option>
+                            <option value="zhirun">時家置閏法</option>
+                            <option value="yinpan">道家陰盤</option>
                         </select>
-                    </div>
+                        
+                        <!-- 紅色流派切換按鈕 -->
+                        <button id="btn-method-cycle" onclick="cycleQimenMethod()" class="bg-[#9E2A2B] hover:bg-[#7A2021] text-[#F9F6F0] py-1.5 px-4 rounded-xl shadow text-sm sm:text-base font-black transition-all border border-[#5C1819]">現時流派：時家拆補法</button>
 
-                    <div class="w-full flex flex-wrap justify-center gap-2 pt-1.5 border-t border-amber-200/50" id="action-buttons-group">
-                        <button id="btn-now" onclick="resetToNow()" class="bg-blue-500 hover:bg-blue-600 text-white py-1.5 px-3.5 rounded-lg shadow text-sm sm:text-base font-bold transition-all">現在時間</button>
-                        <button onclick="handleGenerateBtn()" class="bg-indigo-600 hover:bg-indigo-700 text-white py-1.5 px-6 rounded-lg shadow text-sm sm:text-base font-black tracking-wider">起盤</button>
-                        <button id="btn-show-jieqi" onclick="showJieQiModal()" class="bg-teal-600 hover:bg-teal-700 text-white py-1.5 px-3.5 rounded-lg shadow text-sm sm:text-base font-bold transition-all">🗓️ <span id="btn-jieqi-year"></span>年廿四節氣</button>
-                        <button id="btn-toggle-filter" onclick="toggleFilterPanel()" class="bg-amber-500 hover:bg-amber-600 text-white py-1.5 px-3.5 rounded-lg shadow text-sm sm:text-base font-bold flex items-center gap-1">🔍 條件篩選</button>
+                        <button id="btn-now" onclick="resetToNow()" class="bg-[#2D2319] hover:bg-[#443526] text-[#F8F4EC] py-1.5 px-4 rounded-xl shadow text-sm sm:text-base font-black transition-all border border-[#5A4733]">現在時間</button>
+                        <button onclick="handleGenerateBtn()" class="btn-ink-primary py-1.5 px-6 rounded-xl shadow text-sm sm:text-base font-black tracking-wider">起盤</button>
+                        
+                        <!-- 🌟 核心修復點：務必包含 id="btn-jieqi-year" 防止 JS 崩潰 -->
+                        <button id="btn-show-jieqi" onclick="showJieQiModal()" class="bg-[#385E48] hover:bg-[#2C4A38] text-white py-1.5 px-4 rounded-xl shadow text-sm sm:text-base font-black transition-all border border-[#233B2D]"><span id="btn-jieqi-year"></span>年廿四節氣</button>
+                        <button id="btn-toggle-filter" onclick="toggleFilterPanel()" class="bg-[#A67C2E] hover:bg-[#8C6A2E] text-white py-1.5 px-4 rounded-xl shadow text-sm sm:text-base font-black flex items-center gap-1 border border-[#6E501E]">條件篩選</button>
                     </div>
                 </div>
             </details>
 
-            <!-- 折疊欄二：排盤資料 -->
-            <details id="accordion-pan-info" class="group bg-indigo-50/80 border-l-4 border-indigo-500 rounded-r-xl rounded-l-none mb-2 shadow-sm hidden" open>
-                <summary class="py-2.5 px-4 cursor-pointer text-lg sm:text-xl font-black text-indigo-950 flex justify-between items-center select-none">
-                    <span id="pan-summary-title">📋 排盤資料</span>
+            <!-- ============================================== -->
+            <!-- 折疊欄二：排盤資料 (唯一乾淨版，徹底杜絕重複) -->
+            <!-- ============================================== -->
+            <details id="accordion-pan-info" class="group border border-[#C5A06A]/60 rounded-xl mb-2 shadow-sm" open>
+                <summary class="py-2.5 px-4 cursor-pointer text-lg sm:text-xl font-black text-[#4A3319] bg-[rgba(248,241,227,0.55)] flex justify-between items-center select-none rounded-xl group-open:rounded-b-none group-open:border-b border-[#C5A06A]/40">
+                    <span id="pan-summary-title">排盤資料</span>
                     <span class="transform group-open:rotate-180 transition-transform duration-200 text-base">▼</span>
                 </summary>
                 
-                <div class="p-3.5 text-gray-800 border-t border-indigo-100 bg-transparent space-y-3">
-<div class="text-base sm:text-lg font-black text-indigo-950 leading-relaxed" id="info-bazi"></div>
-<div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-base sm:text-lg border-t border-indigo-100 pt-2.5 font-bold">
-                        <div><span class="text-gray-500">現時節氣：</span><span id="info-jieqi" class="text-indigo-900 font-black"></span></div>
-                        <div><span class="text-gray-500">下一節氣：</span><span id="info-next-jieqi" class="text-teal-900 font-black"></span></div>
+                <div class="p-3.5 text-[#242220] bg-transparent space-y-2">
+                    
+                    <!-- 四柱資料 (透過 JS 自動換行，神煞自動移往資訊列) -->
+                    <div class="text-base sm:text-lg font-black text-[#3C2A1E] leading-relaxed" id="info-bazi"></div>
+                    
+                    <div class="flex justify-between items-center text-sm sm:text-base border-t border-[#C5A06A]/40 pt-2 font-bold">
+                        <div><span class="text-[#8C887B]">現時節氣：</span><span id="info-jieqi" class="text-[#2B4C5E] font-black"></span></div>
+                        <div><span class="text-[#8C887B]">下一節氣：</span><span id="info-next-jieqi" class="text-[#385E48] font-black"></span></div>
                     </div>
-                    <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 text-base sm:text-lg border-t border-indigo-100 pt-2.5 font-bold">
-    <div><span class="text-gray-500 text-sm sm:text-base block">局數</span><span id="info-ju" class="text-red-600 font-black text-base sm:text-lg"></span></div>
-    <div><span class="text-gray-500 text-sm sm:text-base block">旬首</span><span id="info-xunshou" class="text-gray-950 font-black text-base sm:text-lg"></span></div>
-    <div><span class="text-gray-500 text-sm sm:text-base block">值符</span><span id="info-zhifu" class="text-gray-950 font-black text-base sm:text-lg"></span></div>
-    <div><span class="text-gray-500 text-sm sm:text-base block">值使</span><span id="info-zhishi" class="text-gray-950 font-black text-base sm:text-lg"></span></div>
-    <div><span class="text-gray-500 text-sm sm:text-base block">空亡</span><span id="info-kongwang" class="text-gray-950 font-black text-base sm:text-lg"></span></div>
-</div>
-                    <div id="info-special" class="hidden text-base sm:text-xl pt-2 font-black"></div>
+
+                    <!-- 局數與神使 (移除 flex-grow，間距緊縮 70%) -->
+                    <div class="flex flex-wrap items-center gap-x-5 sm:gap-x-7 gap-y-2 text-base sm:text-lg border-t border-[#C5A06A]/40 pt-2.5 font-bold">
+                        <div class="w-auto"><span class="text-[#8C887B] text-xs sm:text-sm block">局數</span><span id="info-ju" class="text-[#9E2A2B] font-black text-base sm:text-lg whitespace-nowrap"></span></div>
+                        <div class="w-auto"><span class="text-[#8C887B] text-xs sm:text-sm block">旬首</span><span id="info-xunshou" class="text-[#1F1F1E] font-black text-sm sm:text-base"></span></div>
+                        <div class="w-auto"><span class="text-[#8C887B] text-xs sm:text-sm block">值符</span><span id="info-zhifu" class="text-[#1F1F1E] font-black text-sm sm:text-base"></span></div>
+                        <div class="w-auto"><span class="text-[#8C887B] text-xs sm:text-sm block">值使</span><span id="info-zhishi" class="text-[#1F1F1E] font-black text-sm sm:text-base"></span></div>
+                        <div class="w-auto"><span class="text-[#8C887B] text-xs sm:text-sm block">空亡</span><span id="info-kongwang" class="text-[#1F1F1E] font-black text-sm sm:text-base"></span></div>
+                    </div>
+
+                    <!-- 永久保留的資訊列 (天顯時格、五不遇時、伏吟反吟均在此處展示) -->
+                    <div class="flex items-start gap-2 border-t border-[#C5A06A]/40 pt-2.5 min-h-[36px]">
+                        <span class="text-[#8C887B] text-sm mt-0.5 whitespace-nowrap font-bold">資訊</span>
+                        <div id="info-special" class="text-sm sm:text-base font-black flex flex-wrap gap-1.5 items-center w-full"></div>
+                    </div>
                 </div>
             </details>
 
-            <!-- 頂部常駐快調 Bar -->
-            <div id="quick-time-bar" class="hidden justify-between items-center bg-white/95 border border-indigo-200 rounded-lg py-1 px-2 shadow-sm mb-1.5 max-w-xl mx-auto">
-                <button onclick="shiftHour(-1)" class="bg-indigo-50 hover:bg-indigo-100 active:bg-indigo-200 text-indigo-800 py-1 px-2.5 sm:px-3 rounded border border-indigo-200 text-xs font-black transition-all"><span>⏪</span></button>
-                <div class="flex items-center text-center text-xs sm:text-sm font-bold text-indigo-950 px-1"><span id="quick-bar-time"></span></div>
-                <button onclick="shiftHour(1)" class="bg-indigo-50 hover:bg-indigo-100 active:bg-indigo-200 text-indigo-800 py-1 px-2.5 sm:px-3 rounded border border-indigo-200 text-xs font-black transition-all"><span>⏩</span></button>
+            <!-- 頂部常駐快調 Bar (⏪ ⏩ 時辰按鈕) -->
+            <div id="quick-time-bar" class="hidden justify-between items-center bg-white/95 border border-[#C5A06A]/60 rounded-lg py-1 px-2 shadow-sm mb-1.5 max-w-xl mx-auto">
+                <button onclick="shiftHour(-1)" class="bg-[#F5EFE4] hover:bg-[#EAE1D0] active:scale-95 text-[#3C2A1E] py-1 px-2.5 sm:px-3 rounded border border-[#D1C2A5] text-xs font-black transition-all"><span>⏪</span></button>
+                <div class="flex items-center text-center text-xs sm:text-sm font-bold text-[#3C2A1E] px-1"><span id="quick-bar-time"></span></div>
+                <button onclick="shiftHour(1)" class="bg-[#F5EFE4] hover:bg-[#EAE1D0] active:scale-95 text-[#3C2A1E] py-1 px-2.5 sm:px-3 rounded border border-[#D1C2A5] text-xs font-black transition-all"><span>⏩</span></button>
             </div>
 
-<!-- ✨ 盤面頂部：當前關聯案例狀態條 -->
+            <!-- 當前關聯案例狀態條 -->
             <div id="active-case-bar" class="hidden max-w-xl mx-auto mb-2 px-3 py-2 bg-indigo-50 border border-indigo-200 rounded-lg shadow-sm flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                 <div class="flex-grow">
                     <div class="text-xs text-gray-500 font-bold mb-0.5">📌 當前關聯案例：<span id="active-case-id" class="font-mono text-[10px]"></span></div>
@@ -365,67 +365,65 @@ select:focus, input:focus, textarea:focus {
             <div class="w-full mt-4 hidden flex-col items-center" id="action-footer">
                 <details id="accordion-tools" class="group w-full max-w-5xl mx-auto bg-slate-50/90 border border-indigo-100 rounded-xl shadow-sm select-none" open>
                     <summary class="py-1.5 px-3 cursor-pointer text-xs sm:text-sm font-bold text-indigo-900 bg-indigo-50/70 rounded-xl group-open:rounded-b-none group-open:border-b border-indigo-100 flex justify-between items-center transition-colors hover:bg-indigo-100/60">
-                        <span class="flex items-center gap-1.5">🛠️ 盤面工具與輔助開關</span>
+                        <span class="flex items-center gap-1.5">盤面工具與輔助開關</span>
                         <span class="transform group-open:rotate-180 transition-transform duration-200 text-xs text-indigo-400">▼</span>
                     </summary>
                     
-<div class="p-2 sm:p-3 bg-white/70 flex flex-wrap justify-center items-center gap-2">
-<!-- ✨ 新增：AI 宗師解盤按鈕 -->
-    <button onclick="openAiModal()" class="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white py-1 px-3.5 rounded-full shadow transition active:scale-95 flex items-center justify-center text-xs font-black gap-1">
-        <span>🤖</span><span>AI 宗師解盤</span>
-    </button>    
+                    <div class="p-2 sm:p-3 bg-white/70 flex flex-wrap justify-center items-center gap-2">
+                        <button onclick="openAiModal()" class="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white py-1 px-3.5 rounded-full shadow transition active:scale-95 flex items-center justify-center text-xs font-black gap-1">
+                            AI 宗師解盤
+                        </button>    
 
-<button onclick="copyPan()" class="bg-slate-800 hover:bg-black text-white py-1 px-3 rounded-full shadow transition active:scale-95 flex items-center justify-center text-xs font-bold"><svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>複製盤面資料</button>
-    <button onclick="sharePan()" class="bg-indigo-600 hover:bg-indigo-700 text-white py-1 px-3 rounded-full shadow transition active:scale-95 flex items-center justify-center text-xs font-bold"><svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>分享起盤連結</button>
-    
-    <!-- ✨ 修改這兩顆按鈕的呼叫函數 -->
-    <button onclick="saveCurrentCase(false)" class="bg-teal-600 hover:bg-teal-700 text-white py-1 px-3 rounded-full shadow transition active:scale-95 flex items-center justify-center text-xs font-bold">💾 儲存案例</button>
-    <button onclick="openRightPanelTab('cases')" class="bg-indigo-600 hover:bg-indigo-700 text-white py-1 px-3 rounded-full shadow transition active:scale-95 flex items-center justify-center text-xs font-bold">📁 案例庫</button>
-    
-    <div class="flex items-center gap-2 bg-white/90 px-3 py-1 rounded-full shadow-sm border border-purple-200">
-        <span class="text-xs font-bold text-purple-900 flex items-center gap-1">奇門指南針</span>
-        <label class="relative inline-flex items-center cursor-pointer">
-            <input type="checkbox" id="toggle-compass" class="sr-only peer" onchange="handleToggleSwitch('toggle-compass')">
-            <div class="w-9 h-5 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-purple-600 shadow-inner"></div>
-        </label>
-    </div>
-    <div class="flex items-center gap-2 bg-white/90 px-3 py-1 rounded-full shadow-sm border border-indigo-100">
-        <span class="text-xs font-bold text-gray-700" id="bagua-label">先天八卦數</span>
-        <label class="relative inline-flex items-center cursor-pointer">
-            <input type="checkbox" id="toggle-bagua" class="sr-only peer" onchange="handleToggleSwitch('toggle-bagua')">
-            <div class="w-9 h-5 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600 shadow-inner"></div>
-        </label>
-    </div>
-    <div class="flex items-center gap-2 bg-white/90 px-3 py-1 rounded-full shadow-sm border border-orange-100">
-        <span class="text-xs font-bold text-gray-700" id="energy-label">能量狀態</span>
-        <label class="relative inline-flex items-center cursor-pointer">
-            <input type="checkbox" id="toggle-energy" class="sr-only peer" onchange="handleToggleSwitch('toggle-energy')">
-            <div class="w-9 h-5 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-orange-500 shadow-inner"></div>
-        </label>
-    </div>
-    <div class="flex items-center gap-2 bg-white/90 px-3 py-1 rounded-full shadow-sm border border-green-100">
-        <span class="text-xs font-bold text-gray-700">內外盤</span>
-        <label class="relative inline-flex items-center cursor-pointer">
-            <input type="checkbox" id="toggle-neiwai" class="sr-only peer" onchange="handleToggleSwitch('toggle-neiwai')">
-            <div class="w-9 h-5 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-green-500 shadow-inner"></div>
-        </label>
-    </div>
-    <div class="flex items-center gap-2 bg-white/90 px-3 py-1 rounded-full shadow-sm border border-rose-100">
-        <span class="text-xs font-bold text-gray-700">流年飛星</span>
-        <label class="relative inline-flex items-center cursor-pointer">
-            <input type="checkbox" id="toggle-feixing" class="sr-only peer" onchange="handleToggleSwitch('toggle-feixing')">
-            <div class="w-9 h-5 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-rose-600 shadow-inner"></div>
-        </label>
-        <select id="sel-feixing-year" class="hidden text-xs p-1 border border-rose-200 rounded bg-rose-50 font-bold text-rose-900 outline-none" onchange="generatePan()"></select>
-    </div>
-    <div class="flex items-center gap-2 bg-white/90 px-3 py-1 rounded-full shadow-sm border border-emerald-100">
-        <span class="text-xs font-bold text-gray-700" id="guiren-label">天乙貴人</span>
-        <label class="relative inline-flex items-center cursor-pointer">
-            <input type="checkbox" id="toggle-guiren" class="sr-only peer" onchange="handleGuiRenToggle()">
-            <div class="w-9 h-5 bg-orange-500 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500 shadow-inner"></div>
-        </label>
-    </div>
-</div>
+                        <button onclick="copyPan()" class="bg-slate-800 hover:bg-black text-white py-1 px-3 rounded-full shadow transition active:scale-95 flex items-center justify-center text-xs font-bold"><svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>複製盤面資料</button>
+                        <button onclick="sharePan()" class="bg-indigo-600 hover:bg-indigo-700 text-white py-1 px-3 rounded-full shadow transition active:scale-95 flex items-center justify-center text-xs font-bold"><svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>分享起盤連結</button>
+                        
+                        <button onclick="saveCurrentCase(false)" class="bg-teal-600 hover:bg-teal-700 text-white py-1 px-3 rounded-full shadow transition active:scale-95 flex items-center justify-center text-xs font-bold">儲存案例</button>
+                        <button onclick="openRightPanelTab('cases')" class="bg-indigo-600 hover:bg-indigo-700 text-white py-1 px-3 rounded-full shadow transition active:scale-95 flex items-center justify-center text-xs font-bold">案例庫</button>
+                        
+                        <div class="flex items-center gap-2 bg-white/90 px-3 py-1 rounded-full shadow-sm border border-purple-200">
+                            <span class="text-xs font-bold text-purple-900 flex items-center gap-1">奇門指南針</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="toggle-compass" class="sr-only peer" onchange="handleToggleSwitch('toggle-compass')">
+                                <div class="w-9 h-5 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-purple-600 shadow-inner"></div>
+                            </label>
+                        </div>
+                        <div class="flex items-center gap-2 bg-white/90 px-3 py-1 rounded-full shadow-sm border border-indigo-100">
+                            <span class="text-xs font-bold text-gray-700" id="bagua-label">先天八卦數</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="toggle-bagua" class="sr-only peer" onchange="handleToggleSwitch('toggle-bagua')">
+                                <div class="w-9 h-5 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600 shadow-inner"></div>
+                            </label>
+                        </div>
+                        <div class="flex items-center gap-2 bg-white/90 px-3 py-1 rounded-full shadow-sm border border-orange-100">
+                            <span class="text-xs font-bold text-gray-700" id="energy-label">能量狀態</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="toggle-energy" class="sr-only peer" onchange="handleToggleSwitch('toggle-energy')">
+                                <div class="w-9 h-5 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-orange-500 shadow-inner"></div>
+                            </label>
+                        </div>
+                        <div class="flex items-center gap-2 bg-white/90 px-3 py-1 rounded-full shadow-sm border border-green-100">
+                            <span class="text-xs font-bold text-gray-700">內外盤</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="toggle-neiwai" class="sr-only peer" onchange="handleToggleSwitch('toggle-neiwai')">
+                                <div class="w-9 h-5 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-green-500 shadow-inner"></div>
+                            </label>
+                        </div>
+                        <div class="flex items-center gap-2 bg-white/90 px-3 py-1 rounded-full shadow-sm border border-rose-100">
+                            <span class="text-xs font-bold text-gray-700">流年飛星</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="toggle-feixing" class="sr-only peer" onchange="handleToggleSwitch('toggle-feixing')">
+                                <div class="w-9 h-5 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-rose-600 shadow-inner"></div>
+                            </label>
+                            <select id="sel-feixing-year" class="hidden text-xs p-1 border border-rose-200 rounded bg-rose-50 font-bold text-rose-900 outline-none" onchange="generatePan()"></select>
+                        </div>
+                        <div class="flex items-center gap-2 bg-white/90 px-3 py-1 rounded-full shadow-sm border border-emerald-100">
+                            <span class="text-xs font-bold text-gray-700" id="guiren-label">天乙貴人</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="toggle-guiren" class="sr-only peer" onchange="handleGuiRenToggle()">
+                                <div class="w-9 h-5 bg-orange-500 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500 shadow-inner"></div>
+                            </label>
+                        </div>
+                    </div>
                 </details>
 
                 <div class="w-full text-center mt-2">
@@ -435,19 +433,16 @@ select:focus, input:focus, textarea:focus {
         </div>
     </div>
 
-<!-- 🌟 右側雙欄位面板 (條件篩選 / 案例庫) -->
+    <!-- 右側面板 -->
     <div id="right-side-panel" class="hidden lg:col-span-4 lg:sticky lg:top-4 lg:self-start bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl p-4 border border-indigo-200 slide-panel overflow-y-auto max-h-[90vh]">
-        
-        <!-- Tab 按鈕區 -->
         <div class="flex justify-between items-center mb-4 border-b-2 border-gray-200 pb-2">
             <div class="flex gap-2">
-                <button id="tab-btn-cases" onclick="switchRightTab('cases')" class="px-3 py-1.5 rounded-lg font-black text-sm transition-colors bg-indigo-600 text-white shadow-sm">📁 案例庫</button>
-                <button id="tab-btn-filter" onclick="switchRightTab('filter')" class="px-3 py-1.5 rounded-lg font-black text-sm transition-colors bg-gray-100 text-gray-500 hover:bg-gray-200">🔍 條件篩選</button>
+                <button id="tab-btn-cases" onclick="switchRightTab('cases')" class="px-3 py-1.5 rounded-lg font-black text-sm transition-colors bg-indigo-600 text-white shadow-sm">案例庫</button>
+                <button id="tab-btn-filter" onclick="switchRightTab('filter')" class="px-3 py-1.5 rounded-lg font-black text-sm transition-colors bg-gray-100 text-gray-500 hover:bg-gray-200">條件篩選</button>
             </div>
             <button onclick="closeRightPanel()" class="text-gray-400 hover:text-black font-bold text-xl">✖</button>
         </div>
 
-        <!-- ==================== Tab 內容 1：案例庫 ==================== -->
         <div id="tab-content-cases" class="space-y-3">
             <div class="flex gap-1.5 mb-2">
                 <button onclick="exportCasesDB()" class="flex-1 text-xs bg-indigo-50 hover:bg-indigo-100 text-indigo-800 font-bold py-1.5 rounded border border-indigo-200 transition shadow-sm">匯出備份</button>
@@ -458,32 +453,25 @@ select:focus, input:focus, textarea:focus {
                 <input type="text" id="case-search-input" placeholder="搜尋姓名、編號或筆記..." onkeyup="renderCaseList(this.value)" class="w-full pl-8 pr-3 py-1.5 border border-gray-300 rounded-lg outline-none focus:ring-1 focus:ring-indigo-500 font-bold text-sm bg-gray-50">
                 <span class="absolute left-2.5 top-1.5 text-gray-400 text-sm">🔍</span>
             </div>
-            <!-- 案例卡片生成處 -->
             <div id="case-list-container" class="space-y-3 max-h-[60vh] overflow-y-auto pr-1"></div>
         </div>
 
-<!-- ==================== Tab 內容 2：條件篩選 ==================== -->
         <div id="tab-content-filter" class="hidden space-y-4">
             <div>
                 <label class="block text-sm text-amber-800 font-bold mb-1">開始日期 (YYYY/MM/DD)</label>
                 <input type="text" id="filter-start-date" class="w-full p-2 border border-amber-300 rounded-lg text-base bg-white outline-none focus:ring-2 focus:ring-amber-500" value="">
-                <p class="text-xs text-gray-500 mt-1">※ 系統將自動搜尋此日期起算 <span class="font-bold text-amber-600">180 天</span> 內所有符合條件之盤面。</p>
-                
-                <!-- ✨ 新增：流派同步提示框 -->
                 <div class="text-xs mt-2 text-indigo-700 font-bold bg-indigo-50 p-2 rounded-lg border border-indigo-200 flex items-center gap-1.5 shadow-sm">
                     <span class="text-lg leading-none">⚙️</span>
-                    <span>目前篩選流派基準：<span id="filter-method-label" class="text-indigo-900 font-black text-sm">時家拆補法</span><br><span class="text-gray-500 font-normal scale-90 inline-block">(將跟隨主畫面的流派自動同步切換)</span></span>
+                    <span>目前篩選流派基準：<span id="filter-method-label" class="text-indigo-900 font-black text-sm">時家拆補法</span></span>
                 </div>
             </div>
-
             <div id="logic-op-container" class="hidden flex items-center gap-2 p-2 bg-gray-100 rounded-lg border border-gray-300">
                 <span class="text-sm font-bold text-gray-700 whitespace-nowrap">雙條件邏輯：</span>
                 <select id="filter-logic-operator" class="w-full p-1.5 border border-gray-300 rounded text-sm bg-white outline-none font-bold text-gray-800 focus:ring-1 focus:ring-gray-400">
-                    <option value="AND">✅ 條件一 與 條件二 (AND)</option>
-                    <option value="OR">☑️ 條件一 或 條件二 (OR)</option>
+                    <option value="AND">條件一 與 條件二 (AND)</option>
+                    <option value="OR">條件一 或 條件二 (OR)</option>
                 </select>
             </div>
-            <!-- 條件一 -->
             <div class="p-3 bg-amber-50/50 rounded-xl border border-amber-200 space-y-2">
                 <div class="flex items-center gap-2 mb-1 border-b border-amber-200 pb-2">
                     <h4 class="text-base font-black text-amber-800 tracking-wider">【條件一】</h4>
@@ -493,446 +481,37 @@ select:focus, input:focus, textarea:focus {
                         <option value="2">坤二宮</option><option value="7">兌七宮</option><option value="6">乾六宮</option>
                     </select>
                 </div>
-                <div class="flex flex-col gap-1.5">
-                    <details class="group bg-white border border-amber-200/60 rounded-lg shadow-sm" open>
-                        <summary class="p-2 cursor-pointer text-sm font-bold text-amber-900 bg-amber-100/40 rounded-lg flex justify-between items-center select-none">
-                            <span>特殊狀態</span><span class="text-xs">▼</span>
-                        </summary>
-                        <div class="p-3 flex flex-col gap-1.5">
-                            <div class="flex flex-wrap gap-1.5 pb-1.5 border-b border-amber-100/60">
-                                <label class="chk-label"><input type="checkbox" id="chk-kong-1" onchange="syncSpecialConditions(1)"><span class="text-xs text-gray-700">空亡</span></label>
-                                <label class="chk-label"><input type="checkbox" id="chk-nokong-1" onchange="syncSpecialConditions(1)"><span class="text-xs text-gray-700">沒有空亡</span></label>
-                            </div>
-                            <div class="flex flex-wrap gap-1.5 pb-1.5 border-b border-amber-100/60">
-                                <label class="chk-label"><input type="checkbox" id="chk-jixing-1" onchange="syncSpecialConditions(1)"><span class="text-xs text-gray-700">擊刑</span></label>
-                                <label class="chk-label"><input type="checkbox" id="chk-nojixing-1" onchange="syncSpecialConditions(1)"><span class="text-xs text-gray-700">沒有擊刑</span></label>
-                            </div>
-                            <div class="flex flex-wrap gap-1.5 pb-1.5 border-b border-amber-100/60">
-                                <label class="chk-label"><input type="checkbox" id="chk-rumu-1" onchange="syncSpecialConditions(1)"><span class="text-xs text-gray-700">入墓</span></label>
-                                <label class="chk-label"><input type="checkbox" id="chk-norumu-1" onchange="syncSpecialConditions(1)"><span class="text-xs text-gray-700">沒有入墓</span></label>
-                            </div>
-                            <div class="flex flex-wrap gap-1.5 pb-1.5 border-b border-amber-100/60">
-                                <label class="chk-label"><input type="checkbox" id="chk-ma-1" onchange="syncSpecialConditions(1)"><span class="text-xs text-gray-700">驛馬</span></label>
-                                <label class="chk-label"><input type="checkbox" id="chk-noma-1" onchange="syncSpecialConditions(1)"><span class="text-xs text-gray-700">沒有驛馬</span></label>
-                            </div>
-                            <div class="flex flex-wrap gap-1.5 pb-1.5 border-b border-amber-100/60">
-                                <label class="chk-label"><input type="checkbox" id="chk-menpo-1" onchange="syncSpecialConditions(1)"><span class="text-xs text-gray-700">門迫</span></label>
-                                <label class="chk-label"><input type="checkbox" id="chk-nomenpo-1" onchange="syncSpecialConditions(1)"><span class="text-xs text-gray-700">沒有門迫</span></label>
-                            </div>
-                            <div class="flex flex-wrap gap-1.5 pb-1.5 border-b border-amber-100/60">
-                                <label class="chk-label"><input type="checkbox" id="chk-chong-1" onchange="syncSpecialConditions(1)"><span class="text-xs text-gray-700">宮位被月令所沖</span></label>
-                                <label class="chk-label"><input type="checkbox" id="chk-nochong-1" onchange="syncSpecialConditions(1)"><span class="text-xs text-gray-700">宮位沒有被月令所沖</span></label>
-                            </div>
-                            <div class="flex flex-wrap gap-1.5">
-                                <label class="chk-label"><input type="checkbox" id="chk-tianxian-1"><span class="text-xs text-gray-700">天顯時格</span></label>
-                                <label class="chk-label"><input type="checkbox" id="chk-wubuyu-1"><span class="text-xs text-gray-700">五不遇時</span></label>
-                            </div>
-                        </div>
-                    </details>
-                    <details class="group bg-white border border-amber-200/60 rounded-lg shadow-sm">
-                        <summary class="p-2 cursor-pointer text-sm font-bold text-amber-900 bg-amber-100/40 flex justify-between select-none"><span>八神</span><span class="text-xs">▼</span></summary>
-                        <div class="p-3 flex flex-wrap gap-1.5" id="chk-group-god-1">
-                            <label class="chk-label"><input type="checkbox" value="值符"><span class="text-xs">值符</span></label><label class="chk-label"><input type="checkbox" value="螣蛇"><span class="text-xs">螣蛇</span></label><label class="chk-label"><input type="checkbox" value="太陰"><span class="text-xs">太陰</span></label><label class="chk-label"><input type="checkbox" value="六合"><span class="text-xs">六合</span></label><label class="chk-label"><input type="checkbox" value="白虎"><span class="text-xs">白虎</span></label><label class="chk-label"><input type="checkbox" value="玄武"><span class="text-xs">玄武</span></label><label class="chk-label"><input type="checkbox" value="九地"><span class="text-xs">九地</span></label><label class="chk-label"><input type="checkbox" value="九天"><span class="text-xs">九天</span></label>
-                        </div>
-                    </details>
-                    <details class="group bg-white border border-amber-200/60 rounded-lg shadow-sm">
-                        <summary class="p-2 cursor-pointer text-sm font-bold text-amber-900 bg-amber-100/40 flex justify-between select-none"><span>九星</span><span class="text-xs">▼</span></summary>
-                        <div class="p-3 flex flex-wrap gap-1.5" id="chk-group-star-1">
-                            <label class="chk-label"><input type="checkbox" value="天蓬"><span class="text-xs">天蓬</span></label><label class="chk-label"><input type="checkbox" value="天芮"><span class="text-xs">天芮</span></label><label class="chk-label"><input type="checkbox" value="天衝"><span class="text-xs">天衝</span></label><label class="chk-label"><input type="checkbox" value="天輔"><span class="text-xs">天輔</span></label><label class="chk-label"><input type="checkbox" value="天禽"><span class="text-xs">天禽</span></label><label class="chk-label"><input type="checkbox" value="天心"><span class="text-xs">天心</span></label><label class="chk-label"><input type="checkbox" value="天柱"><span class="text-xs">天柱</span></label><label class="chk-label"><input type="checkbox" value="天任"><span class="text-xs">天任</span></label><label class="chk-label"><input type="checkbox" value="天英"><span class="text-xs">天英</span></label>
-                        </div>
-                    </details>
-                    <details class="group bg-white border border-amber-200/60 rounded-lg shadow-sm">
-                        <summary class="p-2 cursor-pointer text-sm font-bold text-amber-900 bg-amber-100/40 flex justify-between select-none"><span>八門</span><span class="text-xs">▼</span></summary>
-                        <div class="p-3 flex flex-wrap gap-1.5" id="chk-group-door-1">
-                            <label class="chk-label"><input type="checkbox" value="休門"><span class="text-xs">休門</span></label><label class="chk-label"><input type="checkbox" value="生門"><span class="text-xs">生門</span></label><label class="chk-label"><input type="checkbox" value="傷門"><span class="text-xs">傷門</span></label><label class="chk-label"><input type="checkbox" value="杜門"><span class="text-xs">杜門</span></label><label class="chk-label"><input type="checkbox" value="景門"><span class="text-xs">景門</span></label><label class="chk-label"><input type="checkbox" value="死門"><span class="text-xs">死門</span></label><label class="chk-label"><input type="checkbox" value="驚門"><span class="text-xs">驚門</span></label><label class="chk-label"><input type="checkbox" value="開門"><span class="text-xs">開門</span></label>
-                        </div>
-                    </details>
-                    <details class="group bg-white border border-amber-200/60 rounded-lg shadow-sm">
-                        <summary class="p-2 cursor-pointer text-sm font-bold text-amber-900 bg-amber-100/40 flex justify-between select-none"><span>天盤干</span><span class="text-xs">▼</span></summary>
-                        <div class="p-3 flex flex-wrap gap-1.5" id="chk-group-hstem-1">
-                            <label class="chk-label"><input type="checkbox" value="乙"><span class="text-xs">乙</span></label><label class="chk-label"><input type="checkbox" value="丙"><span class="text-xs">丙</span></label><label class="chk-label"><input type="checkbox" value="丁"><span class="text-xs">丁</span></label><label class="chk-label"><input type="checkbox" value="戊"><span class="text-xs">戊</span></label><label class="chk-label"><input type="checkbox" value="己"><span class="text-xs">己</span></label><label class="chk-label"><input type="checkbox" value="庚"><span class="text-xs">庚</span></label><label class="chk-label"><input type="checkbox" value="辛"><span class="text-xs">辛</span></label><label class="chk-label"><input type="checkbox" value="壬"><span class="text-xs">壬</span></label><label class="chk-label"><input type="checkbox" value="癸"><span class="text-xs">癸</span></label><label class="chk-label"><input type="checkbox" value="=年干"><span class="text-xs">=年干</span></label><label class="chk-label"><input type="checkbox" value="=月干"><span class="text-xs">=月干</span></label><label class="chk-label"><input type="checkbox" value="=日干"><span class="text-xs">=日干</span></label><label class="chk-label"><input type="checkbox" value="=時干"><span class="text-xs">=時干</span></label>
-                        </div>
-                    </details>
-                    <details class="group bg-white border border-amber-200/60 rounded-lg shadow-sm">
-                        <summary class="p-2 cursor-pointer text-sm font-bold text-amber-900 bg-amber-100/40 flex justify-between select-none"><span>地盤干</span><span class="text-xs">▼</span></summary>
-                        <div class="p-3 flex flex-wrap gap-1.5" id="chk-group-estem-1">
-                            <label class="chk-label"><input type="checkbox" value="乙"><span class="text-xs">乙</span></label><label class="chk-label"><input type="checkbox" value="丙"><span class="text-xs">丙</span></label><label class="chk-label"><input type="checkbox" value="丁"><span class="text-xs">丁</span></label><label class="chk-label"><input type="checkbox" value="戊"><span class="text-xs">戊</span></label><label class="chk-label"><input type="checkbox" value="己"><span class="text-xs">己</span></label><label class="chk-label"><input type="checkbox" value="庚"><span class="text-xs">庚</span></label><label class="chk-label"><input type="checkbox" value="辛"><span class="text-xs">辛</span></label><label class="chk-label"><input type="checkbox" value="壬"><span class="text-xs">壬</span></label><label class="chk-label"><input type="checkbox" value="癸"><span class="text-xs">癸</span></label>
-                        </div>
-                    </details>
-                </div>
             </div>
-
-            <!-- 條件二 -->
-            <div class="p-3 bg-blue-50/50 rounded-xl border border-blue-200 space-y-2">
-                <div class="flex items-center gap-2 mb-1 border-b border-blue-200 pb-2">
-                    <h4 class="text-base font-black text-blue-800 tracking-wider">【條件二】</h4>
-                    <select id="filter-target-palace-2" onchange="handleFilterPalaceChange(2)" class="p-1 border border-blue-300 rounded text-sm bg-white outline-none font-bold text-blue-900 focus:ring-1 focus:ring-blue-500 flex-grow">
-                        <option value="0" selected>-- 不啟用條件二 --</option>
-                        <option value="1">坎一宮</option><option value="8">艮八宮</option><option value="3">震三宮</option>
-                        <option value="4">巽四宮</option><option value="5">中五宮</option><option value="9">離九宮</option>
-                        <option value="2">坤二宮</option><option value="7">兌七宮</option><option value="6">乾六宮</option>
-                    </select>
-                </div>
-                
-                <!-- ✨ 完整修復的條件二細節項目 -->
-                <div id="condition-2-elements" class="hidden flex flex-col gap-1.5">
-                    <details class="group bg-white border border-blue-200/60 rounded-lg shadow-sm" open>
-                        <summary class="p-2 cursor-pointer text-sm font-bold text-blue-900 bg-blue-100/40 rounded-lg flex justify-between items-center select-none">
-                            <span>特殊狀態</span><span class="text-xs">▼</span>
-                        </summary>
-                        <div class="p-3 flex flex-col gap-1.5">
-                            <div class="flex flex-wrap gap-1.5 pb-1.5 border-b border-blue-100/60">
-                                <label class="chk-label"><input type="checkbox" id="chk-kong-2" onchange="syncSpecialConditions(2)"><span class="text-xs text-gray-700">空亡</span></label>
-                                <label class="chk-label"><input type="checkbox" id="chk-nokong-2" onchange="syncSpecialConditions(2)"><span class="text-xs text-gray-700">沒有空亡</span></label>
-                            </div>
-                            <div class="flex flex-wrap gap-1.5 pb-1.5 border-b border-blue-100/60">
-                                <label class="chk-label"><input type="checkbox" id="chk-jixing-2" onchange="syncSpecialConditions(2)"><span class="text-xs text-gray-700">擊刑</span></label>
-                                <label class="chk-label"><input type="checkbox" id="chk-nojixing-2" onchange="syncSpecialConditions(2)"><span class="text-xs text-gray-700">沒有擊刑</span></label>
-                            </div>
-                            <div class="flex flex-wrap gap-1.5 pb-1.5 border-b border-blue-100/60">
-                                <label class="chk-label"><input type="checkbox" id="chk-rumu-2" onchange="syncSpecialConditions(2)"><span class="text-xs text-gray-700">入墓</span></label>
-                                <label class="chk-label"><input type="checkbox" id="chk-norumu-2" onchange="syncSpecialConditions(2)"><span class="text-xs text-gray-700">沒有入墓</span></label>
-                            </div>
-                            <div class="flex flex-wrap gap-1.5 pb-1.5 border-b border-blue-100/60">
-                                <label class="chk-label"><input type="checkbox" id="chk-ma-2" onchange="syncSpecialConditions(2)"><span class="text-xs text-gray-700">驛馬</span></label>
-                                <label class="chk-label"><input type="checkbox" id="chk-noma-2" onchange="syncSpecialConditions(2)"><span class="text-xs text-gray-700">沒有驛馬</span></label>
-                            </div>
-                            <div class="flex flex-wrap gap-1.5 pb-1.5 border-b border-blue-100/60">
-                                <label class="chk-label"><input type="checkbox" id="chk-menpo-2" onchange="syncSpecialConditions(2)"><span class="text-xs text-gray-700">門迫</span></label>
-                                <label class="chk-label"><input type="checkbox" id="chk-nomenpo-2" onchange="syncSpecialConditions(2)"><span class="text-xs text-gray-700">沒有門迫</span></label>
-                            </div>
-                            <div class="flex flex-wrap gap-1.5 pb-1.5 border-b border-blue-100/60">
-                                <label class="chk-label"><input type="checkbox" id="chk-chong-2" onchange="syncSpecialConditions(2)"><span class="text-xs text-gray-700">宮位被月令所沖</span></label>
-                                <label class="chk-label"><input type="checkbox" id="chk-nochong-2" onchange="syncSpecialConditions(2)"><span class="text-xs text-gray-700">宮位沒有被月令所沖</span></label>
-                            </div>
-                            <div class="flex flex-wrap gap-1.5">
-                                <label class="chk-label"><input type="checkbox" id="chk-tianxian-2"><span class="text-xs text-gray-700">天顯時格</span></label>
-                                <label class="chk-label"><input type="checkbox" id="chk-wubuyu-2"><span class="text-xs text-gray-700">五不遇時</span></label>
-                            </div>
-                        </div>
-                    </details>
-                    <details class="group bg-white border border-blue-200/60 rounded-lg shadow-sm">
-                        <summary class="p-2 cursor-pointer text-sm font-bold text-blue-900 bg-blue-100/40 flex justify-between select-none"><span>八神</span><span class="text-xs">▼</span></summary>
-                        <div class="p-3 flex flex-wrap gap-1.5" id="chk-group-god-2">
-                            <label class="chk-label"><input type="checkbox" value="值符"><span class="text-xs">值符</span></label><label class="chk-label"><input type="checkbox" value="螣蛇"><span class="text-xs">螣蛇</span></label><label class="chk-label"><input type="checkbox" value="太陰"><span class="text-xs">太陰</span></label><label class="chk-label"><input type="checkbox" value="六合"><span class="text-xs">六合</span></label><label class="chk-label"><input type="checkbox" value="白虎"><span class="text-xs">白虎</span></label><label class="chk-label"><input type="checkbox" value="玄武"><span class="text-xs">玄武</span></label><label class="chk-label"><input type="checkbox" value="九地"><span class="text-xs">九地</span></label><label class="chk-label"><input type="checkbox" value="九天"><span class="text-xs">九天</span></label>
-                        </div>
-                    </details>
-                    <details class="group bg-white border border-blue-200/60 rounded-lg shadow-sm">
-                        <summary class="p-2 cursor-pointer text-sm font-bold text-blue-900 bg-blue-100/40 flex justify-between select-none"><span>九星</span><span class="text-xs">▼</span></summary>
-                        <div class="p-3 flex flex-wrap gap-1.5" id="chk-group-star-2">
-                            <label class="chk-label"><input type="checkbox" value="天蓬"><span class="text-xs">天蓬</span></label><label class="chk-label"><input type="checkbox" value="天芮"><span class="text-xs">天芮</span></label><label class="chk-label"><input type="checkbox" value="天衝"><span class="text-xs">天衝</span></label><label class="chk-label"><input type="checkbox" value="天輔"><span class="text-xs">天輔</span></label><label class="chk-label"><input type="checkbox" value="天禽"><span class="text-xs">天禽</span></label><label class="chk-label"><input type="checkbox" value="天心"><span class="text-xs">天心</span></label><label class="chk-label"><input type="checkbox" value="天柱"><span class="text-xs">天柱</span></label><label class="chk-label"><input type="checkbox" value="天任"><span class="text-xs">天任</span></label><label class="chk-label"><input type="checkbox" value="天英"><span class="text-xs">天英</span></label>
-                        </div>
-                    </details>
-                    <details class="group bg-white border border-blue-200/60 rounded-lg shadow-sm">
-                        <summary class="p-2 cursor-pointer text-sm font-bold text-blue-900 bg-blue-100/40 flex justify-between select-none"><span>八門</span><span class="text-xs">▼</span></summary>
-                        <div class="p-3 flex flex-wrap gap-1.5" id="chk-group-door-2">
-                            <label class="chk-label"><input type="checkbox" value="休門"><span class="text-xs">休門</span></label><label class="chk-label"><input type="checkbox" value="生門"><span class="text-xs">生門</span></label><label class="chk-label"><input type="checkbox" value="傷門"><span class="text-xs">傷門</span></label><label class="chk-label"><input type="checkbox" value="杜門"><span class="text-xs">杜門</span></label><label class="chk-label"><input type="checkbox" value="景門"><span class="text-xs">景門</span></label><label class="chk-label"><input type="checkbox" value="死門"><span class="text-xs">死門</span></label><label class="chk-label"><input type="checkbox" value="驚門"><span class="text-xs">驚門</span></label><label class="chk-label"><input type="checkbox" value="開門"><span class="text-xs">開門</span></label>
-                        </div>
-                    </details>
-                    <details class="group bg-white border border-blue-200/60 rounded-lg shadow-sm">
-                        <summary class="p-2 cursor-pointer text-sm font-bold text-blue-900 bg-blue-100/40 flex justify-between select-none"><span>天盤干</span><span class="text-xs">▼</span></summary>
-                        <div class="p-3 flex flex-wrap gap-1.5" id="chk-group-hstem-2">
-                            <label class="chk-label"><input type="checkbox" value="乙"><span class="text-xs">乙</span></label><label class="chk-label"><input type="checkbox" value="丙"><span class="text-xs">丙</span></label><label class="chk-label"><input type="checkbox" value="丁"><span class="text-xs">丁</span></label><label class="chk-label"><input type="checkbox" value="戊"><span class="text-xs">戊</span></label><label class="chk-label"><input type="checkbox" value="己"><span class="text-xs">己</span></label><label class="chk-label"><input type="checkbox" value="庚"><span class="text-xs">庚</span></label><label class="chk-label"><input type="checkbox" value="辛"><span class="text-xs">辛</span></label><label class="chk-label"><input type="checkbox" value="壬"><span class="text-xs">壬</span></label><label class="chk-label"><input type="checkbox" value="癸"><span class="text-xs">癸</span></label><label class="chk-label"><input type="checkbox" value="=年干"><span class="text-xs">=年干</span></label><label class="chk-label"><input type="checkbox" value="=月干"><span class="text-xs">=月干</span></label><label class="chk-label"><input type="checkbox" value="=日干"><span class="text-xs">=日干</span></label><label class="chk-label"><input type="checkbox" value="=時干"><span class="text-xs">=時干</span></label>
-                        </div>
-                    </details>
-                    <details class="group bg-white border border-blue-200/60 rounded-lg shadow-sm">
-                        <summary class="p-2 cursor-pointer text-sm font-bold text-blue-900 bg-blue-100/40 flex justify-between select-none"><span>地盤干</span><span class="text-xs">▼</span></summary>
-                        <div class="p-3 flex flex-wrap gap-1.5" id="chk-group-estem-2">
-                            <label class="chk-label"><input type="checkbox" value="乙"><span class="text-xs">乙</span></label><label class="chk-label"><input type="checkbox" value="丙"><span class="text-xs">丙</span></label><label class="chk-label"><input type="checkbox" value="丁"><span class="text-xs">丁</span></label><label class="chk-label"><input type="checkbox" value="戊"><span class="text-xs">戊</span></label><label class="chk-label"><input type="checkbox" value="己"><span class="text-xs">己</span></label><label class="chk-label"><input type="checkbox" value="庚"><span class="text-xs">庚</span></label><label class="chk-label"><input type="checkbox" value="辛"><span class="text-xs">辛</span></label><label class="chk-label"><input type="checkbox" value="壬"><span class="text-xs">壬</span></label><label class="chk-label"><input type="checkbox" value="癸"><span class="text-xs">癸</span></label>
-                        </div>
-                    </details>
-                </div>
-            </div>
-
-            <!-- 條件按鈕與結果區 -->
             <div class="flex gap-2 w-full pt-2">
                 <button onclick="resetFilter()" class="w-1/3 py-2.5 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold rounded-xl shadow transition active:scale-[0.98] text-sm border border-gray-300">清除重置</button>
-                <button onclick="executeRealSearch()" class="w-2/3 py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl shadow transition active:scale-[0.98] text-sm">⚡ 開始篩選</button>
+                <button onclick="executeRealSearch()" class="w-2/3 py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl shadow transition active:scale-[0.98] text-sm">開始篩選</button>
             </div>
             <div class="mt-4 pt-4 border-t border-gray-200">
                 <h4 class="text-sm font-bold text-gray-500 mb-2 flex justify-between items-center">
-                    <span>📋 篩選結果</span><span id="filter-results-count" class="text-xs bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full font-black">0 筆</span>
+                    <span>篩選結果</span><span id="filter-results-count" class="text-xs bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full font-black">0 筆</span>
                 </h4>
-                <div id="filter-results-list" class="space-y-2 max-h-[40vh] overflow-y-auto pr-1">
-                    <div class="p-3 text-center text-gray-400 text-sm bg-gray-50 rounded-lg border border-dashed border-gray-200">設定好上方條件，按下按鈕即可搜尋！</div>
-                </div>
+                <div id="filter-results-list" class="space-y-2 max-h-[40vh] overflow-y-auto pr-1"></div>
             </div>
         </div>
     </div>
-<!-- 奇門指南針風水全螢幕模式 -->
-<div id="compass-modal" class="fixed inset-0 bg-black/95 z-[100] hidden flex flex-col justify-between items-center px-1 py-1.5 sm:p-3 select-none overflow-hidden touch-none text-white">
-    <div class="w-full flex flex-col gap-2.5 pt-2 sm:pt-3 px-3 sm:px-6 z-20">
-        <div class="flex justify-between items-center flex-wrap gap-2">
-            <div class="flex items-center gap-3">
-                <div class="flex flex-col">
-                    <div class="flex items-baseline gap-2.5">
-                        <span id="compass-degree" class="text-4xl sm:text-5xl font-black text-amber-400 font-mono tracking-wider">000°</span>
-                        <span id="compass-direction-text" class="text-2xl sm:text-3xl font-black text-white">正北</span>
-                    </div>
-                    <div class="text-base sm:text-lg font-bold text-gray-300 flex items-center gap-1.5 mt-0.5">
-                        <span>廿四山：<span id="compass-mountain" class="text-amber-300 font-black">坎宮 · 子山</span></span>
-                    </div>
-                </div>
-            </div>
-            <div id="pan-mode-container" class="flex items-center bg-slate-900 border border-amber-500/50 rounded-xl p-1 shadow-lg">
-                <button id="btn-mode-shijia" onclick="switchCompassPanMode('shijia')" class="px-4 py-1.5 text-base sm:text-lg font-black rounded-lg bg-amber-500 text-slate-950 transition selected-pan">時家盤</button>
-                <button id="btn-mode-wuxiang" onclick="switchCompassPanMode('wuxiang')" class="px-4 py-1.5 text-base sm:text-lg font-black rounded-lg text-gray-300 hover:text-white transition unselected-pan">屋向盤</button>
-            </div>
-            <div class="flex items-center gap-1.5 sm:gap-2">
-                <button id="btn-compass-size" onclick="cycleCompassSize()" class="bg-gray-900 hover:bg-gray-800 text-gray-200 px-2.5 py-1.5 sm:py-2 rounded-full border border-gray-700 text-sm sm:text-base font-bold transition flex items-center gap-1 shadow">🔍 1.0x</button>
-                <button id="btn-compass-bw" onclick="toggleCompassTheme()" class="bg-gray-900 hover:bg-gray-800 text-gray-200 px-3 py-1.5 sm:py-2 rounded-full border border-gray-700 text-sm sm:text-base font-bold transition flex items-center gap-1 shadow"><span>🌓</span> <span class="hidden sm:inline">黑白模式</span></button>
-                <button id="btn-compass-lock" onclick="toggleCompassLock()" class="bg-gray-900 hover:bg-gray-800 text-gray-200 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-gray-700 text-sm sm:text-base font-bold transition flex items-center gap-1.5 shadow"><span id="compass-lock-icon">🔓</span> <span id="compass-lock-text">鎖定</span></button>
-                <button onclick="closeCompassMode()" class="bg-red-600 hover:bg-red-700 text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-black text-sm sm:text-base shadow border border-red-500 transition active:scale-95">關閉</button>
-            </div>
-        </div>
 
-        <div id="compass-sub-shijia" class="flex items-center justify-between text-base sm:text-lg text-gray-300 bg-slate-900/90 px-4 py-2 rounded-xl border border-gray-800">
-            <span class="text-amber-200 font-bold">✨ 時辰奇門局象</span>
-            <div class="flex items-center gap-2">
-                <span class="text-rose-300 text-sm sm:text-base font-bold">流年飛星:</span>
-                <select id="sel-compass-feixing-year" onchange="changeCompassFeiXingYear()" class="bg-slate-950 border border-rose-500/60 rounded-lg px-2.5 py-1 text-rose-300 text-base sm:text-lg font-bold outline-none cursor-pointer"></select>
-            </div>
-        </div>
-
-        <div id="compass-sub-wuxiang" class="hidden flex-wrap items-center justify-between gap-2 text-base sm:text-lg bg-slate-900/90 px-3 sm:px-4 py-2 rounded-xl border border-indigo-500/60">
-            <div class="flex items-center gap-1.5 flex-grow">
-                <span class="text-indigo-300 font-bold whitespace-nowrap text-sm sm:text-base">九運地盤：</span>
-                <select id="sel-compass-yun9-ju" onchange="renderCompassQimen()" class="bg-slate-950 border border-indigo-400/70 rounded-lg px-2 py-1 text-amber-300 font-bold outline-none text-xs sm:text-sm cursor-pointer flex-grow max-w-[200px] sm:max-w-none">
-                    <option value="子_1" selected>九運 · 門向子 屋向坎 (坎一宮)</option>
-                    <option value="丑_8">九運 · 門向丑 屋向艮 (艮八宮)</option>
-                    <option value="寅_8">九運 · 門向寅 屋向艮 (艮八宮)</option>
-                    <option value="卯_3">九運 · 門向卯 屋向震 (震三宮)</option>
-                    <option value="辰_4">九運 · 門向辰 屋向巽 (巽四宮)</option>
-                    <option value="巳_4">九運 · 門向巳 屋向巽 (巽四宮)</option>
-                    <option value="午_9">九運 · 門向午 屋向離 (離九宮)</option>
-                    <option value="未_2">九運 · 門向未 屋向坤 (坤二宮)</option>
-                    <option value="申_2">九運 · 門向申 屋向坤 (坤二宮)</option>
-                    <option value="酉_7">九運 · 門向酉 屋向兌 (兌七宮)</option>
-                    <option value="戌_6">九運 · 門向戌 屋向乾 (乾六宮)</option>
-                    <option value="亥_6">九運 · 門向亥 屋向乾 (乾六宮)</option>
-                </select>
-            </div>
-            <button id="btn-auto-align" onclick="toggleAutoAlign()" class="bg-slate-700 hover:bg-slate-600 text-white border border-slate-600 px-3 py-1 rounded-lg text-sm font-bold whitespace-nowrap shadow transition-colors auto-align-off">自動定盤: 開</button>
-        </div>
-    </div>
-
-    <div class="relative flex flex-col items-center justify-center flex-grow w-full my-auto overflow-hidden">
-        <div id="compass-scale-wrapper" class="flex flex-col items-center justify-center transition-transform duration-300 ease-out will-change-transform w-full">
-            <div class="flex flex-col items-center justify-end h-6 shrink-0 z-20 pointer-events-none mb-1">
-                <div class="w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[10px] border-t-red-500 drop-shadow-[0_0_6px_rgba(239,68,68,0.9)]"></div>
-                <div class="w-[2px] h-2.5 bg-red-500 shadow-[0_0_6px_rgba(239,68,68,0.9)]"></div>
-            </div>
-            <div id="compass-dial-container" class="relative rounded-full flex-shrink-0 flex items-center justify-center transition-transform duration-100 ease-out will-change-transform shadow-[0_0_50px_rgba(30,58,138,0.35)] border-2 border-amber-500/40 bg-slate-950" style="width: min(98vw, calc(100dvh - 180px), 470px); height: min(98vw, calc(100dvh - 180px), 470px);">
-                <svg id="compass-svg-dial" class="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 440 440"></svg>
-                <div id="compass-qimen-grid" class="grid grid-cols-3 gap-0.5 sm:gap-1 z-10 w-[68%] h-[68%] p-0.5 sm:p-1 rounded-lg bg-black/90 backdrop-blur-md border border-amber-500/40"></div>
-            </div>
-        </div>
-        <div class="h-2 shrink-0 pointer-events-none"></div>
-    </div>
-
-    <div class="w-full text-center pb-2 text-[11px] sm:text-xs text-gray-400 font-bold z-20 flex justify-center items-center gap-2">
-        <span id="compass-status-hint">💡 轉動手機，奇門盤將自動對準方位實地堪輿</span>
-        <button id="btn-ios-perm" onclick="requestDeviceOrientationPerm()" class="hidden bg-amber-500 hover:bg-amber-600 text-slate-950 px-2.5 py-1 rounded-md text-xs font-black shadow transition">啟用指南針感測</button>
-    </div>
+    <!-- 彈窗群 -->
+    <div id="compass-modal" class="fixed inset-0 bg-black/95 z-[100] hidden flex flex-col justify-between items-center px-1 py-1.5 sm:p-3 select-none overflow-hidden touch-none text-white"></div>
+    <div id="jieqi-modal" class="fixed inset-0 bg-gray-900/60 hidden flex justify-center items-center z-50 p-4"></div>
+    <div id="save-case-modal" class="fixed inset-0 bg-gray-900/60 hidden flex justify-center items-center z-[70] p-4"></div>
+    <div id="jieqi-warn-modal" class="fixed inset-0 bg-gray-900/60 hidden flex justify-center items-center z-50 p-4"></div>
+    <div id="palace-modal" class="fixed inset-0 bg-gray-900/60 hidden flex justify-center items-center z-50 p-2 sm:p-4"></div>
+    <div id="bazi-modal" class="fixed inset-0 bg-gray-900/60 hidden flex justify-center items-center z-50 p-4"></div>
+    <div id="manual-modal" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm hidden flex justify-center items-center z-[60] p-3 sm:p-6"></div>
+    <div id="ai-modal" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm hidden flex justify-center items-center z-[80] p-3 sm:p-4"></div>
 </div>
 
-<div id="jieqi-modal" class="fixed inset-0 bg-gray-900/60 hidden flex justify-center items-center z-50 p-4">
-    <div class="bg-white rounded-2xl shadow-2xl p-5 max-w-md w-full max-h-[80vh] overflow-y-auto relative border-t-8 border-teal-600">
-        <button onclick="closeJieQiModal()" class="absolute top-3 right-4 text-gray-400 hover:text-black text-2xl">✖</button>
-        <h3 class="text-xl mb-4 text-center text-teal-800" id="jieqi-modal-title"></h3>
-        <div id="jieqi-modal-content" class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm"></div>
-    </div>
-</div>
+<button id="btn-jump-filter" onclick="openRightPanelTab('filter'); document.getElementById('right-side-panel').scrollIntoView({ behavior: 'smooth', block: 'start' }); this.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');" class="lg:hidden fixed bottom-8 right-5 z-[60] text-xl p-3 bg-amber-500 text-white rounded-full shadow-2xl transition active:scale-95 flex items-center justify-center scale-90 translate-y-0 opacity-100 pointer-events-auto">▼</button>
 
-<!-- 🌟 儲存案例彈窗 -->
-<div id="save-case-modal" class="fixed inset-0 bg-gray-900/60 hidden flex justify-center items-center z-[70] p-4">
-    <div class="bg-white rounded-2xl shadow-2xl p-5 max-w-sm w-full border-t-8 border-teal-600">
-        <h3 class="text-xl mb-3 text-teal-800 font-black tracking-widest text-center">儲存本局案例</h3>
-        <div class="text-xs text-gray-500 bg-gray-50 p-2 rounded mb-4 font-bold" id="save-case-time-info"></div>
-        <div class="space-y-3">
-            <div>
-                <label class="block text-sm font-bold text-gray-700 mb-1">問事人 / 標籤</label>
-                <input type="text" id="case-client-name" placeholder="例如：陳先生問求財" class="w-full p-2 border border-gray-300 rounded outline-none focus:border-teal-500 font-bold">
-            </div>
-            <div>
-                <label class="block text-sm font-bold text-gray-700 mb-1">覆盤狀態</label>
-                <select id="case-status" class="w-full p-2 border border-gray-300 rounded outline-none font-bold">
-                    <option value="等待反饋">🟡 等待反饋</option>
-                    <option value="完全應驗">🟢 完全應驗</option>
-                    <option value="待覆盤">🔴 有待覆盤</option>
-                </select>
-            </div>
-            <div>
-                <label class="block text-sm font-bold text-gray-700 mb-1">斷語與筆記</label>
-                <textarea id="case-notes" placeholder="輸入您的斷語..." rows="3" class="w-full p-2 border border-gray-300 rounded outline-none focus:border-teal-500 font-bold resize-none"></textarea>
-            </div>
-            <div class="flex gap-2 pt-2">
-                <button onclick="closeSaveCaseModal()" class="w-1/2 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 rounded-lg transition">取消</button>
-<button onclick="confirmSaveCase(); closeSaveCaseModal();" class="w-1/2 bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 rounded-lg transition shadow">確定儲存</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-
-<div id="jieqi-warn-modal" class="fixed inset-0 bg-gray-900/60 hidden flex justify-center items-center z-50 p-4">
-    <div class="bg-white rounded-2xl shadow-2xl p-5 max-w-sm w-full text-center border-t-8 border-amber-500 space-y-3 animate-fade-in">
-        <div class="text-3xl">⚠️</div>
-        <h3 class="text-base font-black text-amber-900">節氣交接提醒</h3>
-        <p class="text-sm text-gray-800 font-bold leading-relaxed">請注意：節氣於此時辰交接。</p>
-        <div class="pt-2"><button onclick="document.getElementById('jieqi-warn-modal').classList.add('hidden')" class="bg-amber-600 hover:bg-amber-700 text-white font-bold py-1.5 px-6 rounded-xl shadow transition active:scale-95 text-sm">確定</button></div>
-    </div>
-</div>
-
-<div id="palace-modal" class="fixed inset-0 bg-gray-900/60 hidden flex justify-center items-center z-50 p-2 sm:p-4">
-    <div class="bg-white rounded-2xl shadow-2xl p-3.5 sm:p-5 max-w-full sm:max-w-lg md:max-w-2xl w-full max-h-[92vh] sm:max-h-[85vh] overflow-y-auto relative border-t-8 border-indigo-600">
-        <button onclick="closePalaceModal()" class="absolute top-3 right-4 text-gray-400 hover:text-black text-2xl font-bold">✖</button>
-        <h3 class="text-xl md:text-2xl mb-3 text-center text-indigo-900 font-bold tracking-widest" id="pm-title">宮位資訊</h3>
-        <div class="space-y-4">
-            <div class="bg-indigo-50/80 p-3 rounded-xl border border-indigo-100 grid grid-cols-2 gap-y-2 gap-x-4 text-sm sm:text-base">
-                <div><span class="text-gray-500">神將：</span><span id="pm-god" class="font-bold text-gray-800"></span></div>
-                <div><span class="text-gray-500">天星：</span><span id="pm-star" class="font-bold text-gray-800"></span></div>
-                <div><span class="text-gray-500">人門：</span><span id="pm-door" class="font-bold text-gray-800"></span></div>
-                <div><span class="text-gray-500">暗干：</span><span id="pm-angan" class="font-bold text-gray-800"></span></div>
-                <div class="col-span-2 border-t border-indigo-200 pt-2 mt-1 leading-relaxed">
-                    <span class="text-gray-500">宮 支：</span><span id="pm-branch" class="font-bold text-lg tracking-widest"></span><br>
-                    <span class="text-gray-500">天盤干：</span><span id="pm-hstem" class="font-bold text-lg tracking-widest"></span><span id="pm-hstem-hidden" class="text-indigo-600 font-bold ml-1 text-sm tracking-wide"></span><br>
-                    <span class="text-gray-500">地盤干：</span><span id="pm-estem" class="font-bold text-lg tracking-widest"></span><span id="pm-estem-hidden" class="text-indigo-600 font-bold ml-1 text-sm tracking-wide"></span>
-                </div>
-            </div>
-            <details id="pm-cheatsheet-details" class="group bg-blue-50/40 border border-blue-200 rounded-lg shadow-sm">
-                <summary class="p-2 cursor-pointer text-sm sm:text-base font-bold text-blue-900 flex justify-between items-center select-none">
-                    <div class="flex items-center gap-1.5"><span>📚 合/沖/方局/刑害資料</span><span id="pm-cheatsheet-badge" class="text-xs sm:text-sm"></span></div>
-                    <span class="transform group-open:rotate-180 transition-transform duration-200 text-xs">▼</span>
-                </summary>
-                <div id="pm-cheatsheet-content" class="p-3 text-xs sm:text-sm md:text-base text-gray-700 border-t border-blue-200 bg-white rounded-b-lg"></div>
-            </details>
-            <div>
-                <h4 class="font-bold text-red-700 border-b-2 border-red-100 mb-2 pb-1 flex items-center text-sm sm:text-base">⚠️ 四害與狀態</h4>
-                <div id="pm-harms" class="text-sm sm:text-base flex flex-wrap gap-2 min-h-[24px]"></div>
-            </div>
-            <div>
-                <h4 class="font-bold text-blue-700 border-b-2 border-blue-100 mb-2 pb-1 flex items-center text-sm sm:text-base">📜 格局名堂</h4>
-                <div id="pm-geju" class="space-y-2 text-sm sm:text-base min-h-[24px]"></div>
-            </div>
-            <div class="pt-3 border-t border-gray-200 text-center">
-                <button onclick="closePalaceModal()" class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-10 rounded-xl shadow transition active:scale-95 text-sm sm:text-base">關閉</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div id="bazi-modal" class="fixed inset-0 bg-gray-900/60 hidden flex justify-center items-center z-50 p-4">
-    <div class="bg-white rounded-2xl shadow-2xl p-5 max-w-md w-full max-h-[80vh] overflow-y-auto relative border-t-8 border-amber-500">
-        <button onclick="document.getElementById('bazi-modal').classList.add('hidden')" class="absolute top-3 right-4 text-gray-400 hover:text-black text-2xl">✖</button>
-        <h3 class="text-xl mb-2 text-center text-amber-800 font-bold tracking-widest">四柱搜尋結果</h3>
-        <p class="text-xs text-gray-500 text-center mb-4">搜尋範圍：1930年至2050年</p>
-        <div id="bazi-result-list" class="flex flex-col border border-gray-100 rounded-lg overflow-hidden max-h-[50vh] overflow-y-auto"></div>
-    </div>
-</div>
-
-<div id="manual-modal" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm hidden flex justify-center items-center z-[60] p-3 sm:p-6">
-    <div class="bg-white rounded-2xl shadow-2xl p-5 sm:p-7 max-w-3xl w-full max-h-[88vh] overflow-y-auto relative border-t-8 border-indigo-600 text-gray-800 space-y-6">
-        <button onclick="closeManualModal()" class="absolute top-4 right-5 text-gray-400 hover:text-black text-2xl font-bold transition-colors">✖</button>
-        <div class="border-b border-indigo-100 pb-4 text-center">
-            <span class="bg-indigo-100 text-indigo-800 text-xs font-black px-2.5 py-1 rounded-full uppercase tracking-wider">vc1.4</span>
-            <h2 class="text-2xl sm:text-3xl font-black text-indigo-950 mt-2 tracking-wide">奇門遁甲 - 拆補法排盤程式使用手冊</h2>
-            <p class="text-xs text-gray-500 mt-1">RS2026 研製 ｜ 高精度古典奇門與多維演算工具</p>
-        </div>
-        <div class="space-y-6 text-sm leading-relaxed">
-            <section class="bg-indigo-50/50 p-4 rounded-xl border border-indigo-100">
-                <h3 class="text-base sm:text-lg font-black text-indigo-900 mb-2 flex items-center gap-2"><span>一、 程式版本概述與核心特點</span></h3>
-                <p class="text-gray-700 mb-3">本程式（版本 <strong>vc1.4</strong>）是一款專為奇門遁甲研習者與實務運用者設計的高精度網頁版排盤與分析工具，採用傳統權威之<strong>拆補法</strong>起局。</p>
-                <ul class="list-disc list-inside space-y-1.5 text-gray-700">
-                    <li><strong>精準天文曆法演算</strong>：集成 <code>lunar-javascript</code> 權威曆法庫，精準計算太陽黃經與節氣交節時間，自動區分早晚子時。</li>
-                    <li><strong>拆補法自動定局</strong>：根據節氣與符頭（上元、中元、下元）自動推算陰陽遁局數與旬首。</li>
-                    <li><strong>實地風水奇門指南針</strong>：結合裝置電子羅盤感測器與精確廿四山刻度，將即時奇門盤對齊實地方位。</li>
-                    <li><strong>多維古典與現代輔助切換</strong>：先天/後天八卦數、十二長生能量、流年紫白飛星、經典格局名堂檢測。</li>
-                    <li><strong>強大雙條件反查篩選引擎</strong>：未來 180 天全時辰範圍內，依據神星門干、四害進行多重邏輯篩選。</li>
-                </ul>
-            </section>
-        </div>
-        <div class="pt-4 border-t border-gray-200 text-center">
-            <button onclick="closeManualModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 px-8 rounded-xl shadow-lg transition active:scale-95">關閉使用手冊</button>
-        </div>
-    </div>
-</div>
-
-<!-- 🌟 AI 大師解盤彈窗 -->
-<div id="ai-modal" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm hidden flex justify-center items-center z-[80] p-3 sm:p-4">
-    <div class="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 max-w-xl w-full max-h-[90vh] overflow-y-auto relative border-t-8 border-purple-600 flex flex-col gap-3">
-        <button onclick="closeAiModal()" class="absolute top-3 right-4 text-gray-400 hover:text-black text-2xl font-bold">✖</button>
-        
-        <div class="text-center pb-2 border-b border-purple-100">
-            <h3 class="text-xl font-black text-purple-950 flex items-center justify-center gap-1.5">
-                <span>🤖</span><span>奇門遁甲 · AI 宗師深度解盤</span>
-            </h3>
-            <p class="text-xs text-gray-500 mt-1">基於llama-3.1-8b-instruct-fp8大模型 ｜ 全盤精確推演</p>
-        </div>
-
-        <div class="space-y-3">
-            <div>
-                <label class="block text-xs font-bold text-gray-700 mb-1">問事類別</label>
-                <select id="ai-question-category" class="w-full p-2 border border-purple-200 rounded-lg text-sm font-bold bg-purple-50/50 outline-none">
-                    <option value="💰 求財投資（利潤、回款、合夥、資金風險）">💰 求財投資（利潤、回款、合夥、資金風險）</option>
-                    <option value="💼 事業工作（求職面試、升遷、調動、長官關係）">💼 事業工作（求職面試、升遷、調動、長官關係）</option>
-                    <option value="❤️ 婚姻感情（雙方心意、正緣、感情阻礙、發展）">❤️ 婚姻感情（雙方心意、正緣、感情阻礙、發展）</option>
-                    <option value="🏥 疾病健康（病灶位置、病情吉凶、求醫方向）">🏥 疾病健康（病灶位置、病情吉凶、求醫方向）</option>
-                    <option value="⚖️ 官非訴訟（勝負傾向、調解可能、事態進展）">⚖️ 官非訴訟（勝負傾向、調解可能、事態進展）</option>
-                    <option value="🔍 尋人失物（方向方位、物品狀態、能否尋回）">🔍 尋人失物（方向方位、物品狀態、能否尋回）</option>
-                    <option value="🌐 總體運勢（近期吉凶動向、決策建議）">🌐 總體運勢（近期吉凶動向、決策建議）</option>
-                    <option value="🌐 其他問題">🌐 其他問題</option>
-                </select>
-            </div>
-
-            <div>
-                <label class="block text-xs font-bold text-gray-700 mb-1">具體狀況 / 補充說明 (選填)</label>
-                <textarea id="ai-user-context" rows="2" placeholder="例如：問換工作去這家新公司好不好、或跟合夥人打算下月簽約..." class="w-full p-2 border border-gray-300 rounded-lg text-xs font-bold outline-none resize-none focus:ring-1 focus:ring-purple-500"></textarea>
-            </div>
-
-            <div>
-                <label class="block text-xs font-bold text-gray-700 mb-1">VIP 通行碼 (付費牆/權杖)</label>
-                <input type="password" id="ai-user-passcode" placeholder="若未設置付費碼可留空" class="w-full p-1.5 border border-gray-300 rounded-lg text-xs font-bold outline-none">
-            </div>
-
-            <button id="btn-call-ai" onclick="requestAiInterpretation()" class="w-full py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-black rounded-xl shadow transition active:scale-98 text-sm flex items-center justify-center gap-1.5">
-                <span>⚡ 開始 AI 深度分析</span>
-            </button>
-        </div>
-
-        <!-- 結果展示區 -->
-        <div id="ai-result-container" class="hidden mt-2 p-3 bg-purple-50/60 border border-purple-200 rounded-xl space-y-2">
-<div class="flex justify-between items-center border-b border-purple-200/60 pb-1.5">
-    <span class="text-xs font-black text-purple-900">📋 斷語推演報告</span>
-    <div class="flex items-center gap-1.5">
-        <!-- 複製斷語 -->
-        <button onclick="copyAiResult()" class="text-xs bg-white border border-purple-200 text-purple-800 font-bold px-2 py-0.5 rounded shadow-sm hover:bg-purple-100 transition">
-            複製斷語
-        </button>
-        <!-- ✨ 新增：存入案例筆記 -->
-        <button onclick="saveAiResultToCase()" class="text-xs bg-purple-700 text-white font-bold px-2.5 py-0.5 rounded shadow-sm hover:bg-purple-800 transition">
-            💾 存入案例筆記
-        </button>
-    </div>
-</div>
-<div id="ai-result-content" class="text-xs sm:text-sm text-gray-800 leading-normal font-bold max-h-60 overflow-y-auto"></div>
-        </div>
-    </div>
-</div>
-
-<!-- 手機版專用浮動按鈕 -->
-<button id="btn-jump-filter" 
-    onclick="openRightPanelTab('filter'); document.getElementById('right-side-panel').scrollIntoView({ behavior: 'smooth', block: 'start' }); this.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');" 
-    class="lg:hidden fixed bottom-8 right-5 z-[60] ...">
-    ⬇️ 篩選列表
-</button>
-
-<!-- 第三方依賴 -->
+<!-- 依序載入核心模組 -->
 <script src="data/lunar.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.5.0/lz-string.min.js"></script>
 
-<!-- 核心模組 (依序引入) -->
 <script src="js/constants.js"></script>
 <script src="js/storage.js"></script>
 <script src="js/engine-wuxiang.js"></script>
@@ -941,6 +520,108 @@ select:focus, input:focus, textarea:focus {
 <script src="js/compass.js"></script>
 <script src="js/modals.js"></script>
 <script src="js/app.js"></script>
+
+<!-- 🌟 核心排版引擎與生命週期監聽 -->
+<script>
+    function cycleQimenMethod() {
+        const sel = document.getElementById('sel-qimen-method');
+        const btn = document.getElementById('btn-method-cycle');
+        if(!sel || !btn) return;
+        let idx = sel.selectedIndex;
+        idx = (idx + 1) % sel.options.length;
+        sel.selectedIndex = idx;
+        btn.innerText = "現時流派：" + sel.options[idx].text;
+        if(typeof generatePan === 'function') generatePan();
+    }
+
+    // 核心渲染修飾函數
+    function applyCustomFormatting() {
+        // 1. 強制清除排盤資料標題上的殘留 Emoji
+        const summaryTitle = document.getElementById('pan-summary-title');
+        if (summaryTitle) {
+            summaryTitle.innerText = "排盤資料";
+        }
+
+        // 2. 處理四柱資料與抽離特殊標籤
+        const baziEl = document.getElementById('info-bazi');
+        let extractedTags = [];
+
+        if (baziEl) {
+            let html = baziEl.innerHTML;
+            
+            // 剝離所有形式的「天顯時格」與「五不遇時」
+            html = html.replace(/<span[^>]*>[^<]*(天顯時格|五不遇時)[^<]*<\/span>/gi, (match, p1) => {
+                extractedTags.push(`【${p1}】`); return '';
+            });
+            html = html.replace(/【[^】]*(天顯時格|五不遇時)[^】]*】/gi, (match, p1) => {
+                extractedTags.push(`【${p1}】`); return '';
+            });
+
+            // 確保四柱另起一行
+            if (html.includes('｜') && !html.includes('id="bazi-line"')) {
+                let parts = html.split('｜');
+                if (parts.length >= 3) {
+                    let lastPart = parts.pop();
+                    html = parts.join('｜') + '<br><span id="bazi-line" class="inline-block mt-1.5 text-[#9E2A2B] tracking-wide">' + lastPart.trim() + '</span>';
+                }
+            }
+            baziEl.innerHTML = html;
+        }
+
+        // 3. 處理「資訊」列，整併紅底白字標籤
+        const specialEl = document.getElementById('info-special');
+        if (specialEl) {
+            let rawHtml = specialEl.innerHTML;
+            let cleanText = rawHtml.replace(/<[^>]*>?/gm, '').replace(/[✅❌⚠️]/g, '');
+            let matched = cleanText.match(/【.*?】/g) || [];
+            let all = [...new Set([...matched, ...extractedTags])];
+            
+            if (all.length > 0) {
+                specialEl.innerHTML = all.map(t => `<span class="info-tag">${t}</span>`).join('');
+            } else {
+                specialEl.innerHTML = '';
+            }
+        }
+    }
+
+    // 頁面初始化與劫持
+    window.addEventListener('DOMContentLoaded', () => {
+        const sel = document.getElementById('sel-qimen-method');
+        const btn = document.getElementById('btn-method-cycle');
+        if (sel && btn) btn.innerText = "現時流派：" + sel.options[sel.selectedIndex].text;
+
+        // 密碼鎖變動自動起盤
+        const autoUpdateIds = ['sel-location', 'sel-year', 'sel-month', 'sel-day', 'sel-hour24', 'sel-minute', 'sel-bazi-y', 'sel-bazi-m', 'sel-bazi-d', 'sel-bazi-h'];
+        autoUpdateIds.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.addEventListener('change', () => {
+                    if (id === 'sel-year' && typeof updateJieQiYearBtn === 'function') updateJieQiYearBtn();
+                    if (typeof generatePan === 'function') generatePan();
+                });
+            }
+        });
+
+        // 劫持 generatePan 注入排版微調
+        if (typeof window.generatePan === 'function') {
+            const nativeGenerate = window.generatePan;
+            window.generatePan = function() {
+                nativeGenerate();
+                setTimeout(applyCustomFormatting, 10);
+            };
+        }
+    });
+
+    // 🌟 保證無論何種快取狀態，載入後一律強制起盤成功
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            if (typeof initSelectors === 'function') initSelectors();
+            if (typeof initBaziSelectors === 'function') initBaziSelectors();
+            if (typeof updateJieQiYearBtn === 'function') updateJieQiYearBtn();
+            if (typeof generatePan === 'function') generatePan();
+        }, 50);
+    });
+</script>
 
 </body>
 </html>
