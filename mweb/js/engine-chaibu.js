@@ -377,8 +377,8 @@ const filterLabelEl = document.getElementById('filter-method-label');
         if (((dStemTX === '甲' || dStemTX === '己') && (timeGZ_string === '己巳')) || ((dStemTX === '乙' || dStemTX === '庚') && timeGZ_string === '甲申') || ((dStemTX === '丙' || dStemTX === '辛') && timeGZ_string === '甲午') || ((dStemTX === '丁' || dStemTX === '壬') && timeGZ_string === '甲辰') || ((dStemTX === '戊' || dStemTX === '癸') && timeGZ_string === '甲寅')) isTianXian = true;
         
         let rawSpecialInfo = "";
-        if (isTianXian) { specialStr += "<span class='text-green-600 font-bold ml-2'>【✅天顯時格】</span>"; rawSpecialInfo += "【✅天顯時格】"; }
-        if (isWuBuYu) { specialStr += "<span class='text-red-600 font-bold ml-2'>【❌五不遇時】</span>"; rawSpecialInfo += "【❌五不遇時】"; }
+        if (isTianXian) { specialStr += "<span class='text-green-600 font-bold ml-2'>【天顯時格】</span>"; rawSpecialInfo += "【天顯時格】"; }
+        if (isWuBuYu) { specialStr += "<span class='text-red-600 font-bold ml-2'>【五不遇時】</span>"; rawSpecialInfo += "【五不遇時】"; }
         
         const weekDays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
         const weekStr = weekDays[currentDate.getDay()];
