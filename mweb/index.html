@@ -21,22 +21,21 @@
    底圖透光 ｜ 保留五行辨識 ｜ 牌匾式摺疊欄
    ========================================== */
 
-/* 1. 全局背景：鎖定 images/qm04.png */
-body { 
-font-family: 'Noto Serif TC', 'BiauKai', 'Songti TC', serif; 
-    background-color: #F5EFE4; 
-    /* 建議檢查 GitHub 檔名大小寫，若是大寫請改為 ./images/QM04.png */
-    background-image: url('/images/qm04.png?v=1') !important;
+/* 🌟 1. 同步為 html 與 body 綁定水墨背景，確保全屏覆蓋 */
+html, body { 
+    font-family: 'Noto Serif TC', 'BiauKai', 'Songti TC', serif; 
+    background-color: #F5EFE4 !important; 
+    background-image: url('/images/qm04.png') !important;
     background-repeat: no-repeat !important;
     background-position: center top !important;
     background-size: cover !important;
     background-attachment: fixed !important;
     min-height: 100vh; 
     font-weight: bold; 
-    color: #26211C;
+    color: #26211C; 
 }
 
-/* 移除白底大外框，讓背景全幅展現 */
+/* 確保包裹層 100% 透明，絕不反白遮擋 */
 .main-container { 
     background-color: transparent !important;
     border: none !important;
@@ -44,20 +43,34 @@ font-family: 'Noto Serif TC', 'BiauKai', 'Songti TC', serif;
     backdrop-filter: none !important;
 }
 
+/* 🌟 2. 徹底修復：驛馬 🐎 與 空亡 🈳 浮動置頂於右上角，絕不推開「巽四 / 震三」標題 */
 .emoji-container { 
     position: absolute !important; 
-    top: 5px !important; 
-    right: 6px !important; 
+    top: 6px !important; 
+    right: 8px !important; 
     display: flex !important; 
     flex-direction: column !important; 
     align-items: flex-end !important; 
     gap: 2px !important; 
     font-size: 0.95rem !important; 
     line-height: 1 !important; 
-    z-index: 15 !important; 
-    pointer-events: none; /* 避免遮擋點擊 */
+    z-index: 20 !important; 
+    pointer-events: none !important;
 }
 
+/* 宮位主體：72% 半透明五行色 + 微毛玻璃，透出底層山水 */
+.palace { 
+    position: relative !important; 
+    border-radius: 8px; 
+    padding: 6px 8px; 
+    min-height: 185px; 
+    display: flex; 
+    flex-direction: column; 
+    backdrop-filter: blur(2px);
+    box-shadow: 0 4px 12px rgba(60, 45, 20, 0.05); 
+    border: 1.5px solid rgba(200, 175, 125, 0.6); 
+    cursor: pointer; 
+}
 /* 2. 標題：墨韻古風 */
 #app-title {
     color: #3C2A1E !important;
@@ -115,19 +128,6 @@ select:focus, input:focus, textarea:focus {
     margin: 0 auto !important; 
 }
 
-/* 宮位主體：半透明毛玻璃，透出底層山水，邊框帶淡金線 */
-.palace { 
-    position: relative !important; 
-    border-radius: 8px; 
-    padding: 6px 8px; 
-    min-height: 185px; 
-    display: flex; 
-    flex-direction: column; 
-    backdrop-filter: blur(4px);
-    box-shadow: 0 4px 12px rgba(60, 45, 20, 0.05); 
-    border: 1.5px solid rgba(200, 175, 125, 0.6); 
-    cursor: pointer; 
-}
 .palace:hover {
     border-color: #9E2A2B !important;
     box-shadow: 0 6px 18px rgba(158, 42, 43, 0.15) !important;
@@ -242,7 +242,7 @@ select:focus, input:focus, textarea:focus {
 
 <div id="app-workspace" class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
     <div id="main-panel" class="lg:col-span-12 space-y-4 transition-all duration-500">
-        <div class="bg-white/90 backdrop-blur-md rounded-2xl shadow-2xl p-2.5 sm:p-4 md:p-6 border border-white main-container">
+        <div class="p-1 sm:p-3 md:p-4 main-container">
             
             <h1 id="app-title" class="text-xl sm:text-2xl md:text-3xl text-center mb-2.5 text-indigo-900 tracking-widest">
                 奇門遁甲專業排盤系統
