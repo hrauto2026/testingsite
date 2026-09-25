@@ -15,90 +15,215 @@
     
     <!-- 🌟 將 CSS 放回這裡，避開 OneDrive 與本地路徑阻擋問題 -->
     <style>
-        body { font-family: 'BiauKai', 'DFKai-SB', 'Kaiti', 'STKaiti', 'Noto Serif TC', serif; background: linear-gradient(135deg, #e0e7ff 0%, #f3e8ff 100%); min-height: 100vh; font-weight: bold; color: #1a202c; transition: all 0.5s ease; }
-        .main-container { transition: all 0.5s ease; }
-        .grid-wrapper { padding: 26px 36px 36px 36px; overflow: visible !important; width: 100%; box-sizing: border-box; }
-        @media (max-width: 640px) {
-            .grid-wrapper { padding: 22px 24px 28px 24px !important; overflow: visible !important; }
-            .grid-qimen { gap: 5px !important; margin: 0 auto; width: 100% !important; max-width: 100% !important; }
-            .palace { min-height: 165px !important; padding: 4px 5px !important; border-radius: 6px !important; }
-            .branch-label { font-size: 1.2rem !important; line-height: 1 !important; }
-            .tian-jiang { font-size: 1.2rem !important; line-height: 1 !important; margin-left: 2px !important; }
-            .pos-left { left: -21px !important; } .pos-right { right: -21px !important; } .pos-top { top: -22px !important; } .pos-bottom { bottom: -22px !important; }
-        }
-        .grid-qimen { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; max-width: 640px; min-width: 280px; margin: 0 auto; }
-        .palace { position: relative; border-radius: 8px; padding: 6px 8px; min-height: 185px; display: flex; flex-direction: column; box-shadow: 0 2px 6px rgba(0,0,0,0.06); border: 1.5px solid; background-color: rgba(255, 255, 255, 0.95); transition: all 0.2s ease; cursor: pointer; }
-        .bg-water { background-color: #f0f9ff; border-color: #bae6fd; } .text-water { color: #0369a1; }
-        .bg-brown { background-color: #fcf6f0; border-color: #d7c4b4; } .text-brown { color: #78350f; }
-        .bg-wood { background-color: #f0fdf4; border-color: #bbf7d0; } .text-wood { color: #15803d; }
-        .bg-fire { background-color: #fef2f2; border-color: #fecaca; } .text-fire { color: #b91c1c; }
-        .bg-metal { background-color: #fffbeb; border-color: #fde68a; } .text-metal { color: #b45309; }
-        .bg-white-palace { background-color: #ffffff; border-color: #e2e8f0; } 
-        .text-main { font-size: clamp(1.4rem, 5vw, 1.95rem); font-weight: 900; letter-spacing: 0.08em; line-height: 1.15; }
-        .text-palace-name { font-size: clamp(0.78rem, 1.9vw, 0.95rem); font-weight: 900; }
-        .text-tiandi-stem { font-size: clamp(1.2rem, 4.0vw, 1.55rem); font-weight: 900; line-height: 1.05; }
-        .day-stem { display: inline-block; background-color: #f3e8ff; border: 1.5px solid #a855f7; padding: 0 3px; border-radius: 4px; line-height: 1.1; }
-        .hour-stem { display: inline-block; background-color: #ffedd5; border: 1.5px solid #f97316; padding: 0 3px; border-radius: 4px; line-height: 1.1; }
-        .emoji-container { position: absolute; top: 4px; right: 4px; display: flex; flex-direction: column; align-items: flex-end; gap: 1px; font-size: 1rem; line-height: 1; z-index: 10; }
-        .branch-label { position: absolute; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; line-height: 0.9; font-weight: 700; pointer-events: none; white-space: nowrap; z-index: 20; }
-        .tian-jiang { font-size: 1.19rem; color: #7e22ce; margin-left: 1px; line-height: 0.9; }
-        .vertical-label { flex-direction: column; line-height: 1.1; } .vertical-label .tian-jiang { margin-left: 0; margin-top: 3px; writing-mode: vertical-lr; letter-spacing: 1px; }
-        .pos-top { top: -30px; left: 50%; transform: translateX(-50%); } .pos-bottom { bottom: -30px; left: 50%; transform: translateX(-50%); }
-        .pos-left { top: 50%; left: -30px; transform: translateY(-50%); } .pos-right { top: 50%; right: -30px; transform: translateY(-50%); }
-        .slide-panel { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease; }
-        .chk-label { display: inline-flex; align-items: center; gap: 4px; background-color: #fff; border: 1px solid #e5e7eb; padding: 4px 8px; border-radius: 6px; cursor: pointer; transition: all 0.2s; }
-        .chk-label:hover { background-color: #fef3c7; border-color: #fcd34d; } .chk-label input:checked + span { color: #d97706; font-weight: 900; }
-        .chk-label input { accent-color: #f59e0b; width: 14px; height: 14px; } .chk-label-disabled { opacity: 0.5; cursor: not-allowed !important; background-color: #f9fafb !important; pointer-events: none; }
-        
-        #compass-modal.bw-mode { background-color: #ffffff !important; color: #000000 !important; }
-        #compass-modal.bw-mode #compass-degree, #compass-modal.bw-mode #compass-direction-text, #compass-modal.bw-mode #compass-mountain, #compass-modal.bw-mode #compass-status-hint, #compass-modal.bw-mode .text-gray-300 { color: #000000 !important; }
-        #compass-modal.bw-mode #compass-sub-shijia, #compass-modal.bw-mode #compass-sub-wuxiang { background-color: #f8fafc !important; border-color: #000000 !important; color: #000000 !important; }
-        #compass-modal.bw-mode #compass-sub-shijia *, #compass-modal.bw-mode #compass-sub-wuxiang * { color: #000000 !important; }
-        #compass-modal.bw-mode #sel-compass-feixing-year, #compass-modal.bw-mode #sel-compass-yun9-ju { background-color: #ffffff !important; border-color: #000000 !important; color: #000000 !important; }
-        #compass-modal.bw-mode #compass-dial-container { background-color: #ffffff !important; border-color: #000000 !important; box-shadow: 0 0 30px rgba(0, 0, 0, 0.12) !important; }
-        #compass-modal.bw-mode #compass-qimen-grid { background-color: #ffffff !important; border-color: #000000 !important; }
-        #compass-modal.bw-mode #btn-compass-size, #compass-modal.bw-mode #btn-compass-bw, #compass-modal.bw-mode #compass-sub-wuxiang .auto-align-off, #compass-modal.bw-mode .unselected-pan { background-color: #ffffff !important; color: #000000 !important; border-color: #000000 !important; }
-        #compass-modal.bw-mode .selected-pan, #compass-modal.bw-mode #compass-sub-wuxiang .auto-align-on { background-color: #000000 !important; color: #ffffff !important; border-color: #000000 !important; }
-        #compass-modal.bw-mode #pan-mode-container { background-color: #ffffff !important; border-color: #000000 !important; }
-        #compass-modal.bw-mode #btn-compass-lock { background-color: #f1f5f9 !important; color: #000000 !important; border-color: #000000 !important; }
-/* AI 斷語 Markdown 樣式修復 */
+<style>
+/* ==========================================
+   ✨ 仙鶴水墨宣紙風 (qm04.png 專用版)
+   底圖透光 ｜ 保留五行辨識 ｜ 牌匾式摺疊欄
+   ========================================== */
+
+/* 1. 全局背景：鎖定 images/qm04.png */
+body { 
+    font-family: 'Noto Serif TC', 'BiauKai', 'Songti TC', serif; 
+    background-color: #F5EFE4; 
+    background-image: url('images/qm04.png') !important;
+    background-repeat: no-repeat !important;
+    background-position: center top !important;
+    background-size: cover !important;
+    background-attachment: fixed !important;
+    min-height: 100vh; 
+    font-weight: bold; 
+    color: #26211C; 
+    transition: all 0.3s ease; 
+}
+
+/* 移除白底大外框，讓背景全幅展現 */
+.main-container { 
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+}
+
+/* 2. 標題：墨韻古風 */
+#app-title {
+    color: #3C2A1E !important;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+    font-weight: 900;
+}
+
+/* 3. 頂部 Accordion 摺疊欄：古風宣紙牌匾造型 */
+details#accordion-controls,
+details#accordion-pan-info,
+details#accordion-tools {
+    background: rgba(255, 253, 248, 0.78) !important;
+    backdrop-filter: blur(6px) !important;
+    border: 1px solid rgba(197, 160, 106, 0.6) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 4px 15px rgba(60, 45, 25, 0.05) !important;
+    overflow: hidden;
+}
+
+/* 摺疊標題列：淡金微光雙線感 */
+details#accordion-controls summary,
+details#accordion-pan-info summary,
+details#accordion-tools summary {
+    background: rgba(248, 241, 227, 0.85) !important;
+    border-bottom: 1px solid rgba(197, 160, 106, 0.4) !important;
+    color: #4A3319 !important;
+    font-weight: 900;
+}
+
+/* 下拉選單與輸入框：柔和宣紙底色，取代刺眼現代邊框 */
+select, input[type="text"], input[type="password"], textarea {
+    background-color: rgba(255, 255, 255, 0.85) !important;
+    border: 1px solid #D1C2A5 !important;
+    color: #3C2A1E !important;
+    border-radius: 6px !important;
+}
+select:focus, input:focus, textarea:focus {
+    border-color: #9E2A2B !important;
+    outline: none !important;
+}
+
+/* 4. 九宮格幾何骨架（精確維持 640px 與外緣標籤定位） */
+.grid-wrapper { 
+    padding: 26px 36px 36px 36px; 
+    overflow: visible !important; 
+    width: 100%; 
+    box-sizing: border-box; 
+}
+.grid-qimen { 
+    display: grid !important; 
+    grid-template-columns: repeat(3, 1fr) !important; 
+    gap: 8px !important; 
+    max-width: 640px !important; 
+    min-width: 280px; 
+    margin: 0 auto !important; 
+}
+
+/* 宮位主體：半透明毛玻璃，透出底層山水，邊框帶淡金線 */
+.palace { 
+    position: relative; 
+    border-radius: 8px; 
+    padding: 6px 8px; 
+    min-height: 185px; 
+    display: flex; 
+    flex-direction: column; 
+    backdrop-filter: blur(4px);
+    box-shadow: 0 4px 12px rgba(60, 45, 20, 0.05); 
+    border: 1.5px solid rgba(200, 175, 125, 0.6); 
+    transition: all 0.25s ease; 
+    cursor: pointer; 
+}
+.palace:hover {
+    border-color: #9E2A2B !important;
+    box-shadow: 0 6px 18px rgba(158, 42, 43, 0.15) !important;
+    transform: translateY(-1px);
+}
+
+/* 🌟 核心保留：五行半透明雅色（保留 B 款色彩索引，不再刺眼） */
+.bg-water { background-color: rgba(240, 249, 255, 0.72) !important; border-color: rgba(186, 230, 253, 0.85) !important; } 
+.text-water { color: #0369a1 !important; }
+
+.bg-brown { background-color: rgba(253, 248, 242, 0.75) !important; border-color: rgba(220, 205, 190, 0.85) !important; } 
+.text-brown { color: #78350f !important; }
+
+.bg-wood { background-color: rgba(240, 253, 244, 0.72) !important; border-color: rgba(187, 247, 208, 0.85) !important; } 
+.text-wood { color: #15803d !important; }
+
+.bg-fire { background-color: rgba(254, 242, 242, 0.75) !important; border-color: rgba(254, 202, 202, 0.85) !important; } 
+.text-fire { color: #b91c1c !important; }
+
+.bg-metal { background-color: rgba(255, 251, 235, 0.75) !important; border-color: rgba(253, 230, 138, 0.85) !important; } 
+.text-metal { color: #b45309 !important; }
+
+.bg-white-palace { background-color: rgba(255, 255, 255, 0.82) !important; border-color: rgba(210, 195, 175, 0.85) !important; }
+
+/* 5. 文字排版層級 */
+.text-main { font-size: clamp(1.4rem, 5vw, 1.95rem); font-weight: 900; letter-spacing: 0.08em; line-height: 1.15; }
+.text-palace-name { font-size: clamp(0.78rem, 1.9vw, 0.95rem); font-weight: 900; }
+.text-tiandi-stem { font-size: clamp(1.2rem, 4.0vw, 1.55rem); font-weight: 900; line-height: 1.05; }
+
+/* 用神標籤：硃砂與泥金印記 */
+.day-stem { 
+    display: inline-block; 
+    background-color: #FDF2F0; 
+    border: 1.5px solid #9E2A2B; 
+    padding: 0 3px; 
+    border-radius: 4px; 
+    line-height: 1.1; 
+}
+.hour-stem { 
+    display: inline-block; 
+    background-color: #FEF7E8; 
+    border: 1.5px solid #C88A2A; 
+    padding: 0 3px; 
+    border-radius: 4px; 
+    line-height: 1.1; 
+}
+
+/* 6. 外圍十二地支天將（維持絕對定位與微卡片質感） */
+.branch-label { 
+    position: absolute; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    font-size: 0.88rem; 
+    line-height: 0.9; 
+    font-weight: 800; 
+    pointer-events: none; 
+    white-space: nowrap; 
+    z-index: 20; 
+    background: rgba(255, 253, 248, 0.8);
+    padding: 2px 4px;
+    border-radius: 4px;
+    border: 1px solid rgba(200, 180, 140, 0.4);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+}
+.tian-jiang { font-size: 1.15rem; color: #5B3B70; margin-left: 2px; line-height: 0.9; }
+.vertical-label { flex-direction: column; line-height: 1.1; }
+.vertical-label .tian-jiang { margin-left: 0; margin-top: 3px; writing-mode: vertical-lr; letter-spacing: 1px; }
+
+.pos-top { top: -30px; left: 50%; transform: translateX(-50%); } 
+.pos-bottom { bottom: -30px; left: 50%; transform: translateX(-50%); }
+.pos-left { top: 50%; left: -30px; transform: translateY(-50%); } 
+.pos-right { top: 50%; right: -30px; transform: translateY(-50%); }
+
+/* 手機版微調 */
+@media (max-width: 640px) {
+    .grid-wrapper { padding: 22px 24px 28px 24px !important; }
+    .grid-qimen { gap: 5px !important; }
+    .palace { min-height: 165px !important; padding: 4px 5px !important; }
+    .pos-left { left: -21px !important; } 
+    .pos-right { right: -21px !important; } 
+    .pos-top { top: -22px !important; } 
+    .pos-bottom { bottom: -22px !important; }
+}
+
+/* 7. 按鈕水墨化 */
+.btn-ink-primary {
+    background-color: #2D2319 !important;
+    color: #F8F4EC !important;
+    border: 1px solid #5A4733 !important;
+    letter-spacing: 0.05em;
+}
+.btn-ink-primary:hover { background-color: #443526 !important; }
+
+/* AI 斷語內容緊湊優化 */
+#ai-result-content { white-space: normal !important; }
+#ai-result-content p { margin-top: 0.25rem !important; margin-bottom: 0.35rem !important; line-height: 1.6 !important; }
 #ai-result-content h1, #ai-result-content h2, #ai-result-content h3 {
-    color: #4338ca;
-    font-size: 1rem;
+    color: #3C2A1E;
+    font-size: 0.95rem;
     font-weight: 900;
     margin-top: 0.75rem;
     margin-bottom: 0.25rem;
-    border-bottom: 1px dashed #c7d2fe;
-    padding-bottom: 2px;
+    border-bottom: 1px dashed #C8B89E;
+    padding-bottom: 3px;
 }
-#ai-result-content ul, #ai-result-content ol {
-    padding-left: 1.25rem;
-    margin-top: 0.25rem;
-    margin-bottom: 0.5rem;
-    list-style-type: disc;
-}
-#ai-result-content li {
-    margin-bottom: 0.25rem;
-}
-#ai-result-content strong {
-    color: #312e81;
-}
-
-/* ✨ AI 斷語緊湊排版修復 */
-#ai-result-content {
-    white-space: normal !important;
-}
-#ai-result-content p {
-    margin-top: 0.25rem !important;
-    margin-bottom: 0.35rem !important;
-    line-height: 1.5 !important;
-}
-#ai-result-content hr, #ai-result-content blockquote {
-    display: none; /* 隱藏 AI 產生的多餘星號分隔線 */
-}
-
-
-    </style>
+#ai-result-content strong { color: #9E2A2B; }
+#ai-result-content hr, #ai-result-content blockquote { display: none; }
+</style>
 </head>
 <body class="p-2 md:p-6">
 
