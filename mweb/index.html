@@ -226,7 +226,7 @@ details#accordion-tools summary {
    十二地支天將：宮外絕對定位 (徹底解決 iOS Safari 錯位)
    =================================================== */
 
-/* 標籤外框卡片 */
+/* 1. 預設十二天將地支標籤（非月令：宣紙溫潤米白） */
 .branch-label { 
     position: absolute !important; 
     display: inline-flex !important; 
@@ -238,11 +238,21 @@ details#accordion-tools summary {
     pointer-events: none !important; 
     white-space: nowrap !important; 
     z-index: 20 !important; 
-    background: rgba(255, 253, 248, 0.95) !important; 
+    background-color: rgba(255, 253, 248, 0.95); /* 🌟 拔除 !important，允許月令黃色高亮覆蓋 */
     padding: 2px 3px !important; 
     border-radius: 4px !important; 
-    border: 1px solid rgba(200, 180, 140, 0.5) !important; 
+    border: 1px solid rgba(200, 180, 140, 0.5); /* 🌟 拔除 !important */
     box-shadow: 0 1px 3px rgba(60, 45, 20, 0.08) !important;
+}
+
+/* 🌟 2. 月令 Container 專屬高亮 (保障泥金黃印章背景絕對生效) */
+.branch-label[class*="yellow"],
+.branch-label[class*="amber"],
+.branch-label[class*="month"],
+.branch-label.is-month { 
+    background-color: #FEF08A !important; /* 鮮明月令泥金黃 */
+    border: 1.5px solid #D97706 !important; /* 琥珀金邊框 */
+    box-shadow: 0 1px 5px rgba(217, 119, 6, 0.35) !important;
 }
 
 /* 橫向標籤 (頂部與底部：巳午未、丑子亥) */
@@ -1128,7 +1138,17 @@ details#accordion-tools summary {
                 }).join('');
             }
         }
-    }
+// 🌟 確保月令 Container 必定高亮顯示
+        if (typeof panData !== 'undefined' && panData.monthBranch) {
+            document.querySelectorAll('.branch-label').forEach(el => {
+                if (el.textContent.trim().startsWith(panData.monthBranch)) {
+                    el.style.setProperty('background-color', '#FEF08A', 'important');
+                    el.style.setProperty('border', '1.5px solid #D97706', 'important');
+                }
+            });
+        }    
+
+}
 
     window.toggleInputMode = function() {
         if (typeof isBaziMode === 'undefined') window.isBaziMode = false;
