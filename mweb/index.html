@@ -765,7 +765,7 @@ details#accordion-tools summary {
                 </div>
                 <div class="flex gap-2 pt-2">
                     <button onclick="closeSaveCaseModal()" class="w-1/2 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 rounded-lg transition">取消</button>
-                    <button onclick="confirmSaveCase(); closeSaveCaseModal();" class="w-1/2 bg-[#A67C2E] hover:bg-[#8C6A2E] text-white font-bold py-2 rounded-lg transition shadow">確定儲存</button>
+<button onclick="confirmSaveCase(); closeSaveCaseModal(); setTimeout(() => { if (typeof renderCaseList === 'function') renderCaseList(); }, 60);" class="w-1/2 bg-[#A67C2E] hover:bg-[#8C6A2E] text-white font-bold py-2 rounded-lg transition shadow">確定儲存</button>
                 </div>
             </div>
         </div>
@@ -939,6 +939,7 @@ details#accordion-tools summary {
 <script src="js/app.js"></script>
 
 <script>
+// 🌟 1. 切換右側 Tab：切換至「案例庫」時，強制立即觸發 renderCaseList()
     function switchRightTab(tab) {
         const btnCases = document.getElementById('tab-btn-cases');
         const btnFilter = document.getElementById('tab-btn-filter');
@@ -951,6 +952,13 @@ details#accordion-tools summary {
             btnFilter.className = "px-3 py-1.5 rounded-lg font-black text-sm transition-colors bg-[#F5EFE4] text-[#786C5E] hover:bg-[#EAE1D0]";
             contentCases.classList.remove('hidden');
             contentFilter.classList.add('hidden');
+
+            // 🌟 核心關鍵：切換到案例庫時，立即載入並繪製列表
+            const searchInput = document.getElementById('case-search-input');
+            const keyword = searchInput ? searchInput.value : '';
+            if (typeof renderCaseList === 'function') {
+                renderCaseList(keyword);
+            }
         } else {
             btnFilter.className = "px-3 py-1.5 rounded-lg font-black text-sm transition-colors bg-[#9E2A2B] text-[#F9F6F0] shadow-sm";
             btnCases.className = "px-3 py-1.5 rounded-lg font-black text-sm transition-colors bg-[#F5EFE4] text-[#786C5E] hover:bg-[#EAE1D0]";
@@ -959,6 +967,21 @@ details#accordion-tools summary {
         }
     }
     window.switchRightTab = switchRightTab;
+
+    // 🌟 2. 打開側邊欄面板：保證載入案例庫內容
+    function openRightPanelTab(tab) {
+        const panel = document.getElementById('right-side-panel');
+        if (panel) {
+            panel.classList.remove('hidden');
+            const mainPanel = document.getElementById('main-panel');
+            if (mainPanel) {
+                mainPanel.classList.remove('lg:col-span-12');
+                mainPanel.classList.add('lg:col-span-8');
+            }
+        }
+        switchRightTab(tab);
+    }
+    window.openRightPanelTab = openRightPanelTab;
 
     function openRightPanelTab(tab) {
         const panel = document.getElementById('right-side-panel');
@@ -1134,7 +1157,7 @@ details#accordion-tools summary {
     }); // 🌟 補回此處閉合括號
 
     // 確保載入後一律起盤成功
-    window.addEventListener('load', () => {
+window.addEventListener('load', () => {
         setTimeout(() => {
             if (typeof initSelectors === 'function') initSelectors();
             if (typeof initBaziSelectors === 'function') initBaziSelectors();
@@ -1144,7 +1167,11 @@ details#accordion-tools summary {
                 handleFilterPalaceChange(1);
                 handleFilterPalaceChange(2);
             }
-        }, 50);
+            // 🌟 預先載入案例清單
+            if (typeof renderCaseList === 'function') {
+                renderCaseList('');
+            }
+        }, 60);
     });
 </script>
 </body>
