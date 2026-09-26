@@ -6,21 +6,19 @@
     <title>奇門遁甲 - 專業排盤系統</title>
     <link rel="apple-touch-icon" href="icon.png">
     <link rel="icon" type="image/png" href="icon.png">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@latest/style.css">    
-    <!-- 依賴載入 -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-
-    <!-- 宋韻水墨思源宋體 -->
+    
+    <!-- 1. 字體 CDN (必須在 <style> 外部載入) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@latest/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;900&display=swap" rel="stylesheet">  
 
-    <style>
-<!-- 1. 在 <head> 引入支援完整古典字庫的霞鶩文楷 CDN -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@latest/style.css">
+    <!-- 2. 核心套件依賴 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
-<style>
-/* 2. 全域套用 */
+    <!-- 3. 單一、正規的 <style> 樣式區塊 -->
+    <style>
+/* 全域套用霞鶩文楷 (包含所有按鈕、輸入框、選單與九宮格) */
 *, 
 html, 
 body, 
@@ -35,10 +33,10 @@ summary,
 .text-palace-name, 
 .text-tiandi-stem, 
 .combo-lock select {
-    font-family: 'LXGW WenKai', 'Noto Serif TC', serif !important;
+    font-family: 'LXGW WenKai', 'Noto Serif TC', 'STKaiti', 'BiauKai', serif !important;
 }
 
-</style>
+/* 全屏覆蓋水墨背景 */
 html, body { 
     background-color: #F5EFE4 !important; 
     background-image: url('/images/qm04.png') !important;
@@ -48,41 +46,6 @@ html, body {
     background-attachment: fixed !important;
     min-height: 100vh; 
     font-weight: 500; 
-    color: #26211C; 
-}
-
-/* 保持九宮格大字秀麗而不肥厚 */
-.text-main { 
-    font-size: clamp(1.4rem, 5vw, 1.95rem); 
-    font-weight: 700; 
-    letter-spacing: 0.08em; 
-    line-height: 1.15; 
-}
-.text-palace-name { 
-    font-size: clamp(0.78rem, 1.9vw, 0.95rem); 
-    font-weight: 700; 
-}
-.text-tiandi-stem { 
-    font-size: clamp(1.2rem, 4.0vw, 1.55rem); 
-    font-weight: 700; 
-    line-height: 1.05; 
-}
-
-/* ==========================================
-   ✨ 仙鶴水墨宣紙風 (精簡乾淨版)
-   ========================================== */
-
-/* 全屏覆蓋水墨背景 */
-html, body { 
-    font-family: 'Noto Serif TC', 'BiauKai', 'Songti TC', serif; 
-    background-color: #F5EFE4 !important; 
-    background-image: url('/images/qm04.jpg') !important;
-    background-repeat: no-repeat !important;
-    background-position: center top !important;
-    background-size: cover !important;
-    background-attachment: fixed !important;
-    min-height: 100vh; 
-    font-weight: bold; 
     color: #26211C; 
 }
 
@@ -252,9 +215,9 @@ details#accordion-tools summary {
 .text-metal { color: #b45309 !important; }
 .bg-white-palace { background-color: rgba(255, 255, 255, 0.85) !important; border-color: rgba(210, 195, 175, 0.85) !important; }
 
-.text-main { font-size: clamp(1.4rem, 5vw, 1.95rem); font-weight: 900; letter-spacing: 0.08em; line-height: 1.15; }
-.text-palace-name { font-size: clamp(0.78rem, 1.9vw, 0.95rem); font-weight: 900; }
-.text-tiandi-stem { font-size: clamp(1.2rem, 4.0vw, 1.55rem); font-weight: 900; line-height: 1.05; }
+.text-main { font-size: clamp(1.4rem, 5vw, 1.95rem); font-weight: 700; letter-spacing: 0.08em; line-height: 1.15; }
+.text-palace-name { font-size: clamp(0.78rem, 1.9vw, 0.95rem); font-weight: 700; }
+.text-tiandi-stem { font-size: clamp(1.2rem, 4.0vw, 1.55rem); font-weight: 700; line-height: 1.05; }
 
 .day-stem { display: inline-block; background-color: #FDF2F0; border: 1.5px solid #9E2A2B; padding: 0 3px; border-radius: 4px; line-height: 1.1; }
 .hour-stem { display: inline-block; background-color: #FEF7E8; border: 1.5px solid #C88A2A; padding: 0 3px; border-radius: 4px; line-height: 1.1; }
@@ -298,9 +261,7 @@ details#accordion-tools summary {
                 奇門遁甲專業排盤系統
             </h1>
 
-            <!-- ============================================== -->
             <!-- 折疊欄一：起盤時間與參數設定 -->
-            <!-- ============================================== -->
             <details id="accordion-controls" class="group border border-[#C5A06A]/60 rounded-xl mb-2 shadow-sm" open>
                 <summary class="py-2.5 px-4 cursor-pointer text-lg sm:text-xl font-black text-[#4A3319] bg-[rgba(248,241,227,0.55)] rounded-xl group-open:rounded-b-none group-open:border-b border-[#C5A06A]/40 flex justify-between items-center select-none">
                     <span>起盤時間與參數設定</span>
@@ -373,7 +334,7 @@ details#accordion-tools summary {
                         <button id="btn-method-cycle" onclick="cycleQimenMethod()" class="bg-[#9E2A2B] hover:bg-[#7A2021] text-[#F9F6F0] py-1.5 px-4 rounded-xl shadow text-sm sm:text-base font-black transition-all border border-[#5C1819]">現時流派：時家拆補法</button>
 
                         <button id="btn-now" onclick="resetToNow()" class="bg-[#2D2319] hover:bg-[#443526] text-[#F8F4EC] py-1.5 px-4 rounded-xl shadow text-sm sm:text-base font-black transition-all border border-[#5A4733]">現在時間</button>
-<button onclick="window.isFromGenerateBtn = true; handleGenerateBtn();" class="btn-ink-primary py-1.5 px-6 rounded-xl shadow text-sm sm:text-base font-black tracking-wider">起盤</button>
+                        <button onclick="window.isFromGenerateBtn = true; handleGenerateBtn();" class="btn-ink-primary py-1.5 px-6 rounded-xl shadow text-sm sm:text-base font-black tracking-wider">起盤</button>
                         
                         <button id="btn-show-jieqi" onclick="showJieQiModal()" class="bg-[#385E48] hover:bg-[#2C4A38] text-white py-1.5 px-4 rounded-xl shadow text-sm sm:text-base font-black transition-all border border-[#233B2D]"><span id="btn-jieqi-year"></span>年廿四節氣</button>
                         <button id="btn-toggle-filter" onclick="toggleFilterPanel()" class="bg-[#A67C2E] hover:bg-[#8C6A2E] text-white py-1.5 px-4 rounded-xl shadow text-sm sm:text-base font-black flex items-center gap-1 border border-[#6E501E]">條件篩選</button>
@@ -381,9 +342,7 @@ details#accordion-tools summary {
                 </div>
             </details>
 
-            <!-- ============================================== -->
             <!-- 折疊欄二：排盤資料 -->
-            <!-- ============================================== -->
             <details id="accordion-pan-info" class="group border border-[#C5A06A]/60 rounded-xl mb-2 shadow-sm" open>
                 <summary class="py-2.5 px-4 cursor-pointer text-lg sm:text-xl font-black text-[#4A3319] bg-[rgba(248,241,227,0.55)] flex justify-between items-center select-none rounded-xl group-open:rounded-b-none group-open:border-b border-[#C5A06A]/40">
                     <span id="pan-summary-title">排盤資料</span>
@@ -391,7 +350,6 @@ details#accordion-tools summary {
                 </summary>
                 
                 <div class="p-3.5 text-[#242220] bg-transparent space-y-2">
-                    <!-- 四柱資料 -->
                     <div class="text-base sm:text-lg font-black text-[#3C2A1E] leading-relaxed" id="info-bazi"></div>
                     
                     <div class="flex justify-between items-center text-sm sm:text-base border-t border-[#C5A06A]/40 pt-2 font-bold">
@@ -399,7 +357,6 @@ details#accordion-tools summary {
                         <div><span class="text-[#8C887B]">下一節氣：</span><span id="info-next-jieqi" class="text-[#385E48] font-black"></span></div>
                     </div>
 
-                    <!-- 局數與神使 (黃金比例間距) -->
                     <div class="flex flex-wrap items-center gap-x-5 sm:gap-x-7 gap-y-2 text-base sm:text-lg border-t border-[#C5A06A]/40 pt-2.5 font-bold">
                         <div class="w-auto"><span class="text-[#8C887B] text-xs sm:text-sm block">局數</span><span id="info-ju" class="text-[#9E2A2B] font-black text-base sm:text-lg whitespace-nowrap"></span></div>
                         <div class="w-auto"><span class="text-[#8C887B] text-xs sm:text-sm block">旬首</span><span id="info-xunshou" class="text-[#1F1F1E] font-black text-sm sm:text-base"></span></div>
@@ -408,7 +365,6 @@ details#accordion-tools summary {
                         <div class="w-auto"><span class="text-[#8C887B] text-xs sm:text-sm block">空亡</span><span id="info-kongwang" class="text-[#1F1F1E] font-black text-sm sm:text-base"></span></div>
                     </div>
 
-                    <!-- 永久保留的資訊列 (三色印章) -->
                     <div class="flex items-start gap-2 border-t border-[#C5A06A]/40 pt-2.5 min-h-[36px]">
                         <span class="text-[#8C887B] text-sm mt-0.5 whitespace-nowrap font-bold">資訊</span>
                         <div id="info-special" class="text-sm sm:text-base font-black flex flex-wrap gap-1.5 items-center w-full"></div>
@@ -416,9 +372,7 @@ details#accordion-tools summary {
                 </div>
             </details>
 
-            <!-- ============================================== -->
-            <!-- 頂部常駐快調 Bar (放大 50% 時間 + 水墨前後時辰箭頭) -->
-            <!-- ============================================== -->
+            <!-- 頂部常駐快調 Bar -->
             <div id="quick-time-bar" class="hidden justify-between items-center bg-[rgba(255,253,248,0.95)] border border-[#C5A06A]/60 rounded-xl py-1 px-2.5 sm:px-4 shadow-sm mb-2 max-w-xl mx-auto transition-all">
                 <button onclick="shiftHour(-1)" 
                         title="退後一時辰"
@@ -467,9 +421,7 @@ details#accordion-tools summary {
                 </div>
             </div>
 
-            <!-- ============================================== -->
-            <!-- 底部工具列 (已移除：指南針外觀、分享按鈕、使用手冊) -->
-            <!-- ============================================== -->
+            <!-- 底部工具列 -->
             <div class="w-full mt-4 hidden flex-col items-center" id="action-footer">
                 <details id="accordion-tools" class="group w-full max-w-5xl mx-auto bg-[rgba(255,253,248,0.7)] border border-[#C5A06A]/60 rounded-xl shadow-sm select-none" open>
                     <summary class="py-1.5 px-3 cursor-pointer text-xs sm:text-sm font-bold text-[#4A3319] bg-[rgba(248,241,227,0.6)] rounded-xl group-open:rounded-b-none group-open:border-b border-[#C5A06A]/30 flex justify-between items-center transition-colors">
@@ -478,22 +430,17 @@ details#accordion-tools summary {
                     </summary>
                     
                     <div class="p-2 sm:p-3 bg-transparent flex flex-wrap justify-center items-center gap-2">
-                        <!-- AI 宗師解盤 -->
                         <button onclick="openAiModal()" class="bg-[#9E2A2B] hover:bg-[#7A2021] text-[#F9F6F0] py-1 px-3.5 rounded-full shadow transition active:scale-95 flex items-center justify-center text-xs font-black gap-1 border border-[#5C1819]">
                             AI 宗師解盤
                         </button>    
 
-                        <!-- 複製盤面資料 -->
                         <button onclick="copyPan()" class="bg-[#2D2319] hover:bg-[#443526] text-white py-1 px-3 rounded-full shadow transition active:scale-95 flex items-center justify-center text-xs font-bold border border-[#5A4733]"><svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>複製盤面資料</button>
                         
-                        <!-- 案例庫相關 -->
                         <button onclick="saveCurrentCase(false)" class="bg-[#A67C2E] hover:bg-[#8C6A2E] text-white py-1 px-3 rounded-full shadow transition active:scale-95 flex items-center justify-center text-xs font-bold border border-[#6E501E]">儲存案例</button>
                         <button onclick="openRightPanelTab('cases')" class="bg-[#2D2319] hover:bg-[#443526] text-white py-1 px-3 rounded-full shadow transition active:scale-95 flex items-center justify-center text-xs font-bold border border-[#5A4733]">案例庫</button>
                         
-                        <!-- 🌟 背景相容：保留隱藏的指南針 checkbox，防止 app.js 崩潰 -->
                         <input type="checkbox" id="toggle-compass" class="hidden">
 
-                        <!-- 先天八卦數 -->
                         <div class="flex items-center gap-2 bg-white/80 px-3 py-1 rounded-full shadow-sm border border-[#C5A06A]/40">
                             <span class="text-xs font-bold text-[#3C2A1E]" id="bagua-label">先天八卦數</span>
                             <label class="relative inline-flex items-center cursor-pointer">
@@ -502,7 +449,6 @@ details#accordion-tools summary {
                             </label>
                         </div>
 
-                        <!-- 能量狀態 -->
                         <div class="flex items-center gap-2 bg-white/80 px-3 py-1 rounded-full shadow-sm border border-[#C5A06A]/40">
                             <span class="text-xs font-bold text-[#3C2A1E]" id="energy-label">能量狀態</span>
                             <label class="relative inline-flex items-center cursor-pointer">
@@ -511,7 +457,6 @@ details#accordion-tools summary {
                             </label>
                         </div>
 
-                        <!-- 內外盤 -->
                         <div class="flex items-center gap-2 bg-white/80 px-3 py-1 rounded-full shadow-sm border border-[#C5A06A]/40">
                             <span class="text-xs font-bold text-[#3C2A1E]">內外盤</span>
                             <label class="relative inline-flex items-center cursor-pointer">
@@ -520,7 +465,6 @@ details#accordion-tools summary {
                             </label>
                         </div>
 
-                        <!-- 流年飛星 -->
                         <div class="flex items-center gap-2 bg-white/80 px-3 py-1 rounded-full shadow-sm border border-[#C5A06A]/40">
                             <span class="text-xs font-bold text-[#3C2A1E]">流年飛星</span>
                             <label class="relative inline-flex items-center cursor-pointer">
@@ -530,7 +474,6 @@ details#accordion-tools summary {
                             <select id="sel-feixing-year" class="hidden text-xs p-1 border border-[#C5A06A] rounded bg-[#FAF6EE] font-bold text-[#3C2A1E] outline-none" onchange="generatePan()"></select>
                         </div>
 
-                        <!-- 天乙貴人 -->
                         <div class="flex items-center gap-2 bg-white/80 px-3 py-1 rounded-full shadow-sm border border-[#C5A06A]/40">
                             <span class="text-xs font-bold text-[#3C2A1E]" id="guiren-label">天乙貴人</span>
                             <label class="relative inline-flex items-center cursor-pointer">
@@ -548,9 +491,7 @@ details#accordion-tools summary {
         </div>
     </div>
 
-    <!-- ============================================== -->
     <!-- 右側面板：條件篩選 / 案例庫 -->
-    <!-- ============================================== -->
     <div id="right-side-panel" class="hidden lg:col-span-4 lg:sticky lg:top-4 lg:self-start bg-[rgba(255,253,248,0.92)] backdrop-blur-md rounded-2xl shadow-2xl p-4 border border-[#C5A06A]/60 slide-panel overflow-y-auto max-h-[92vh]">
         <div class="flex justify-between items-center mb-4 border-b border-[#C5A06A]/40 pb-2">
             <div class="flex gap-2">
@@ -772,9 +713,7 @@ details#accordion-tools summary {
         </div>
     </div>
 
-<!-- ============================================== -->
-    <!-- 1. 廿四節氣彈窗 (純淨無 Emoji + 底部關閉按鈕) -->
-    <!-- ============================================== -->
+    <!-- 1. 廿四節氣彈窗 -->
     <div id="jieqi-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden flex justify-center items-center z-50 p-4">
         <div class="bg-[#FCFAF6] rounded-2xl shadow-2xl p-5 sm:p-6 max-w-md w-full max-h-[85vh] overflow-y-auto relative border-t-8 border-[#385E48] border-x border-b border-[#C5A06A]/40 flex flex-col justify-between">
             <button onclick="closeJieQiModal()" class="absolute top-3 right-4 text-[#8C887B] hover:text-black text-2xl font-bold transition-colors">✕</button>
@@ -784,7 +723,6 @@ details#accordion-tools summary {
                 <div id="jieqi-modal-content" class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm font-bold"></div>
             </div>
 
-            <!-- 🌟 底部新增：古風「關閉」按鈕 -->
             <div class="pt-4 border-t border-[#C5A06A]/30 text-center mt-4">
                 <button onclick="closeJieQiModal()" class="w-full sm:w-auto bg-[#385E48] hover:bg-[#2C4A38] active:scale-95 text-white font-black py-2 px-10 rounded-xl shadow transition text-sm cursor-pointer border border-[#233B2D]">
                     關閉
@@ -817,29 +755,23 @@ details#accordion-tools summary {
                 </div>
                 <div class="flex gap-2 pt-2">
                     <button onclick="closeSaveCaseModal()" class="w-1/2 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 rounded-lg transition">取消</button>
-<button onclick="confirmSaveCase(); closeSaveCaseModal(); setTimeout(() => { if (typeof renderCaseList === 'function') renderCaseList(); }, 60);" class="w-1/2 bg-[#A67C2E] hover:bg-[#8C6A2E] text-white font-bold py-2 rounded-lg transition shadow">確定儲存</button>
+                    <button onclick="confirmSaveCase(); closeSaveCaseModal(); setTimeout(() => { if (typeof renderCaseList === 'function') renderCaseList(); }, 60);" class="w-1/2 bg-[#A67C2E] hover:bg-[#8C6A2E] text-white font-bold py-2 rounded-lg transition shadow">確定儲存</button>
                 </div>
             </div>
         </div>
     </div>
 
-<!-- ============================================== -->
-    <!-- 節氣交接提醒 (古風宣紙令符 · 沉浸雅致版) -->
-    <!-- ============================================== -->
+    <!-- 節氣交接提醒 -->
     <div id="jieqi-warn-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden flex justify-center items-center z-[90] p-4 transition-opacity duration-300">
         <div class="relative bg-[rgba(255,253,248,0.96)] rounded-2xl shadow-[0_12px_40px_rgba(60,45,20,0.22)] p-6 max-w-sm w-full text-center border-2 border-[#C5A06A]/80 space-y-4">
-            
-            <!-- 四角古典折角裝飾微光線 -->
             <div class="absolute inset-1.5 border border-[#C5A06A]/30 rounded-xl pointer-events-none"></div>
 
-            <!-- 頂部印章徽標：泥金硃砂「氣令」印 -->
             <div class="flex justify-center pt-1">
                 <div class="w-12 h-12 rounded-full bg-[#FDF2F0] border-2 border-[#9E2A2B] flex items-center justify-center shadow-inner">
                     <span class="text-[#9E2A2B] text-xl font-black tracking-widest" style="font-family: 'Noto Serif TC', serif;">令</span>
                 </div>
             </div>
 
-            <!-- 標題與內文 -->
             <div class="space-y-1.5">
                 <h3 class="text-lg font-black text-[#9E2A2B] tracking-widest flex items-center justify-center gap-1.5">
                     <span>✦</span> 節氣交接提醒 <span>✦</span>
@@ -850,7 +782,6 @@ details#accordion-tools summary {
                 </p>
             </div>
 
-            <!-- 硃砂底色確認按鈕 -->
             <div class="pt-1 pb-1">
                 <button onclick="document.getElementById('jieqi-warn-modal').classList.add('hidden')" 
                         class="bg-[#9E2A2B] hover:bg-[#7A2021] active:scale-95 text-[#F9F6F0] font-black py-2 px-8 rounded-xl shadow-md transition-all text-sm tracking-widest border border-[#5C1819] cursor-pointer">
@@ -860,9 +791,7 @@ details#accordion-tools summary {
         </div>
     </div>
 
-<!-- ============================================== -->
-    <!-- 2. 宮位詳細資訊彈窗 (移除所有標題 Emoji) -->
-    <!-- ============================================== -->
+    <!-- 2. 宮位詳細資訊彈窗 -->
     <div id="palace-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden flex justify-center items-center z-50 p-2 sm:p-4">
         <div class="bg-[#FCFAF6] rounded-2xl shadow-2xl p-3.5 sm:p-5 max-w-full sm:max-w-lg md:max-w-2xl w-full max-h-[92vh] sm:max-h-[85vh] overflow-y-auto relative border-t-8 border-[#2D2319] border-x border-b border-[#C5A06A]/40">
             <button onclick="closePalaceModal()" class="absolute top-3 right-4 text-[#8C887B] hover:text-black text-2xl font-bold transition-colors">✕</button>
@@ -881,7 +810,6 @@ details#accordion-tools summary {
                     </div>
                 </div>
 
-                <!-- 已移除 📚 -->
                 <details id="pm-cheatsheet-details" class="group bg-white border border-[#C5A06A]/40 rounded-lg shadow-sm">
                     <summary class="p-2 cursor-pointer text-sm sm:text-base font-bold text-[#4A3319] flex justify-between items-center select-none bg-[rgba(248,241,227,0.5)]">
                         <div class="flex items-center gap-1.5"><span>合/沖/方局/刑害資料</span><span id="pm-cheatsheet-badge" class="text-xs sm:text-sm"></span></div>
@@ -890,13 +818,11 @@ details#accordion-tools summary {
                     <div id="pm-cheatsheet-content" class="p-3 text-xs sm:text-sm md:text-base text-gray-700 border-t border-[#C5A06A]/30 bg-white rounded-b-lg"></div>
                 </details>
 
-                <!-- 已移除 ⚠️ -->
                 <div>
                     <h4 class="font-bold text-[#9E2A2B] border-b-2 border-[#9E2A2B]/20 mb-2 pb-1 flex items-center text-sm sm:text-base">四害與狀態</h4>
                     <div id="pm-harms" class="text-sm sm:text-base flex flex-wrap gap-2 min-h-[24px]"></div>
                 </div>
 
-                <!-- 已移除 📜 -->
                 <div>
                     <h4 class="font-bold text-[#2B4C5E] border-b-2 border-[#2B4C5E]/20 mb-2 pb-1 flex items-center text-sm sm:text-base">格局名堂</h4>
                     <div id="pm-geju" class="space-y-2 text-sm sm:text-base min-h-[24px]"></div>
@@ -919,9 +845,7 @@ details#accordion-tools summary {
         </div>
     </div>
 
-<!-- ============================================== -->
-    <!-- 3. AI 宗師解盤彈窗 (全選單移除 Emoji) -->
-    <!-- ============================================== -->
+    <!-- 3. AI 宗師解盤彈窗 -->
     <div id="ai-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden flex justify-center items-center z-[80] p-3 sm:p-4">
         <div class="bg-[#FCFAF6] rounded-2xl shadow-2xl p-4 sm:p-6 max-w-xl w-full max-h-[90vh] overflow-y-auto relative border-t-8 border-[#9E2A2B] border-x border-b border-[#C5A06A]/40 flex flex-col gap-3">
             <button onclick="closeAiModal()" class="absolute top-3 right-4 text-[#8C887B] hover:text-black text-2xl font-bold transition-colors">✕</button>
@@ -961,7 +885,6 @@ details#accordion-tools summary {
                 </button>
             </div>
 
-            <!-- 結果展示區 (已移除 📋) -->
             <div id="ai-result-container" class="hidden mt-2 p-3 bg-[rgba(248,241,227,0.7)] border border-[#C5A06A]/60 rounded-xl space-y-2">
                 <div class="flex justify-between items-center border-b border-[#C5A06A]/40 pb-1.5">
                     <span class="text-xs font-black text-[#9E2A2B]">斷語推演報告</span>
@@ -991,7 +914,6 @@ details#accordion-tools summary {
 <script src="js/app.js"></script>
 
 <script>
-// 🌟 1. 切換右側 Tab：切換至「案例庫」時，強制立即觸發 renderCaseList()
     function switchRightTab(tab) {
         const btnCases = document.getElementById('tab-btn-cases');
         const btnFilter = document.getElementById('tab-btn-filter');
@@ -1005,7 +927,6 @@ details#accordion-tools summary {
             contentCases.classList.remove('hidden');
             contentFilter.classList.add('hidden');
 
-            // 🌟 核心關鍵：切換到案例庫時，立即載入並繪製列表
             const searchInput = document.getElementById('case-search-input');
             const keyword = searchInput ? searchInput.value : '';
             if (typeof renderCaseList === 'function') {
@@ -1019,21 +940,6 @@ details#accordion-tools summary {
         }
     }
     window.switchRightTab = switchRightTab;
-
-    // 🌟 2. 打開側邊欄面板：保證載入案例庫內容
-    function openRightPanelTab(tab) {
-        const panel = document.getElementById('right-side-panel');
-        if (panel) {
-            panel.classList.remove('hidden');
-            const mainPanel = document.getElementById('main-panel');
-            if (mainPanel) {
-                mainPanel.classList.remove('lg:col-span-12');
-                mainPanel.classList.add('lg:col-span-8');
-            }
-        }
-        switchRightTab(tab);
-    }
-    window.openRightPanelTab = openRightPanelTab;
 
     function openRightPanelTab(tab) {
         const panel = document.getElementById('right-side-panel');
@@ -1172,7 +1078,6 @@ details#accordion-tools summary {
         }
     };
 
-    // 頁面初始化與綁定
     window.addEventListener('DOMContentLoaded', () => {
         const sel = document.getElementById('sel-qimen-method');
         const btn = document.getElementById('btn-method-cycle');
@@ -1189,7 +1094,6 @@ details#accordion-tools summary {
             }
         });
 
-        // 劫持 generatePan：滾輪變更時保持折疊欄展開
         if (typeof window.generatePan === 'function') {
             const nativeGenerate = window.generatePan;
             window.generatePan = function() {
@@ -1206,10 +1110,9 @@ details#accordion-tools summary {
                 setTimeout(applyCustomFormatting, 10);
             };
         }
-    }); // 🌟 補回此處閉合括號
+    });
 
-    // 確保載入後一律起盤成功
-window.addEventListener('load', () => {
+    window.addEventListener('load', () => {
         setTimeout(() => {
             if (typeof initSelectors === 'function') initSelectors();
             if (typeof initBaziSelectors === 'function') initBaziSelectors();
@@ -1219,7 +1122,6 @@ window.addEventListener('load', () => {
                 handleFilterPalaceChange(1);
                 handleFilterPalaceChange(2);
             }
-            // 🌟 預先載入案例清單
             if (typeof renderCaseList === 'function') {
                 renderCaseList('');
             }
