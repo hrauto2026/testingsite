@@ -6,7 +6,7 @@
     <title>奇門遁甲 - 專業排盤系統</title>
     <link rel="apple-touch-icon" href="icon.png">
     <link rel="icon" type="image/png" href="icon.png">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/iansui@latest/css/iansui.css">    
+    
     <!-- 依賴載入 -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -17,10 +17,18 @@
 
     <style>
 /* ===================================================
-   🌟 全域套用 芫荽體 (Iansui) - 秀麗清雅古風
+   🌟 本地載入 芫荽體 (Iansui) - 自託管高速穩定版
    =================================================== */
 
-/* 1. 表單元件、文字標籤、九宮格全面強制套用 */
+@font-face {
+    font-family: 'Iansui';
+    src: url('./fonts/Iansui-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap; /* 確保字體載入前不出現白屏 */
+}
+
+/* 全域元件全面套用 Iansui */
 *, 
 html, 
 body, 
@@ -35,10 +43,9 @@ summary,
 .text-palace-name, 
 .text-tiandi-stem, 
 .combo-lock select {
-    font-family: 'Iansui', 'STKaiti', 'Kaiti', 'BiauKai', 'Noto Serif TC', serif !important;
+    font-family: 'Iansui', serif !important;
 }
 
-/* 2. 背景與全域字重調整（避免仿粗體破壞秀麗骨線） */
 html, body { 
     background-color: #F5EFE4 !important; 
     background-image: url('/images/qm04.png') !important;
@@ -47,11 +54,11 @@ html, body {
     background-size: cover !important;
     background-attachment: fixed !important;
     min-height: 100vh; 
-    font-weight: 500; /* 保留適當清晰度，不臃腫 */
+    font-weight: 500; 
     color: #26211C; 
 }
 
-/* 3. 標題與九宮格大字微調（保持清秀立體感） */
+/* 保持九宮格大字秀麗而不肥厚 */
 .text-main { 
     font-size: clamp(1.4rem, 5vw, 1.95rem); 
     font-weight: 700; 
