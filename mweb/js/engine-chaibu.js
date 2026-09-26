@@ -1,6 +1,6 @@
 // ==========================================
 // js/engine-chaibu.js
-// 全域狀態變數與時家拆補法排盤引擎
+// 全域狀態變數與時家拆補法排盤引擎 (原版宮外天將地支)
 // ==========================================
 
 // 1. 全域狀態變數宣告 (讓所有模組共用)
@@ -184,8 +184,6 @@ function generatePan() {
         const y = parseInt(document.getElementById('sel-year').value);
         const m = parseInt(document.getElementById('sel-month').value);
         const d = parseInt(document.getElementById('sel-day').value);
-
-
         
         const checkDate = new Date(y, m - 1, d);
         if (checkDate.getFullYear() !== y || checkDate.getMonth() !== (m - 1) || checkDate.getDate() !== d) {
@@ -201,7 +199,6 @@ function generatePan() {
         let cityKey = document.getElementById('sel-location') ? document.getElementById('sel-location').value : "none";
         let solarData = typeof getTrueSolarTime === 'function' ? getTrueSolarTime(rawDate, cityKey) : { adjustedDate: rawDate, isAdjusted: false };
         
-        // 將系統核心時間設定為「真太陽時」
         currentDate = solarData.adjustedDate; 
         
         const trueY = currentDate.getFullYear();
@@ -211,7 +208,6 @@ function generatePan() {
         const trueMin = currentDate.getMinutes();
         // --- ✨ 真太陽時校正結束 ---
         
-        // 接下來的節氣與干支計算，全部改用 trueY, trueM, trueD, trueH, trueMin
         const exactLunar = Solar.fromYmdHms(trueY, trueM, trueD, trueH, trueMin, 0).getLunar();
         const noonLunar = Solar.fromYmdHms(trueY, trueM, trueD, 12, 0, 0).getLunar();
         
@@ -274,11 +270,10 @@ function generatePan() {
         // ==========================================
         const qimenMethod = document.getElementById('sel-qimen-method') ? document.getElementById('sel-qimen-method').value : 'chaibu';
         let isYang, juNum, juStr, yuan = "";
-        let methodLabel = ""; // 新增：流派標籤文字
+        let methodLabel = "";
         
         if (qimenMethod === 'yinpan') {
             methodLabel = "【道家陰盤】";
-            // --- 陰盤奇門定局邏輯 ---
             const lunarYearBranch = exactLunar.getYearInGanZhiExact().substring(1, 2);
             const lunarMonth = Math.abs(exactLunar.getMonth());
             const lunarDay = exactLunar.getDay();
@@ -294,7 +289,6 @@ function generatePan() {
             
         } else if (qimenMethod === 'zhirun') {
             methodLabel = "【時家置閏】";
-            // --- 時家置閏定局邏輯 ---
             const JIA_ZI = []; for(let i=0; i<60; i++) JIA_ZI.push(STEMS[i%10] + BRANCHES[i%12]);
             const dIdx = JIA_ZI.indexOf(dayGZ), fuTouIdx = dIdx - (dIdx % 5), fuTouBranch = BRANCHES[fuTouIdx % 12];
             yuan = ["子", "午", "卯", "酉"].includes(fuTouBranch) ? "上元" : (["寅", "申", "巳", "亥"].includes(fuTouBranch) ? "中元" : "下元");
@@ -307,7 +301,6 @@ function generatePan() {
             
         } else {
             methodLabel = "【時家拆補】";
-            // --- 傳統時家拆補定局邏輯 ---
             const JIA_ZI = []; for(let i=0; i<60; i++) JIA_ZI.push(STEMS[i%10] + BRANCHES[i%12]);
             const dIdx = JIA_ZI.indexOf(dayGZ), fuTouIdx = dIdx - (dIdx % 5), fuTouBranch = BRANCHES[fuTouIdx % 12];
             yuan = ["子", "午", "卯", "酉"].includes(fuTouBranch) ? "上元" : (["寅", "申", "巳", "亥"].includes(fuTouBranch) ? "中元" : "下元");
@@ -319,14 +312,12 @@ function generatePan() {
             juStr = `【拆補】${isYang ? "陽遁" : "陰遁"}${juNum}局 (${yuan})`;
         }
 
-const filterLabelEl = document.getElementById('filter-method-label');
+        const filterLabelEl = document.getElementById('filter-method-label');
         if (filterLabelEl) {
             if (qimenMethod === 'yinpan') filterLabelEl.innerText = '道家陰盤 (數理定局)';
             else if (qimenMethod === 'zhirun') filterLabelEl.innerText = '時家置閏法';
             else filterLabelEl.innerText = '時家拆補法';
         }
-
-        // ==========================================
 
         let earthPan = {}; let currentPalaceNum = juNum;
         for (let i = 0; i < 9; i++) { earthPan[currentPalaceNum] = YI_LIU[i]; currentPalaceNum = isYang ? currentPalaceNum + 1 : currentPalaceNum - 1; if (currentPalaceNum > 9) currentPalaceNum = 1; else if (currentPalaceNum < 1) currentPalaceNum = 9; }
@@ -378,11 +369,11 @@ const filterLabelEl = document.getElementById('filter-method-label');
         const dStemTX = dayGZ.substring(0, 1);
         if (((dStemTX === '甲' || dStemTX === '己') && (timeGZ_string === '己巳')) || ((dStemTX === '乙' || dStemTX === '庚') && timeGZ_string === '甲申') || ((dStemTX === '丙' || dStemTX === '辛') && timeGZ_string === '甲午') || ((dStemTX === '丁' || dStemTX === '壬') && timeGZ_string === '甲辰') || ((dStemTX === '戊' || dStemTX === '癸') && timeGZ_string === '甲寅')) isTianXian = true;
 
-let specialTagsHtml = "";
+        // 🌟 正確依序生成印章標籤（天顯時格為綠，五不遇時為鮮紅）
+        let specialTagsHtml = "";
         let rawSpecialInfo = "";
         if (isTianXian) { specialTagsHtml += "<span class='info-tag info-tag-green'>【天顯時格】</span>"; rawSpecialInfo += "【天顯時格】"; }
         if (isWuBuYu) { specialTagsHtml += "<span class='info-tag info-tag-red'>【五不遇時】</span>"; rawSpecialInfo += "【五不遇時】"; }
-
         
         const weekDays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
         const weekStr = weekDays[currentDate.getDay()];
@@ -397,7 +388,7 @@ let specialTagsHtml = "";
             let offsetSign = solarData.offsetMinutes >= 0 ? "+" : "";
             let offsetMinStr = solarData.offsetMinutes.toFixed(1);
             solarBadge = `<div class="text-[11px] sm:text-xs text-teal-700 bg-teal-50 border border-teal-200 px-2 py-0.5 rounded inline-flex items-center gap-1 mb-1.5 font-bold shadow-sm">
-                🌞 ${solarData.cityName}真太陽時 ${trueH.toString().padStart(2,'0')}:${trueMin.toString().padStart(2,'0')} (鐘錶差 ${offsetSign}${offsetMinStr}分)
+                ${solarData.cityName}真太陽時 ${trueH.toString().padStart(2,'0')}:${trueMin.toString().padStart(2,'0')} (鐘錶差 ${offsetSign}${offsetMinStr}分)
             </div><br>`;
             copyBaziLine += ` [${solarData.cityName}真太陽時]`;
         }
@@ -410,9 +401,9 @@ let specialTagsHtml = "";
         const quickBar = document.getElementById('quick-time-bar');
 
         if (accControls && window.isFromGenerateBtn) {
-    accControls.open = false;
-    window.isFromGenerateBtn = false;
-}
+            accControls.open = false;
+            window.isFromGenerateBtn = false;
+        }
         if (accInfo) {
             accInfo.classList.remove('hidden');
             accInfo.open = true;
@@ -424,7 +415,8 @@ let specialTagsHtml = "";
             document.getElementById('quick-bar-time').innerHTML = `${trueY}年${trueM}月${trueD}日(${weekStr}) ${trueH.toString().padStart(2,'0')}:${trueMin.toString().padStart(2,'0')}${displayZiMark}`;
         }
 
-document.getElementById('info-bazi').innerHTML = `${solarBadge}<span class="text-red-700 mr-2">${methodLabel}</span>${trueY}年${trueM}月${trueD}日(${weekStr}) ${trueH.toString().padStart(2,'0')}:${trueMin.toString().padStart(2,'0')} ｜ <span class="text-teal-800 font-bold">${lunarStr}</span><br><span id="bazi-line" class="inline-block mt-1.5 text-[#9E2A2B] tracking-wide">${coloredBaziStr}${displayZiMark}</span>`;
+        // 🌟 四柱獨立成行，農曆後換行
+        document.getElementById('info-bazi').innerHTML = `${solarBadge}<span class="text-red-700 mr-2">${methodLabel}</span>${trueY}年${trueM}月${trueD}日(${weekStr}) ${trueH.toString().padStart(2,'0')}:${trueMin.toString().padStart(2,'0')} ｜ <span class="text-teal-800 font-bold">${lunarStr}</span><br><span id="bazi-line" class="inline-block mt-1.5 text-[#9E2A2B] tracking-wide">${coloredBaziStr}${displayZiMark}</span>`;
         
         let targetWarn = jqData.isCurrentTransition ? "⚠️" : "";
         let nextWarn = jqData.isNextTransition ? "⚠️" : "";
@@ -445,7 +437,7 @@ document.getElementById('info-bazi').innerHTML = `${solarBadge}<span class="text
         let isMenFuyin = (doorOffset === 0); let isStarFuyin = (offset === 0); let isGanFuyin = (offset === 0);
         let isMenFanyin = (doorOffset === 4); let isStarFanyin = (offset === 4); let isGanFanyin = (offset === 4);
 
-let fuyinHTML = ""; let rawFuyin = ""; let rawFanyin = "";
+        let fuyinHTML = ""; let rawFuyin = ""; let rawFanyin = "";
         
         if (isMenFuyin) { fuyinHTML += "<span class='info-tag info-tag-orange'>【門伏吟】</span>"; rawFuyin += "【門伏吟】"; }
         if (isStarFuyin) { fuyinHTML += "<span class='info-tag info-tag-orange'>【星伏吟】</span>"; rawFuyin += "【星伏吟】"; }
@@ -470,7 +462,7 @@ let fuyinHTML = ""; let rawFuyin = ""; let rawFanyin = "";
             if(pBranches.includes(clashBranch)) isChong = true;
         }
         
-let stemStatusStr = "", rawStemStatus = "";
+        let stemStatusStr = "", rawStemStatus = "";
         if (isZuo) { stemStatusStr = "<span class='info-tag info-tag-orange'>【日干落月令之宮】</span>"; rawStemStatus = "【日干落月令之宮】"; }
         if (isChong) { stemStatusStr = "<span class='info-tag info-tag-orange'>【月令沖日干】</span>"; rawStemStatus = "【月令沖日干】"; }
 
@@ -483,6 +475,7 @@ let stemStatusStr = "", rawStemStatus = "";
         } else {
             document.getElementById('info-special').innerHTML = combinedStatusHTML;
         }
+
         document.getElementById('qimen-grid').classList.remove('hidden');
         document.getElementById('action-footer').classList.remove('hidden');
         document.getElementById('action-footer').classList.add('flex');
@@ -600,6 +593,7 @@ let stemStatusStr = "", rawStemStatus = "";
                 yStemEff: yStemEff, mStemEff: mStemEff, dStemEff: dStemEff, hStemEff: hStemEff
             };
 
+            // 🌟 恢復原版：十二地支與天將維持在宮外 (${getBranchHTML(i)})，宮內各元素回到原位
             el.innerHTML = `${getBranchHTML(i)}
                 <div class="emoji-container">
                     ${isKong ? '<span>🈳</span>' : ''}
