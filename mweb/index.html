@@ -222,23 +222,115 @@ details#accordion-tools summary {
 .day-stem { display: inline-block; background-color: #FDF2F0; border: 1.5px solid #9E2A2B; padding: 0 3px; border-radius: 4px; line-height: 1.1; }
 .hour-stem { display: inline-block; background-color: #FEF7E8; border: 1.5px solid #C88A2A; padding: 0 3px; border-radius: 4px; line-height: 1.1; }
 
+/* ===================================================
+   十二地支天將：黃金百分比外緣錨定（徹底杜絕宮位內部重疊）
+   =================================================== */
+
 .branch-label { 
-    position: absolute; display: flex; align-items: center; justify-content: center; font-size: 0.88rem; line-height: 0.9; font-weight: 800; pointer-events: none; white-space: nowrap; z-index: 20; background: rgba(255, 253, 248, 0.85); padding: 2px 4px; border-radius: 4px; border: 1px solid rgba(200, 180, 140, 0.4); box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    position: absolute !important; 
+    display: flex !important; 
+    align-items: center !important; 
+    justify-content: center !important; 
+    font-size: 0.85rem !important; 
+    line-height: 0.9 !important; 
+    font-weight: 800 !important; 
+    pointer-events: none !important; 
+    white-space: nowrap !important; 
+    z-index: 20 !important; 
+    background: rgba(255, 253, 248, 0.9) !important; 
+    padding: 2px 3px !important; 
+    border-radius: 4px !important; 
+    border: 1px solid rgba(200, 180, 140, 0.5) !important; 
+    box-shadow: 0 1px 3px rgba(60, 45, 20, 0.06) !important;
 }
-.tian-jiang { font-size: 1.15rem; color: #5B3B70; margin-left: 2px; line-height: 0.9; }
-.vertical-label { flex-direction: column; line-height: 1.1; }
-.vertical-label .tian-jiang { margin-left: 0; margin-top: 3px; writing-mode: vertical-lr; letter-spacing: 1px; }
 
-.pos-top { top: -30px; left: 50%; transform: translateX(-50%); } 
-.pos-bottom { bottom: -30px; left: 50%; transform: translateX(-50%); }
-.pos-left { top: 50%; left: -30px; transform: translateY(-50%); } 
-.pos-right { top: 50%; right: -30px; transform: translateY(-50%); }
+.tian-jiang { 
+    font-size: 1.1rem !important; 
+    color: #5B3B70 !important; 
+    margin-left: 2px !important; 
+    line-height: 0.9 !important; 
+}
 
+.vertical-label { 
+    flex-direction: column !important; 
+    line-height: 1.05 !important; 
+}
+
+.vertical-label .tian-jiang { 
+    margin-left: 0 !important; 
+    margin-top: 2px !important; 
+    writing-mode: vertical-lr !important; 
+    letter-spacing: 1px !important; 
+}
+
+/* 🌟 電腦版錨定定位 */
+.pos-top { 
+    bottom: calc(100% + 4px) !important; 
+    left: 50% !important; 
+    top: auto !important;
+    transform: translateX(-50%) !important; 
+} 
+.pos-bottom { 
+    top: calc(100% + 4px) !important; 
+    left: 50% !important; 
+    bottom: auto !important;
+    transform: translateX(-50%) !important; 
+}
+.pos-left { 
+    right: calc(100% + 4px) !important; 
+    top: 50% !important; 
+    left: auto !important;
+    transform: translateY(-50%) !important; 
+} 
+.pos-right { 
+    left: calc(100% + 4px) !important; 
+    top: 50% !important; 
+    right: auto !important;
+    transform: translateY(-50%) !important; 
+}
+
+/* ===================================================
+   📱 手機版微調 (螢幕寬度 <= 640px)
+   =================================================== */
 @media (max-width: 640px) {
-    .grid-wrapper { padding: 22px 24px 28px 24px !important; }
-    .grid-qimen { gap: 5px !important; }
-    .palace { min-height: 165px !important; padding: 4px 5px !important; }
-    .pos-left { left: -21px !important; } .pos-right { right: -21px !important; } .pos-top { top: -22px !important; } .pos-bottom { bottom: -22px !important; }
+    /* 增加左右內邊距至 32px，為兩側天將標籤留出安全通道 */
+    .grid-wrapper { 
+        padding: 24px 32px 28px 32px !important; 
+        overflow: visible !important;
+    }
+    .grid-qimen { 
+        gap: 5px !important; 
+    }
+    .palace { 
+        min-height: 160px !important; 
+        padding: 4px 4px !important; 
+    }
+
+    /* 手機端標籤微緊湊，外框間距縮至 2px */
+    .branch-label {
+        font-size: 0.78rem !important;
+        padding: 1px 2px !important;
+    }
+    .branch-label .tian-jiang {
+        font-size: 0.98rem !important;
+    }
+
+    .pos-left { 
+        right: calc(100% + 2px) !important; 
+        left: auto !important;
+    } 
+    .pos-right { 
+        left: calc(100% + 2px) !important; 
+        right: auto !important;
+    } 
+    .pos-top { 
+        bottom: calc(100% + 2px) !important; 
+        top: auto !important;
+    } 
+    .pos-bottom { 
+        top: calc(100% + 2px) !important; 
+        bottom: auto !important;
+    }
 }
 
 .btn-ink-primary { background-color: #2D2319 !important; color: #F8F4EC !important; border: 1px solid #5A4733 !important; }
