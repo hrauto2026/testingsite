@@ -16,6 +16,63 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;900&display=swap" rel="stylesheet">  
 
     <style>
+/* ===================================================
+   🌟 全域替換字體為「方正聚珍仿宋」
+   涵蓋所有文字、按鈕、輸入框、選單與九宮格
+   =================================================== */
+
+/* 若你有將字型檔 (如 .ttf / .woff2) 放入專案的 fonts/ 資料夾，可解除以下註解使用 WebFont：
+@font-face {
+    font-family: '方正聚珍仿宋';
+    src: url('./fonts/FZJuZhenFangSong.woff2') format('woff2'),
+         url('./fonts/FZJuZhenFangSong.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+*/
+
+/* 1. 全域強制套用方正聚珍仿宋（包含繁簡英名字體別名與回退仿宋體） */
+*, 
+html, 
+body, 
+button, 
+input, 
+select, 
+textarea, 
+details, 
+summary, 
+.palace, 
+.text-main, 
+.text-palace-name, 
+.text-tiandi-stem, 
+.combo-lock select {
+    font-family: 
+        'FZJuZhenFangSong-Z02',       /* 方正聚珍仿宋 官方英文名 */
+        'FZJuZhenFangSongS-Z02',      /* 方正聚珍仿宋簡體 英文名 */
+        'FZJuZhenFangSongB-Z02',      /* 方正聚珍仿宋繁體 英文名 */
+        '方正聚珍仿宋',               /* 中文名 */
+        '方正聚珍仿宋简体',
+        '方正聚珍仿宋繁体',
+        'STFangsong',                 /* Mac / iOS 華文仿宋 回退備用 */
+        'FangSong',                   /* Windows 仿宋 回退備用 */
+        '仿宋',
+        serif !important;
+}
+
+/* 2. 移除原有的 body font-family 設定，改為純背景宣告 */
+html, body { 
+    background-color: #F5EFE4 !important; 
+    background-image: url('/images/qm04.png') !important;
+    background-repeat: no-repeat !important;
+    background-position: center top !important;
+    background-size: cover !important;
+    background-attachment: fixed !important;
+    min-height: 100vh; 
+    font-weight: bold; 
+    color: #26211C; 
+}
+
 /* ==========================================
    ✨ 仙鶴水墨宣紙風 (精簡乾淨版)
    ========================================== */
