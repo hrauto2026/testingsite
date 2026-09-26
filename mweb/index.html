@@ -222,60 +222,129 @@ details#accordion-tools summary {
 .day-stem { display: inline-block; background-color: #FDF2F0; border: 1.5px solid #9E2A2B; padding: 0 3px; border-radius: 4px; line-height: 1.1; }
 .hour-stem { display: inline-block; background-color: #FEF7E8; border: 1.5px solid #C88A2A; padding: 0 3px; border-radius: 4px; line-height: 1.1; }
 
-.branch-label { 
-    position: absolute; display: flex; align-items: center; justify-content: center; font-size: 0.88rem; line-height: 0.9; font-weight: 800; pointer-events: none; white-space: nowrap; z-index: 20; background: rgba(255, 253, 248, 0.85); padding: 2px 4px; border-radius: 4px; border: 1px solid rgba(200, 180, 140, 0.4); box-shadow: 0 1px 3px rgba(0,0,0,0.03);
-}
-.tian-jiang { font-size: 1.15rem; color: #5B3B70; margin-left: 2px; line-height: 0.9; }
-.vertical-label { flex-direction: column; line-height: 1.1; }
-.vertical-label .tian-jiang { margin-left: 0; margin-top: 3px; writing-mode: vertical-lr; letter-spacing: 1px; }
+/* ===================================================
+   十二地支天將：宮外絕對定位 (徹底解決 iOS Safari 錯位)
+   =================================================== */
 
-/* 🌟 外圍十二天將：永遠保持在宮外，絕不內侵 */
+/* 標籤外框卡片 */
+.branch-label { 
+    position: absolute !important; 
+    display: inline-flex !important; 
+    align-items: center !important; 
+    justify-content: center !important; 
+    font-size: 0.8rem !important; 
+    line-height: 1 !important; 
+    font-weight: 800 !important; 
+    pointer-events: none !important; 
+    white-space: nowrap !important; 
+    z-index: 20 !important; 
+    background: rgba(255, 253, 248, 0.95) !important; 
+    padding: 2px 3px !important; 
+    border-radius: 4px !important; 
+    border: 1px solid rgba(200, 180, 140, 0.5) !important; 
+    box-shadow: 0 1px 3px rgba(60, 45, 20, 0.08) !important;
+}
+
+/* 橫向標籤 (頂部與底部：巳午未、丑子亥) */
+.branch-label .tian-jiang { 
+    font-size: 0.95rem !important; 
+    color: #5B3B70 !important; 
+    margin-left: 2px !important; 
+    line-height: 1 !important; 
+}
+
+/* 🌟 直向標籤 (兩側：辰卯寅、申酉戌) 
+   放棄 writing-mode，改用 1em 強制單字換行，徹底消除 iOS 橫向撐開問題 */
+.vertical-label { 
+    flex-direction: column !important; 
+    width: auto !important;
+    padding: 3px 2px !important;
+    box-sizing: border-box !important;
+}
+.vertical-label .tian-jiang { 
+    margin-left: 0 !important; 
+    margin-top: 2px !important; 
+    width: 1em !important;
+    line-height: 1.05 !important;
+    word-break: break-all !important;
+    white-space: normal !important;
+    text-align: center !important;
+    letter-spacing: 0 !important;
+    writing-mode: horizontal-tb !important; /* 強制標準水平文字流，杜絕 WebKit 旋轉軸位 bug */
+}
+
+/* 🌟 外緣定位：利用 transform 將標籤 100% 推出宮位外 */
 .pos-left { 
-    right: calc(100% + 4px) !important; 
-    left: auto !important; 
-    top: 50% !important; 
-    transform: translateY(-50%) !important; 
+    left: 0 !important;
+    right: auto !important;
+    top: 50% !important;
+    bottom: auto !important;
+    transform: translate(calc(-100% - 3px), -50%) !important; 
 } 
 .pos-right { 
-    left: calc(100% + 4px) !important; 
-    right: auto !important; 
-    top: 50% !important; 
-    transform: translateY(-50%) !important; 
+    left: 100% !important;
+    right: auto !important;
+    top: 50% !important;
+    bottom: auto !important;
+    transform: translate(3px, -50%) !important; 
 }
 .pos-top { 
-    bottom: calc(100% + 4px) !important; 
-    top: auto !important; 
-    left: 50% !important; 
-    transform: translateX(-50%) !important; 
-}
+    top: 0 !important;
+    bottom: auto !important;
+    left: 50% !important;
+    right: auto !important;
+    transform: translate(-50%, calc(-100% - 3px)) !important; 
+} 
 .pos-bottom { 
-    top: calc(100% + 4px) !important; 
-    bottom: auto !important; 
-    left: 50% !important; 
-    transform: translateX(-50%) !important; 
+    top: 100% !important;
+    bottom: auto !important;
+    left: 50% !important;
+    right: auto !important;
+    transform: translate(-50%, 3px) !important; 
 }
 
-/* 手機版微調：外圍 wrapper 左右留出 34px，讓外圍天將牌有充裕空間站立 */
+/* ===================================================
+   📱 手機版專用微調 (螢幕寬度 <= 640px)
+   =================================================== */
 @media (max-width: 640px) {
+    /* 外圍邊距拓寬至 30px，為左右兩側直式標籤預留充裕通道 */
     .grid-wrapper { 
-        padding: 26px 36px 32px 36px !important; 
+        padding: 24px 30px 28px 30px !important; 
         overflow: visible !important; 
     }
     .grid-qimen { 
-        gap: 6px !important; 
+        gap: 5px !important; 
     }
     .palace { 
         min-height: 165px !important; 
-        padding: 4px 5px !important; 
+        padding: 4px 4px !important; 
     }
+
+    /* 手機上標籤更加緊湊纖細（約 16px-18px 寬） */
+    .branch-label {
+        font-size: 0.75rem !important;
+        padding: 1px 2px !important;
+    }
+    .branch-label .tian-jiang {
+        font-size: 0.88rem !important;
+    }
+    .vertical-label {
+        padding: 2px 1.5px !important;
+    }
+
+    /* 與宮位外框緊貼 2px，保證不進入宮內也不出螢幕 */
     .pos-left { 
-        right: calc(100% + 2px) !important; 
-        left: auto !important; 
+        transform: translate(calc(-100% - 2px), -50%) !important; 
     } 
     .pos-right { 
-        left: calc(100% + 2px) !important; 
-        right: auto !important; 
+        transform: translate(2px, -50%) !important; 
     } 
+    .pos-top { 
+        transform: translate(-50%, calc(-100% - 2px)) !important; 
+    } 
+    .pos-bottom { 
+        transform: translate(-50%, 2px) !important; 
+    }
 }
 
 .btn-ink-primary { background-color: #2D2319 !important; color: #F8F4EC !important; border: 1px solid #5A4733 !important; }
