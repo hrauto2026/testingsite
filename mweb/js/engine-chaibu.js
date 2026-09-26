@@ -184,6 +184,8 @@ function generatePan() {
         const y = parseInt(document.getElementById('sel-year').value);
         const m = parseInt(document.getElementById('sel-month').value);
         const d = parseInt(document.getElementById('sel-day').value);
+
+
         
         const checkDate = new Date(y, m - 1, d);
         if (checkDate.getFullYear() !== y || checkDate.getMonth() !== (m - 1) || checkDate.getDate() !== d) {
@@ -375,10 +377,12 @@ const filterLabelEl = document.getElementById('filter-method-label');
         let specialStr = "", isWuBuYu = (timeStemIdx === (STEMS.indexOf(dayStem) + 6) % 10), isTianXian = false;
         const dStemTX = dayGZ.substring(0, 1);
         if (((dStemTX === '甲' || dStemTX === '己') && (timeGZ_string === '己巳')) || ((dStemTX === '乙' || dStemTX === '庚') && timeGZ_string === '甲申') || ((dStemTX === '丙' || dStemTX === '辛') && timeGZ_string === '甲午') || ((dStemTX === '丁' || dStemTX === '壬') && timeGZ_string === '甲辰') || ((dStemTX === '戊' || dStemTX === '癸') && timeGZ_string === '甲寅')) isTianXian = true;
-        
+
+let specialTagsHtml = "";
         let rawSpecialInfo = "";
-        if (isTianXian) { specialStr += "<span class='text-green-600 font-bold ml-2'>【天顯時格】</span>"; rawSpecialInfo += "【天顯時格】"; }
-        if (isWuBuYu) { specialStr += "<span class='text-red-600 font-bold ml-2'>【五不遇時】</span>"; rawSpecialInfo += "【五不遇時】"; }
+        if (isTianXian) { specialTagsHtml += "<span class='info-tag info-tag-green'>【天顯時格】</span>"; rawSpecialInfo += "【天顯時格】"; }
+        if (isWuBuYu) { specialTagsHtml += "<span class='info-tag info-tag-red'>【五不遇時】</span>"; rawSpecialInfo += "【五不遇時】"; }
+
         
         const weekDays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
         const weekStr = weekDays[currentDate.getDay()];
@@ -405,11 +409,14 @@ const filterLabelEl = document.getElementById('filter-method-label');
         const accInfo = document.getElementById('accordion-pan-info');
         const quickBar = document.getElementById('quick-time-bar');
 
-        if (accControls) accControls.open = false;
+        if (accControls && window.isFromGenerateBtn) {
+    accControls.open = false;
+    window.isFromGenerateBtn = false;
+}
         if (accInfo) {
             accInfo.classList.remove('hidden');
             accInfo.open = true;
-            document.getElementById('pan-summary-title').innerHTML = `📋 排盤資料`;
+            document.getElementById('pan-summary-title').innerHTML = `排盤資料`;
         }
         if (quickBar) {
             quickBar.classList.remove('hidden');
@@ -417,8 +424,7 @@ const filterLabelEl = document.getElementById('filter-method-label');
             document.getElementById('quick-bar-time').innerHTML = `${trueY}年${trueM}月${trueD}日(${weekStr}) ${trueH.toString().padStart(2,'0')}:${trueMin.toString().padStart(2,'0')}${displayZiMark}`;
         }
 
-        // 修改排盤資料顯示，加上紅色流派標籤
-        document.getElementById('info-bazi').innerHTML = `${solarBadge}<span class="text-red-700 mr-2">${methodLabel}</span>${trueY}年${trueM}月${trueD}日(${weekStr}) ${trueH.toString().padStart(2,'0')}:${trueMin.toString().padStart(2,'0')} ｜ <span class="text-teal-800 font-bold">${lunarStr}</span> ｜ ${coloredBaziStr}${displayZiMark}${specialStr}`;
+document.getElementById('info-bazi').innerHTML = `${solarBadge}<span class="text-red-700 mr-2">${methodLabel}</span>${trueY}年${trueM}月${trueD}日(${weekStr}) ${trueH.toString().padStart(2,'0')}:${trueMin.toString().padStart(2,'0')} ｜ <span class="text-teal-800 font-bold">${lunarStr}</span><br><span id="bazi-line" class="inline-block mt-1.5 text-[#9E2A2B] tracking-wide">${coloredBaziStr}${displayZiMark}</span>`;
         
         let targetWarn = jqData.isCurrentTransition ? "⚠️" : "";
         let nextWarn = jqData.isNextTransition ? "⚠️" : "";
@@ -439,15 +445,15 @@ const filterLabelEl = document.getElementById('filter-method-label');
         let isMenFuyin = (doorOffset === 0); let isStarFuyin = (offset === 0); let isGanFuyin = (offset === 0);
         let isMenFanyin = (doorOffset === 4); let isStarFanyin = (offset === 4); let isGanFanyin = (offset === 4);
 
-        let fuyinHTML = ""; let rawFuyin = ""; let rawFanyin = "";
+let fuyinHTML = ""; let rawFuyin = ""; let rawFanyin = "";
         
-        if (isMenFuyin) { fuyinHTML += "<span class='text-red-700 mr-2'>【門伏吟】</span>"; rawFuyin += "【門伏吟】"; }
-        if (isStarFuyin) { fuyinHTML += "<span class='text-amber-700 mr-2'>【星伏吟】</span>"; rawFuyin += "【星伏吟】"; }
-        if (isGanFuyin) { fuyinHTML += "<span class='text-purple-700 mr-2'>【干伏吟】</span>"; rawFuyin += "【干伏吟】"; }
+        if (isMenFuyin) { fuyinHTML += "<span class='info-tag info-tag-orange'>【門伏吟】</span>"; rawFuyin += "【門伏吟】"; }
+        if (isStarFuyin) { fuyinHTML += "<span class='info-tag info-tag-orange'>【星伏吟】</span>"; rawFuyin += "【星伏吟】"; }
+        if (isGanFuyin) { fuyinHTML += "<span class='info-tag info-tag-orange'>【干伏吟】</span>"; rawFuyin += "【干伏吟】"; }
 
-        if (isMenFanyin) { fuyinHTML += "<span class='text-red-700 mr-2'>【門反吟】</span>"; rawFanyin += "【門反吟】"; }
-        if (isStarFanyin) { fuyinHTML += "<span class='text-amber-700 mr-2'>【星反吟】</span>"; rawFanyin += "【星反吟】"; }
-        if (isGanFanyin) { fuyinHTML += "<span class='text-purple-700 mr-2'>【干反吟】</span>"; rawFanyin += "【干反吟】"; }
+        if (isMenFanyin) { fuyinHTML += "<span class='info-tag info-tag-orange'>【門反吟】</span>"; rawFanyin += "【門反吟】"; }
+        if (isStarFanyin) { fuyinHTML += "<span class='info-tag info-tag-orange'>【星反吟】</span>"; rawFanyin += "【星反吟】"; }
+        if (isGanFanyin) { fuyinHTML += "<span class='info-tag info-tag-orange'>【干反吟】</span>"; rawFanyin += "【干反吟】"; }
 
         let dPalaces = [];
         for(let i=1; i<=9; i++) {
@@ -464,21 +470,19 @@ const filterLabelEl = document.getElementById('filter-method-label');
             if(pBranches.includes(clashBranch)) isChong = true;
         }
         
-        let stemStatusStr = "", rawStemStatus = "";
-        if (isZuo) { stemStatusStr = "<span class='text-blue-700'>【日干落月令之宮】</span>"; rawStemStatus = "【日干落月令之宮】"; }
-        if (isChong) { stemStatusStr = "<span class='text-red-700'>【月令沖日干】</span>"; rawStemStatus = "【月令沖日干】"; }
+let stemStatusStr = "", rawStemStatus = "";
+        if (isZuo) { stemStatusStr = "<span class='info-tag info-tag-orange'>【日干落月令之宮】</span>"; rawStemStatus = "【日干落月令之宮】"; }
+        if (isChong) { stemStatusStr = "<span class='info-tag info-tag-orange'>【月令沖日干】</span>"; rawStemStatus = "【月令沖日干】"; }
 
-        let combinedStatusHTML = fuyinHTML + stemStatusStr;
-        let combinedRawStatus = rawFuyin + rawFanyin + rawStemStatus;
+        // 🌟 核心優先級：天顯時格/五不遇時排在首位，其次為伏吟/反吟，最後為月令沖
+        let combinedStatusHTML = specialTagsHtml + fuyinHTML + stemStatusStr;
+        let combinedRawStatus = rawSpecialInfo + rawFuyin + rawFanyin + rawStemStatus;
 
         if (!combinedStatusHTML) {
-            document.getElementById('info-special').classList.add('hidden');
             document.getElementById('info-special').innerHTML = "";
         } else {
-            document.getElementById('info-special').classList.remove('hidden');
             document.getElementById('info-special').innerHTML = combinedStatusHTML;
         }
-
         document.getElementById('qimen-grid').classList.remove('hidden');
         document.getElementById('action-footer').classList.remove('hidden');
         document.getElementById('action-footer').classList.add('flex');
