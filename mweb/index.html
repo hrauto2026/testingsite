@@ -17,14 +17,14 @@
 
     <style>
 /* ==========================================
-   ✨ 仙鶴水墨宣紙風 (完整修復與條件篩選一致版)
+   ✨ 仙鶴水墨宣紙風 (精簡乾淨版)
    ========================================== */
 
 /* 全屏覆蓋水墨背景 */
 html, body { 
     font-family: 'Noto Serif TC', 'BiauKai', 'Songti TC', serif; 
     background-color: #F5EFE4 !important; 
-    background-image: url('/images/qm04.png') !important;
+    background-image: url('/images/qm04.jpg') !important;
     background-repeat: no-repeat !important;
     background-position: center top !important;
     background-size: cover !important;
@@ -246,7 +246,9 @@ details#accordion-tools summary {
                 奇門遁甲專業排盤系統
             </h1>
 
+            <!-- ============================================== -->
             <!-- 折疊欄一：起盤時間與參數設定 -->
+            <!-- ============================================== -->
             <details id="accordion-controls" class="group border border-[#C5A06A]/60 rounded-xl mb-2 shadow-sm" open>
                 <summary class="py-2.5 px-4 cursor-pointer text-lg sm:text-xl font-black text-[#4A3319] bg-[rgba(248,241,227,0.55)] rounded-xl group-open:rounded-b-none group-open:border-b border-[#C5A06A]/40 flex justify-between items-center select-none">
                     <span>起盤時間與參數設定</span>
@@ -319,7 +321,7 @@ details#accordion-tools summary {
                         <button id="btn-method-cycle" onclick="cycleQimenMethod()" class="bg-[#9E2A2B] hover:bg-[#7A2021] text-[#F9F6F0] py-1.5 px-4 rounded-xl shadow text-sm sm:text-base font-black transition-all border border-[#5C1819]">現時流派：時家拆補法</button>
 
                         <button id="btn-now" onclick="resetToNow()" class="bg-[#2D2319] hover:bg-[#443526] text-[#F8F4EC] py-1.5 px-4 rounded-xl shadow text-sm sm:text-base font-black transition-all border border-[#5A4733]">現在時間</button>
-                        <button onclick="handleGenerateBtn()" class="btn-ink-primary py-1.5 px-6 rounded-xl shadow text-sm sm:text-base font-black tracking-wider">起盤</button>
+<button onclick="window.isFromGenerateBtn = true; handleGenerateBtn();" class="btn-ink-primary py-1.5 px-6 rounded-xl shadow text-sm sm:text-base font-black tracking-wider">起盤</button>
                         
                         <button id="btn-show-jieqi" onclick="showJieQiModal()" class="bg-[#385E48] hover:bg-[#2C4A38] text-white py-1.5 px-4 rounded-xl shadow text-sm sm:text-base font-black transition-all border border-[#233B2D]"><span id="btn-jieqi-year"></span>年廿四節氣</button>
                         <button id="btn-toggle-filter" onclick="toggleFilterPanel()" class="bg-[#A67C2E] hover:bg-[#8C6A2E] text-white py-1.5 px-4 rounded-xl shadow text-sm sm:text-base font-black flex items-center gap-1 border border-[#6E501E]">條件篩選</button>
@@ -327,7 +329,9 @@ details#accordion-tools summary {
                 </div>
             </details>
 
+            <!-- ============================================== -->
             <!-- 折疊欄二：排盤資料 -->
+            <!-- ============================================== -->
             <details id="accordion-pan-info" class="group border border-[#C5A06A]/60 rounded-xl mb-2 shadow-sm" open>
                 <summary class="py-2.5 px-4 cursor-pointer text-lg sm:text-xl font-black text-[#4A3319] bg-[rgba(248,241,227,0.55)] flex justify-between items-center select-none rounded-xl group-open:rounded-b-none group-open:border-b border-[#C5A06A]/40">
                     <span id="pan-summary-title">排盤資料</span>
@@ -360,22 +364,20 @@ details#accordion-tools summary {
                 </div>
             </details>
 
-<!-- 頂部常駐快調 Bar (放大 50% 時間 + 水墨箭頭圖示) -->
+            <!-- ============================================== -->
+            <!-- 頂部常駐快調 Bar (放大 50% 時間 + 水墨前後時辰箭頭) -->
+            <!-- ============================================== -->
             <div id="quick-time-bar" class="hidden justify-between items-center bg-[rgba(255,253,248,0.95)] border border-[#C5A06A]/60 rounded-xl py-1 px-2.5 sm:px-4 shadow-sm mb-2 max-w-xl mx-auto transition-all">
-                
-                <!-- 上一時辰按鈕 (Backward) -->
                 <button onclick="shiftHour(-1)" 
                         title="退後一時辰"
                         class="w-7 h-7 sm:w-8 sm:h-8 p-0.5 rounded-lg border border-[#C5A06A]/50 bg-[#FAF6EE] hover:bg-[#F0E6D2] active:scale-90 transition-transform flex items-center justify-center shrink-0 shadow-sm cursor-pointer overflow-hidden">
                     <img src="./images/arrowbwd.jpg" alt="上一個時辰" class="w-full h-full object-contain pointer-events-none rounded">
                 </button>
                 
-                <!-- 中間日期時間 (放大 50%，居中加粗) -->
                 <div class="flex items-center justify-center text-center px-2 flex-grow">
                     <span id="quick-bar-time" class="text-base sm:text-xl font-black text-[#3C2A1E] tracking-wide select-none leading-tight"></span>
                 </div>
                 
-                <!-- 下一時辰按鈕 (Forward) -->
                 <button onclick="shiftHour(1)" 
                         title="前進一時辰"
                         class="w-7 h-7 sm:w-8 sm:h-8 p-0.5 rounded-lg border border-[#C5A06A]/50 bg-[#FAF6EE] hover:bg-[#F0E6D2] active:scale-90 transition-transform flex items-center justify-center shrink-0 shadow-sm cursor-pointer overflow-hidden">
@@ -413,7 +415,9 @@ details#accordion-tools summary {
                 </div>
             </div>
 
-            <!-- 底部工具列 -->
+            <!-- ============================================== -->
+            <!-- 底部工具列 (已移除：指南針外觀、分享按鈕、使用手冊) -->
+            <!-- ============================================== -->
             <div class="w-full mt-4 hidden flex-col items-center" id="action-footer">
                 <details id="accordion-tools" class="group w-full max-w-5xl mx-auto bg-[rgba(255,253,248,0.7)] border border-[#C5A06A]/60 rounded-xl shadow-sm select-none" open>
                     <summary class="py-1.5 px-3 cursor-pointer text-xs sm:text-sm font-bold text-[#4A3319] bg-[rgba(248,241,227,0.6)] rounded-xl group-open:rounded-b-none group-open:border-b border-[#C5A06A]/30 flex justify-between items-center transition-colors">
@@ -422,23 +426,22 @@ details#accordion-tools summary {
                     </summary>
                     
                     <div class="p-2 sm:p-3 bg-transparent flex flex-wrap justify-center items-center gap-2">
+                        <!-- AI 宗師解盤 -->
                         <button onclick="openAiModal()" class="bg-[#9E2A2B] hover:bg-[#7A2021] text-[#F9F6F0] py-1 px-3.5 rounded-full shadow transition active:scale-95 flex items-center justify-center text-xs font-black gap-1 border border-[#5C1819]">
                             AI 宗師解盤
                         </button>    
 
+                        <!-- 複製盤面資料 -->
                         <button onclick="copyPan()" class="bg-[#2D2319] hover:bg-[#443526] text-white py-1 px-3 rounded-full shadow transition active:scale-95 flex items-center justify-center text-xs font-bold border border-[#5A4733]"><svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>複製盤面資料</button>
-                        <button onclick="sharePan()" class="bg-[#385E48] hover:bg-[#2C4A38] text-white py-1 px-3 rounded-full shadow transition active:scale-95 flex items-center justify-center text-xs font-bold border border-[#233B2D]"><svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>分享起盤連結</button>
                         
+                        <!-- 案例庫相關 -->
                         <button onclick="saveCurrentCase(false)" class="bg-[#A67C2E] hover:bg-[#8C6A2E] text-white py-1 px-3 rounded-full shadow transition active:scale-95 flex items-center justify-center text-xs font-bold border border-[#6E501E]">儲存案例</button>
                         <button onclick="openRightPanelTab('cases')" class="bg-[#2D2319] hover:bg-[#443526] text-white py-1 px-3 rounded-full shadow transition active:scale-95 flex items-center justify-center text-xs font-bold border border-[#5A4733]">案例庫</button>
                         
-                        <div class="flex items-center gap-2 bg-white/80 px-3 py-1 rounded-full shadow-sm border border-[#C5A06A]/40">
-                            <span class="text-xs font-bold text-[#3C2A1E] flex items-center gap-1">奇門指南針</span>
-                            <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" id="toggle-compass" class="sr-only peer" onchange="handleToggleSwitch('toggle-compass')">
-                                <div class="w-9 h-5 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#9E2A2B] shadow-inner"></div>
-                            </label>
-                        </div>
+                        <!-- 🌟 背景相容：保留隱藏的指南針 checkbox，防止 app.js 崩潰 -->
+                        <input type="checkbox" id="toggle-compass" class="hidden">
+
+                        <!-- 先天八卦數 -->
                         <div class="flex items-center gap-2 bg-white/80 px-3 py-1 rounded-full shadow-sm border border-[#C5A06A]/40">
                             <span class="text-xs font-bold text-[#3C2A1E]" id="bagua-label">先天八卦數</span>
                             <label class="relative inline-flex items-center cursor-pointer">
@@ -446,6 +449,8 @@ details#accordion-tools summary {
                                 <div class="w-9 h-5 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#385E48] shadow-inner"></div>
                             </label>
                         </div>
+
+                        <!-- 能量狀態 -->
                         <div class="flex items-center gap-2 bg-white/80 px-3 py-1 rounded-full shadow-sm border border-[#C5A06A]/40">
                             <span class="text-xs font-bold text-[#3C2A1E]" id="energy-label">能量狀態</span>
                             <label class="relative inline-flex items-center cursor-pointer">
@@ -453,6 +458,8 @@ details#accordion-tools summary {
                                 <div class="w-9 h-5 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#A67C2E] shadow-inner"></div>
                             </label>
                         </div>
+
+                        <!-- 內外盤 -->
                         <div class="flex items-center gap-2 bg-white/80 px-3 py-1 rounded-full shadow-sm border border-[#C5A06A]/40">
                             <span class="text-xs font-bold text-[#3C2A1E]">內外盤</span>
                             <label class="relative inline-flex items-center cursor-pointer">
@@ -460,6 +467,8 @@ details#accordion-tools summary {
                                 <div class="w-9 h-5 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#2B4C5E] shadow-inner"></div>
                             </label>
                         </div>
+
+                        <!-- 流年飛星 -->
                         <div class="flex items-center gap-2 bg-white/80 px-3 py-1 rounded-full shadow-sm border border-[#C5A06A]/40">
                             <span class="text-xs font-bold text-[#3C2A1E]">流年飛星</span>
                             <label class="relative inline-flex items-center cursor-pointer">
@@ -468,6 +477,8 @@ details#accordion-tools summary {
                             </label>
                             <select id="sel-feixing-year" class="hidden text-xs p-1 border border-[#C5A06A] rounded bg-[#FAF6EE] font-bold text-[#3C2A1E] outline-none" onchange="generatePan()"></select>
                         </div>
+
+                        <!-- 天乙貴人 -->
                         <div class="flex items-center gap-2 bg-white/80 px-3 py-1 rounded-full shadow-sm border border-[#C5A06A]/40">
                             <span class="text-xs font-bold text-[#3C2A1E]" id="guiren-label">天乙貴人</span>
                             <label class="relative inline-flex items-center cursor-pointer">
@@ -479,18 +490,16 @@ details#accordion-tools summary {
                 </details>
 
                 <div class="w-full text-center mt-2">
-                    <span class="text-xs text-[#8C887B] font-normal">created by RS2026 <button onclick="showManualModal()" class="text-[#9E2A2B] hover:underline font-bold transition-colors focus:outline-none cursor-pointer">使用手冊</button></span>
+                    <span class="text-xs text-[#8C887B] font-normal">created by RS2026</span>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- ============================================== -->
-    <!-- 🌟 右側面板：完美修復並與宣紙水墨一致的搜尋條件/案例庫 -->
+    <!-- 右側面板：條件篩選 / 案例庫 -->
     <!-- ============================================== -->
     <div id="right-side-panel" class="hidden lg:col-span-4 lg:sticky lg:top-4 lg:self-start bg-[rgba(255,253,248,0.92)] backdrop-blur-md rounded-2xl shadow-2xl p-4 border border-[#C5A06A]/60 slide-panel overflow-y-auto max-h-[92vh]">
-        
-        <!-- Tab 按鈕區 -->
         <div class="flex justify-between items-center mb-4 border-b border-[#C5A06A]/40 pb-2">
             <div class="flex gap-2">
                 <button id="tab-btn-cases" onclick="switchRightTab('cases')" class="px-3 py-1.5 rounded-lg font-black text-sm transition-colors bg-[#2D2319] text-[#F8F4EC] shadow-sm">📁 案例庫</button>
@@ -499,7 +508,7 @@ details#accordion-tools summary {
             <button onclick="closeRightPanel()" class="text-[#8C887B] hover:text-black font-bold text-xl leading-none">✖</button>
         </div>
 
-        <!-- ==================== Tab 內容 1：案例庫 ==================== -->
+        <!-- 案例庫內容 -->
         <div id="tab-content-cases" class="space-y-3">
             <div class="flex gap-1.5 mb-2">
                 <button onclick="exportCasesDB()" class="flex-1 text-xs bg-[#FAF6EE] hover:bg-[#EAE1D0] text-[#3C2A1E] font-bold py-1.5 rounded border border-[#C5A06A]/60 transition shadow-sm">匯出備份</button>
@@ -513,7 +522,7 @@ details#accordion-tools summary {
             <div id="case-list-container" class="space-y-3 max-h-[60vh] overflow-y-auto pr-1"></div>
         </div>
 
-        <!-- ==================== Tab 內容 2：條件篩選 (完整還原版) ==================== -->
+        <!-- 條件篩選內容 -->
         <div id="tab-content-filter" class="hidden space-y-4">
             <div>
                 <label class="block text-sm text-[#4A3319] font-black mb-1">開始日期 (YYYY/MM/DD)</label>
@@ -526,7 +535,7 @@ details#accordion-tools summary {
                 </div>
             </div>
 
-            <!-- 雙條件邏輯切換 (AND / OR) -->
+            <!-- 雙條件邏輯 -->
             <div id="logic-op-container" class="hidden flex items-center gap-2 p-2 bg-[rgba(248,241,227,0.7)] rounded-lg border border-[#C5A06A]/50">
                 <span class="text-sm font-bold text-[#4A3319] whitespace-nowrap">雙條件邏輯：</span>
                 <select id="filter-logic-operator" class="w-full p-1.5 border border-[#C5A06A]/60 rounded text-sm bg-white font-bold text-[#3C2A1E] outline-none">
@@ -712,30 +721,8 @@ details#accordion-tools summary {
     </div>
 
     <!-- ============================================== -->
-    <!-- 🌟 所有彈窗 Modals (恢復完整 DOM，杜絕 JS NULL 崩潰) -->
+    <!-- 必要的彈窗 Modals (恢復完整 DOM，杜絕 JS NULL 崩潰) -->
     <!-- ============================================== -->
-    <div id="compass-modal" class="fixed inset-0 bg-black/95 z-[100] hidden flex flex-col justify-between items-center px-1 py-1.5 sm:p-3 select-none overflow-hidden touch-none text-white">
-        <!-- 保持原有結構，由 compass.js 控制 -->
-        <div class="w-full flex flex-col gap-2.5 pt-2 sm:pt-3 px-3 sm:px-6 z-20">
-            <div class="flex justify-between items-center flex-wrap gap-2">
-                <div class="flex items-center gap-3">
-                    <div class="flex flex-col">
-                        <div class="flex items-baseline gap-2.5">
-                            <span id="compass-degree" class="text-4xl sm:text-5xl font-black text-amber-400 font-mono tracking-wider">000°</span>
-                            <span id="compass-direction-text" class="text-2xl sm:text-3xl font-black text-white">正北</span>
-                        </div>
-                        <div class="text-base sm:text-lg font-bold text-gray-300 flex items-center gap-1.5 mt-0.5">
-                            <span>廿四山：<span id="compass-mountain" class="text-amber-300 font-black">坎宮 · 子山</span></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="flex items-center gap-2">
-                    <button onclick="closeCompassMode()" class="bg-red-600 hover:bg-red-700 text-white px-3.5 py-1.5 rounded-full font-black text-sm">關閉</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- 節氣彈窗 -->
     <div id="jieqi-modal" class="fixed inset-0 bg-gray-900/60 hidden flex justify-center items-center z-50 p-4">
         <div class="bg-[#FCFAF6] rounded-2xl shadow-2xl p-5 max-w-md w-full max-h-[80vh] overflow-y-auto relative border-t-8 border-[#385E48]">
@@ -834,23 +821,6 @@ details#accordion-tools summary {
         </div>
     </div>
 
-    <!-- 使用手冊彈窗 -->
-    <div id="manual-modal" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm hidden flex justify-center items-center z-[60] p-3 sm:p-6">
-        <div class="bg-[#FCFAF6] rounded-2xl shadow-2xl p-5 sm:p-7 max-w-3xl w-full max-h-[88vh] overflow-y-auto relative border-t-8 border-[#2D2319] text-gray-800 space-y-4">
-            <button onclick="closeManualModal()" class="absolute top-4 right-5 text-gray-400 hover:text-black text-2xl font-bold">✖</button>
-            <div class="border-b border-[#C5A06A]/30 pb-3 text-center">
-                <span class="bg-[#F5EFE4] text-[#3C2A1E] text-xs font-black px-2.5 py-1 rounded-full uppercase tracking-wider border border-[#C5A06A]/40">vc1.5</span>
-                <h2 class="text-2xl font-black text-[#2D2319] mt-2">奇門遁甲 - 排盤系統使用手冊</h2>
-            </div>
-            <div class="text-sm leading-relaxed space-y-2 text-[#3C2A1E]">
-                <p>本系統採用傳統高精度曆法演算，支援拆補法、置閏法與道家陰盤排盤，並集成多維條件反查篩選引擎與 AI 宗師解盤推演。</p>
-            </div>
-            <div class="pt-4 border-t border-gray-200 text-center">
-                <button onclick="closeManualModal()" class="btn-ink-primary text-white font-bold py-2.5 px-8 rounded-xl shadow-lg transition">關閉使用手冊</button>
-            </div>
-        </div>
-    </div>
-
     <!-- AI 宗師解盤彈窗 -->
     <div id="ai-modal" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm hidden flex justify-center items-center z-[80] p-3 sm:p-4">
         <div class="bg-[#FCFAF6] rounded-2xl shadow-2xl p-4 sm:p-6 max-w-xl w-full max-h-[90vh] overflow-y-auto relative border-t-8 border-[#9E2A2B] flex flex-col gap-3">
@@ -915,7 +885,6 @@ details#accordion-tools summary {
 
 <!-- 🌟 核心排版引擎、Tab 切換與生命週期監聽 -->
 <script>
-    // 側邊欄 Tab 切換保證函數 (防止外部模組未載入)
     function switchRightTab(tab) {
         const btnCases = document.getElementById('tab-btn-cases');
         const btnFilter = document.getElementById('tab-btn-filter');
@@ -1099,14 +1068,25 @@ details#accordion-tools summary {
             }
         });
 
+// 🌟 劫持 generatePan：滾輪變更時強制保持折疊欄展開，絕不即時摺埋
         if (typeof window.generatePan === 'function') {
             const nativeGenerate = window.generatePan;
             window.generatePan = function() {
+                const accControls = document.getElementById('accordion-controls');
+                // 記錄執行起盤前，設定欄原本是否為展開狀態
+                const wasControlsOpen = accControls ? accControls.open : false;
+
                 nativeGenerate();
+
+                // 若原本是展開的，且非點擊「起盤」按鈕，強制還原為展開狀態
+                if (accControls && wasControlsOpen && !window.isFromGenerateBtn) {
+                    accControls.open = true;
+                }
+                window.isFromGenerateBtn = false; // 重設標記
+
                 setTimeout(applyCustomFormatting, 10);
             };
         }
-    });
 
     // 確保載入後一律起盤成功
     window.addEventListener('load', () => {
