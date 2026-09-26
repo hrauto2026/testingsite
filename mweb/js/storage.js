@@ -1,6 +1,6 @@
 // ==========================================
 // js/storage.js
-// Local-First 案例儲存庫引擎 (支援 Tab 切換、防撞車機制與版本控制)
+// Local-First 案例儲存庫引擎 (修復斷語空格 · 深色高亮載入卡片)
 // ==========================================
 
 const DB_NAME = 'QimenDB';
@@ -9,6 +9,8 @@ let dbInstance = null;
 
 // 記錄目前盤面正在檢視的案例
 let activeCase = null;
+// 記錄當前彈窗是「儲存/更新」還是「另存新案」
+let isSaveAsNewMode = false;
 
 // 產生唯一的案例編號 (UUID)
 function generateCaseId() {
@@ -34,10 +36,29 @@ async function initDB() {
     });
 }
 
+// 輕量古風 Toast 提示訊息 (無 Emoji)
+function showToast(msg) {
+    let toast = document.getElementById('qm-toast');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'qm-toast';
+        toast.className = 'fixed bottom-6 left-1/2 -translate-x-1/2 bg-[#2D2319] text-[#F8F4EC] border border-[#C5A06A]/60 px-5 py-2 rounded-xl text-sm font-bold shadow-2xl z-[100] transition-opacity duration-300 pointer-events-none opacity-0';
+        document.body.appendChild(toast);
+    }
+    toast.innerText = msg;
+    toast.classList.remove('opacity-0');
+    toast.classList.add('opacity-100');
+    setTimeout(() => {
+        toast.classList.remove('opacity-100');
+        toast.classList.add('opacity-0');
+    }, 2000);
+}
+
 // ====== 右側欄 Tab 切換邏輯 ======
 function openRightPanelTab(tabName) {
     const panel = document.getElementById('right-side-panel');
     const mainPanel = document.getElementById('main-panel');
+    if (!panel || !mainPanel) return;
     
     panel.classList.remove('hidden');
     mainPanel.classList.replace('lg:col-span-12', 'lg:col-span-8');
@@ -50,8 +71,12 @@ function openRightPanelTab(tabName) {
 }
 
 function closeRightPanel() {
-    document.getElementById('right-side-panel').classList.add('hidden');
-    document.getElementById('main-panel').classList.replace('lg:col-span-8', 'lg:col-span-12');
+    const panel = document.getElementById('right-side-panel');
+    const mainPanel = document.getElementById('main-panel');
+    if (!panel || !mainPanel) return;
+
+    panel.classList.add('hidden');
+    mainPanel.classList.replace('lg:col-span-8', 'lg:col-span-12');
 }
 
 function switchRightTab(tabName) {
@@ -59,62 +84,115 @@ function switchRightTab(tabName) {
     const btnFilter = document.getElementById('tab-btn-filter');
     const contentCases = document.getElementById('tab-content-cases');
     const contentFilter = document.getElementById('tab-content-filter');
+    if (!btnCases || !btnFilter || !contentCases || !contentFilter) return;
 
     if (tabName === 'cases') {
-        btnCases.className = "px-3 py-1.5 rounded-lg font-black text-sm transition-colors bg-indigo-600 text-white shadow-sm";
-        btnFilter.className = "px-3 py-1.5 rounded-lg font-black text-sm transition-colors bg-gray-100 text-gray-500 hover:bg-gray-200";
+        btnCases.className = "px-3 py-1.5 rounded-lg font-black text-sm transition-colors bg-[#2D2319] text-[#F8F4EC] shadow-sm";
+        btnFilter.className = "px-3 py-1.5 rounded-lg font-black text-sm transition-colors bg-[#F5EFE4] text-[#786C5E] hover:bg-[#EAE1D0]";
         contentCases.classList.remove('hidden');
         contentFilter.classList.add('hidden');
-        renderCaseList();
+        
+        const searchInput = document.getElementById('case-search-input');
+        renderCaseList(searchInput ? searchInput.value : '');
     } else {
-        btnFilter.className = "px-3 py-1.5 rounded-lg font-black text-sm transition-colors bg-amber-600 text-white shadow-sm";
-        btnCases.className = "px-3 py-1.5 rounded-lg font-black text-sm transition-colors bg-gray-100 text-gray-500 hover:bg-gray-200";
+        btnFilter.className = "px-3 py-1.5 rounded-lg font-black text-sm transition-colors bg-[#9E2A2B] text-[#F9F6F0] shadow-sm";
+        btnCases.className = "px-3 py-1.5 rounded-lg font-black text-sm transition-colors bg-[#F5EFE4] text-[#786C5E] hover:bg-[#EAE1D0]";
         contentFilter.classList.remove('hidden');
         contentCases.classList.add('hidden');
     }
 }
 
-// ====== ✨ 案例儲存核心 (支援接收斷語自定義物件) ======
-async function saveCurrentCase(isSaveAsNew = false, customData = null) {
+// ====== 案例儲存核心 (喚醒表單彈窗) ======
+function saveCurrentCase(isSaveAsNew = false, customData = null) {
     if (!panData || !panData.ju) {
-        showToast("⚠️ 請先起盤後再儲存案例！");
+        showToast("請先起盤後再儲存案例！");
         return;
     }
 
-    const y = document.getElementById('sel-year').value;
-    const m = document.getElementById('sel-month').value;
-    const d = document.getElementById('sel-day').value;
-    const h = document.getElementById('sel-hour24').value;
-    const min = document.getElementById('sel-minute').value;
-    const qimenMethod = document.getElementById('sel-qimen-method') ? document.getElementById('sel-qimen-method').value : 'chaibu';
-    const now = new Date().getTime();
-
-    let clientName = "";
-    let notes = "";
-    let status = "等待反饋";
-
     if (customData) {
-        // ✨ 由 AI 或外部傳入之資料
-        clientName = customData.clientName || "未命名案例";
-        notes = customData.notes || "";
-        status = customData.status || "等待反饋";
-    } else if (!activeCase || isSaveAsNew) {
-        let inputName = prompt("請輸入案例標籤(稍後可於案例庫輸入資料)：", "-");
-        if (inputName === null) return;
-        clientName = inputName.trim() || "未命名案例";
-    } else {
-        clientName = activeCase.clientName;
-        notes = activeCase.notes || "";
-        status = activeCase.status || "等待反饋";
+        executeSaveCase(isSaveAsNew, customData);
+        return;
     }
+
+    isSaveAsNewMode = isSaveAsNew;
+    const modal = document.getElementById('save-case-modal');
+    if (!modal) return;
+
+    const timeInfoEl = document.getElementById('save-case-time-info');
+    if (timeInfoEl) {
+        timeInfoEl.innerText = panData.bazi || '當前排盤時間';
+    }
+
+    const nameInput = document.getElementById('case-client-name');
+    const notesTextarea = document.getElementById('case-notes');
+    const statusSelect = document.getElementById('case-status');
+
+    if (!isSaveAsNew && activeCase) {
+        if (nameInput) nameInput.value = activeCase.clientName || '';
+        if (notesTextarea) notesTextarea.value = (activeCase.notes || '').trim();
+        if (statusSelect) statusSelect.value = activeCase.status || '等待反饋';
+    } else {
+        if (nameInput) nameInput.value = '';
+        if (notesTextarea) notesTextarea.value = '';
+        if (statusSelect) statusSelect.value = '等待反饋';
+    }
+
+    modal.classList.remove('hidden');
+    if (nameInput) setTimeout(() => nameInput.focus(), 80);
+}
+
+function closeSaveCaseModal() {
+    const modal = document.getElementById('save-case-modal');
+    if (modal) modal.classList.add('hidden');
+}
+
+async function confirmSaveCase() {
+    if (!panData || !panData.ju) {
+        showToast("請先起盤後再儲存案例！");
+        return;
+    }
+
+    const nameInput = document.getElementById('case-client-name');
+    const notesTextarea = document.getElementById('case-notes');
+    const statusSelect = document.getElementById('case-status');
+
+    const clientName = nameInput ? nameInput.value.trim() : "";
+    if (!clientName) {
+        alert("請輸入問事人或案例標籤！");
+        if (nameInput) nameInput.focus();
+        return;
+    }
+
+    const status = statusSelect ? statusSelect.value : "等待反饋";
+    const notes = notesTextarea ? notesTextarea.value.trim() : "";
+
+    closeSaveCaseModal();
+
+    await executeSaveCase(isSaveAsNewMode, {
+        clientName: clientName,
+        status: status,
+        notes: notes
+    });
+
+    openRightPanelTab('cases');
+}
+
+async function executeSaveCase(isSaveAsNew, data) {
+    const y = document.getElementById('sel-year')?.value || 2026;
+    const m = document.getElementById('sel-month')?.value || 1;
+    const d = document.getElementById('sel-day')?.value || 1;
+    const h = document.getElementById('sel-hour24')?.value || 12;
+    const min = document.getElementById('sel-minute')?.value || 0;
+    const qimenMethod = document.getElementById('sel-qimen-method') ? document.getElementById('sel-qimen-method').value : 'chaibu';
+    const now = Date.now();
 
     const caseData = {
         caseId: (activeCase && !isSaveAsNew && activeCase.caseId) ? activeCase.caseId : generateCaseId(),
-        clientName: clientName,
-        status: status,
-        notes: notes,
-        baziStr: panData.bazi,
-        ju: panData.ju,
+        clientName: data.clientName || "未命名案例",
+        status: data.status || "等待反饋",
+        notes: (data.notes || "").trim(),
+        baziStr: panData.bazi || "",
+        ju: panData.ju || "",
         qimenMethod: qimenMethod,
         timeData: { y, m, d, h, min },
         createdAt: (activeCase && !isSaveAsNew && activeCase.createdAt) ? activeCase.createdAt : now,
@@ -134,44 +212,18 @@ async function saveCurrentCase(isSaveAsNew = false, customData = null) {
         req.onsuccess = (e) => {
             caseData.id = e.target.result;
             setActiveCase(caseData);
-            showToast(isSaveAsNew ? '💾 已另存為新案例！' : '💾 案例已更新儲存！');
-            if (!document.getElementById('right-side-panel').classList.contains('hidden')) {
-                renderCaseList();
-            }
+            showToast(isSaveAsNew ? '已另存為新案例！' : '案例已更新儲存！');
+            renderCaseList(document.getElementById('case-search-input')?.value || '');
             resolve(caseData);
         };
     });
 }
 
-// 補回彈窗輔助函式
-function closeSaveCaseModal() {
-    const modal = document.getElementById('save-case-modal');
-    if (modal) modal.classList.add('hidden');
-}
-
-async function confirmSaveCase() {
-    if (!panData || !panData.ju) return;
-    const nameInput = document.getElementById('case-client-name');
-    const statusSelect = document.getElementById('case-status');
-    const notesTextarea = document.getElementById('case-notes');
-
-    const clientName = nameInput ? nameInput.value.trim() : "";
-    const status = statusSelect ? statusSelect.value : "等待反饋";
-    const notes = notesTextarea ? notesTextarea.value.trim() : "";
-
-    await saveCurrentCase(true, {
-        clientName: clientName || "未命名案例",
-        status: status,
-        notes: notes
-    });
-
-    closeSaveCaseModal();
-    openRightPanelTab('cases');
-}
-
 function setActiveCase(caseData) {
     activeCase = caseData;
     const bar = document.getElementById('active-case-bar');
+    if (!bar) return;
+
     if (!caseData) {
         bar.classList.add('hidden');
         bar.classList.remove('flex');
@@ -181,27 +233,32 @@ function setActiveCase(caseData) {
     bar.classList.remove('hidden');
     bar.classList.add('flex');
     
-    document.getElementById('active-case-id').innerText = caseData.caseId;
-    document.getElementById('active-case-name').innerText = caseData.clientName;
+    const idEl = document.getElementById('active-case-id');
+    const nameEl = document.getElementById('active-case-name');
+    const statusEl = document.getElementById('active-case-status');
+
+    if (idEl) idEl.innerText = caseData.caseId;
+    if (nameEl) nameEl.innerText = caseData.clientName;
     
     const statusColors = {
-        '等待反饋': 'bg-yellow-100 text-yellow-800 border-yellow-300',
-        '完全應驗': 'bg-green-100 text-green-800 border-green-300',
-        '待覆盤': 'bg-red-100 text-red-800 border-red-300'
+        '等待反饋': 'bg-[#FEF9C3] text-[#854D0E] border-[#FDE047]',
+        '完全應驗': 'bg-[#DCFCE7] text-[#166534] border-[#86EFAC]',
+        '待覆盤': 'bg-[#FEE2E2] text-[#991B1B] border-[#FCA5A5]'
     };
     const sc = statusColors[caseData.status] || statusColors['等待反饋'];
-    const statusEl = document.getElementById('active-case-status');
-    statusEl.className = `text-xs px-1.5 py-0.5 rounded border font-bold ${sc}`;
-    statusEl.innerText = caseData.status;
+    if (statusEl) {
+        statusEl.className = `text-xs px-1.5 py-0.5 rounded border font-bold ${sc}`;
+        statusEl.innerText = caseData.status;
+    }
 }
 
 function clearActiveCase() {
     activeCase = null;
     setActiveCase(null);
-    showToast("✖ 已解除案例關聯，恢復自由起盤模式");
+    showToast("已解除案例關聯，恢復自由起盤模式");
 }
 
-// ====== 案例列表與行內編輯 (含斷語展示盒) ======
+// ====== 案例列表與行內編輯 (修復空格與深色高亮) ======
 async function renderCaseList(searchTerm = "") {
     const db = await initDB();
     const tx = db.transaction(STORE_NAME, 'readonly');
@@ -234,8 +291,10 @@ async function renderCaseList(searchTerm = "") {
         }
 
         const container = document.getElementById('case-list-container');
+        if (!container) return;
+
         if (displayList.length === 0) {
-            container.innerHTML = `<div class="text-center text-gray-500 py-10 font-bold">目前沒有案例資料。</div>`;
+            container.innerHTML = `<div class="text-center text-[#8C887B] py-10 font-bold text-sm">目前沒有符合條件的案例資料。</div>`;
             return;
         }
 
@@ -246,64 +305,78 @@ async function renderCaseList(searchTerm = "") {
             const dateStr = `${date.getFullYear()}/${date.getMonth()+1}/${date.getDate()} ${date.getHours().toString().padStart(2,'0')}:${date.getMinutes().toString().padStart(2,'0')}`;
             
             const statusColors = {
-                '等待反饋': 'bg-yellow-100 text-yellow-800 border-yellow-300',
-                '完全應驗': 'bg-green-100 text-green-800 border-green-300',
-                '待覆盤': 'bg-red-100 text-red-800 border-red-300'
+                '等待反饋': 'bg-[#FEF9C3] text-[#854D0E] border-[#FDE047]',
+                '完全應驗': 'bg-[#DCFCE7] text-[#166534] border-[#86EFAC]',
+                '待覆盤': 'bg-[#FEE2E2] text-[#991B1B] border-[#FCA5A5]'
             };
             const sc = statusColors[c.status] || statusColors['等待反饋'];
             
-            const borderClass = c.isOldVersion ? 'border-red-400 shadow-md ring-1 ring-red-200 bg-red-50/20' : 'border-indigo-100 hover:border-indigo-300';
-            const highlightActive = (activeCase && activeCase.id === c.id) ? 'bg-green-50 border-green-300' : '';
-            const oldBadge = c.isOldVersion ? `<span class="text-[18px] bg-red-100 text-red-700 px-1.5 py-0.5 rounded border border-red-200 ml-2 font-black">⚠️ 歷史舊版</span>` : '';
+            // 🌟 1. 徹底解決樣式覆蓋衝突：明確區分當前導入 vs 歷史版本 vs 一般案例
+            const isActive = activeCase && (activeCase.id === c.id || activeCase.caseId === c.caseId);
+            let cardBgBorderClass = '';
+            let activeBadge = '';
 
-            // ✨ 斷語展示區：若有斷語筆記，用清晰的紫色小卡片展示
-            const notesBlock = c.notes ? `
-                <div class="mt-2 mb-3 p-3 bg-purple-50/80 border border-purple-200 rounded-xl text-left shadow-sm">
-                    <div class="text-[17px] font-black text-purple-900 mb-1 flex items-center gap-1">
-                        <span>📋</span><span>斷語與筆記：</span>
-                    </div>
-                    <div class="text-[18px] text-gray-800 whitespace-pre-wrap font-bold leading-relaxed max-h-52 overflow-y-auto pr-1">
-                        ${c.notes}
-                    </div>
+            if (isActive) {
+                // 深色高亮：深雅松柏綠底色、加粗墨綠外框與微立體陰影
+                cardBgBorderClass = 'border-2 border-[#2A5235] bg-[#DCECE2] shadow-md';
+                activeBadge = `<span class="text-xs bg-[#2A5235] text-white px-2 py-0.5 rounded font-black tracking-wider ml-1.5 shadow-sm">當前載入</span>`;
+            } else if (c.isOldVersion) {
+                cardBgBorderClass = 'border-[#E6BAB9] bg-[#FDF2F0]/50';
+            } else {
+                cardBgBorderClass = 'border-[#C5A06A]/50 bg-white/90 hover:border-[#9E2A2B]';
+            }
+
+            const oldBadge = c.isOldVersion ? `<span class="text-xs bg-[#FEE2E2] text-[#991B1B] px-1.5 py-0.5 rounded border border-[#FCA5A5] ml-1.5 font-bold">歷史舊版</span>` : '';
+
+            // 🌟 2. 徹底消除前導無用空格：將文字與 div 標籤緊貼，不產生任何樣板字串縮排空白
+            const cleanNotes = (c.notes || '').trim();
+            const notesBlock = cleanNotes ? `
+                <div class="mt-2 mb-3 p-3 bg-[rgba(248,241,227,0.7)] border border-[#C5A06A]/40 rounded-xl text-left shadow-sm">
+                    <div class="text-xs font-black text-[#4A3319] mb-1">斷語與筆記：</div>
+                    <div class="text-sm text-[#26211C] whitespace-pre-wrap font-bold leading-relaxed max-h-52 overflow-y-auto pr-1">${cleanNotes}</div>
                 </div>
-            ` : `<div class="text-[16px] text-gray-400 italic mb-2">（暫無斷語筆記）</div>`;
+            ` : `<div class="text-xs text-[#8C887B] italic mb-2">（暫無斷語筆記）</div>`;
 
             html += `
-            <div id="case-card-${c.id}" class="bg-white border rounded-xl p-4 shadow-sm mb-3 text-left transition-all ${borderClass} ${highlightActive}">
+            <div id="case-card-${c.id}" class="rounded-xl p-3.5 shadow-sm mb-3 text-left transition-all ${cardBgBorderClass}">
                 
                 <div id="case-view-${c.id}">
-                    <div class="flex justify-between items-start mb-2">
+                    <div class="flex justify-between items-start mb-1.5">
                         <div>
-                            <h4 class="font-black text-[29px] text-indigo-950">${c.clientName} ${oldBadge}</h4>
-                            <div class="text-[18px] text-gray-400 font-mono mt-0.5">${c.caseId}</div>
+                            <div class="flex items-center flex-wrap gap-1">
+                                <h4 class="font-black text-lg text-[#26211C] leading-snug">${c.clientName}</h4>
+                                ${activeBadge}
+                                ${oldBadge}
+                            </div>
+                            <div class="text-xs text-[#8C887B] font-mono mt-0.5">${c.caseId}</div>
                         </div>
-                        <span class="text-[18px] px-1.5 py-0.5 rounded border font-bold ${sc}">${c.status}</span>
+                        <span class="text-xs px-2 py-0.5 rounded border font-black ${sc}">${c.status}</span>
                     </div>
-                    <div class="text-[20px] text-gray-500 font-bold mb-1.5">更新於 ${dateStr}</div>
-                    <div class="text-[20px] text-gray-600 bg-gray-50 p-1.5 rounded mb-2 font-bold leading-relaxed border border-gray-100 break-words">
-                        ${c.ju} | ${c.baziStr}
+                    <div class="text-xs text-[#8C887B] font-bold mb-1.5">更新於 ${dateStr}</div>
+                    <div class="text-xs text-[#4A3319] bg-[rgba(248,241,227,0.5)] p-2 rounded-lg mb-2 font-bold leading-relaxed border border-[#C5A06A]/30 break-words">
+                        ${c.ju} ｜ ${c.baziStr}
                     </div>
                     
                     ${notesBlock}
                     
-                    <div class="flex justify-end gap-1.5 border-t border-gray-100 pt-2.5">
-                        <button onclick="deleteCase(${c.id})" class="text-[20px] text-red-600 hover:text-red-800 font-bold px-2.5 py-1 rounded border border-red-100 hover:bg-red-50 transition">刪除</button>
-                        <button onclick="openInlineEdit(${c.id})" class="text-[20px] text-indigo-600 hover:text-indigo-800 font-bold px-2.5 py-1 rounded border border-indigo-100 hover:bg-indigo-50 transition">✏️ 編輯</button>
-                        <button onclick="loadCase(${c.id})" class="text-[20px] text-white bg-indigo-600 hover:bg-indigo-700 font-bold px-3 py-1 rounded shadow transition">🔄 載入盤面</button>
+                    <div class="flex justify-end gap-1.5 border-t border-[#C5A06A]/30 pt-2.5">
+                        <button onclick="deleteCase(${c.id})" class="text-xs text-[#9E2A2B] hover:text-[#7A2021] font-bold px-2.5 py-1 rounded border border-[#E6BAB9] hover:bg-[#FDF2F0] transition">刪除</button>
+                        <button onclick="openInlineEdit(${c.id})" class="text-xs text-[#4A3319] hover:text-black font-bold px-2.5 py-1 rounded border border-[#D1C2A5] hover:bg-[#FAF6EE] transition">編輯</button>
+                        <button onclick="loadCase(${c.id})" class="text-xs text-white bg-[#2D2319] hover:bg-[#443526] font-bold px-3 py-1 rounded-lg shadow transition">${isActive ? '重新載入' : '載入盤面'}</button>
                     </div>
                 </div>
 
                 <div id="case-edit-${c.id}" class="hidden space-y-2">
-                    <input type="text" id="edit-name-${c.id}" value="${c.clientName}" class="w-full p-1.5 text-[25px] border border-indigo-300 rounded font-bold outline-none focus:ring-1 focus:ring-indigo-500">
-                    <select id="edit-status-${c.id}" class="w-full p-1.5 text-[25px] border border-indigo-300 rounded font-bold outline-none">
-                        <option value="等待反饋" ${c.status === '等待反饋' ? 'selected' : ''}>🟡 等待反饋</option>
-                        <option value="完全應驗" ${c.status === '完全應驗' ? 'selected' : ''}>🟢 完全應驗</option>
-                        <option value="待覆盤" ${c.status === '待覆盤' ? 'selected' : ''}>🔴 有待覆盤</option>
+                    <input type="text" id="edit-name-${c.id}" value="${c.clientName}" class="w-full p-1.5 text-sm border border-[#C5A06A]/60 rounded-lg font-bold outline-none focus:border-[#9E2A2B] bg-white text-[#26211C]">
+                    <select id="edit-status-${c.id}" class="w-full p-1.5 text-xs border border-[#C5A06A]/60 rounded-lg font-bold outline-none bg-white text-[#26211C]">
+                        <option value="等待反饋" ${c.status === '等待反饋' ? 'selected' : ''}>等待反饋</option>
+                        <option value="完全應驗" ${c.status === '完全應驗' ? 'selected' : ''}>完全應驗</option>
+                        <option value="待覆盤" ${c.status === '待覆盤' ? 'selected' : ''}>有待覆盤</option>
                     </select>
-                    <textarea id="edit-notes-${c.id}" rows="6" class="w-full p-1.5 text-[20px] border border-indigo-300 rounded font-bold outline-none resize-none focus:ring-1 focus:ring-indigo-500">${c.notes || ''}</textarea>
+                    <textarea id="edit-notes-${c.id}" rows="5" class="w-full p-2 text-xs border border-[#C5A06A]/60 rounded-lg font-bold outline-none resize-none focus:border-[#9E2A2B] bg-white text-[#26211C]">${(c.notes || '').trim()}</textarea>
                     <div class="flex justify-end gap-2 pt-1">
-                        <button onclick="cancelInlineEdit(${c.id})" class="text-[22px] bg-gray-200 text-gray-700 font-bold px-3 py-1.5 rounded transition">取消</button>
-                        <button onclick="saveInlineEdit(${c.id})" class="text-[22px] bg-teal-600 text-white font-bold px-4 py-1.5 rounded shadow transition">💾 儲存修改</button>
+                        <button onclick="cancelInlineEdit(${c.id})" class="text-xs bg-[#F5EFE4] hover:bg-[#EAE1D0] text-[#3C2A1E] font-bold px-3 py-1.5 rounded-lg border border-[#D1C2A5] transition">取消</button>
+                        <button onclick="saveInlineEdit(${c.id})" class="text-xs bg-[#385E48] hover:bg-[#2C4A38] text-white font-bold px-4 py-1.5 rounded-lg shadow transition">儲存修改</button>
                     </div>
                 </div>
             </div>`;
@@ -313,20 +386,20 @@ async function renderCaseList(searchTerm = "") {
 }
 
 function openInlineEdit(id) {
-    document.getElementById(`case-view-${id}`).classList.add('hidden');
-    document.getElementById(`case-edit-${id}`).classList.remove('hidden');
+    document.getElementById(`case-view-${id}`)?.classList.add('hidden');
+    document.getElementById(`case-edit-${id}`)?.classList.remove('hidden');
 }
 
 function cancelInlineEdit(id) {
-    document.getElementById(`case-edit-${id}`).classList.add('hidden');
-    document.getElementById(`case-view-${id}`).classList.remove('hidden');
+    document.getElementById(`case-edit-${id}`)?.classList.add('hidden');
+    document.getElementById(`case-view-${id}`)?.classList.remove('hidden');
 }
 
 async function saveInlineEdit(id) {
     const newName = document.getElementById(`edit-name-${id}`).value.trim();
     const newStatus = document.getElementById(`edit-status-${id}`).value;
     const newNotes = document.getElementById(`edit-notes-${id}`).value.trim();
-    const now = new Date().getTime();
+    const now = Date.now();
 
     const db = await initDB();
     const tx = db.transaction(STORE_NAME, 'readwrite');
@@ -344,9 +417,9 @@ async function saveInlineEdit(id) {
 
         store.put(caseData);
         tx.oncomplete = () => {
-            showToast('✅ 案例資料已更新');
+            showToast('案例資料已更新');
             if (activeCase && activeCase.id === id) setActiveCase(caseData);
-            renderCaseList(document.getElementById('case-search-input').value);
+            renderCaseList(document.getElementById('case-search-input')?.value || '');
         };
     };
 }
@@ -370,8 +443,8 @@ async function loadCase(id) {
 
             setActiveCase(c);
             applyBaziResult(c.timeData.y, c.timeData.m, c.timeData.d, c.timeData.h, c.timeData.min);
-            renderCaseList(document.getElementById('case-search-input').value);
-            showToast(`✅ 已載入案例：${c.clientName}`);
+            renderCaseList(document.getElementById('case-search-input')?.value || '');
+            showToast(`已載入案例：${c.clientName}`);
             
             if (window.innerWidth < 1024) {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -388,12 +461,14 @@ async function deleteCase(id) {
     tx.objectStore(STORE_NAME).delete(id);
     tx.oncomplete = () => {
         if (activeCase && activeCase.id === id) clearActiveCase();
-        renderCaseList(document.getElementById('case-search-input').value);
-        showToast('🗑️ 案例已刪除');
+        renderCaseList(document.getElementById('case-search-input')?.value || '');
+        showToast('案例已刪除');
     };
 }
 
-function triggerImport() { document.getElementById('case-import-file').click(); }
+function triggerImport() { 
+    document.getElementById('case-import-file')?.click(); 
+}
 
 async function exportCasesDB() {
     const db = await initDB();
@@ -441,7 +516,7 @@ function importCasesDB(event) {
 
                 tx.oncomplete = () => {
                     renderCaseList();
-                    showToast(`✅ 成功匯入 ${importedCount} 筆新資料！`);
+                    showToast(`成功匯入 ${importedCount} 筆新資料！`);
                     event.target.value = ''; 
                 };
             };
@@ -450,4 +525,20 @@ function importCasesDB(event) {
         }
     };
     reader.readAsText(file);
+}
+
+function saveAiResultToCase() {
+    const aiContent = document.getElementById('ai-result-content');
+    if (!aiContent || !aiContent.innerText.trim()) {
+        showToast("無可儲存的 AI 斷語內容。");
+        return;
+    }
+    const aiText = aiContent.innerText.trim();
+    const cat = document.getElementById('ai-question-category')?.value || 'AI 解盤';
+    
+    saveCurrentCase(false, {
+        clientName: activeCase ? activeCase.clientName : `${cat}`,
+        notes: (activeCase && activeCase.notes) ? `${activeCase.notes}\n\n【AI 宗師斷語】\n${aiText}` : `【AI 宗師斷語】\n${aiText}`,
+        status: activeCase ? activeCase.status : "等待反饋"
+    });
 }
