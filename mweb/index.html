@@ -6,7 +6,7 @@
     <title>奇門遁甲 - 專業排盤系統</title>
     <link rel="apple-touch-icon" href="icon.png">
     <link rel="icon" type="image/png" href="icon.png">
-    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@latest/style.css">    
     <!-- 依賴載入 -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -16,19 +16,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;900&display=swap" rel="stylesheet">  
 
     <style>
-/* ===================================================
-   🌟 本地載入 芫荽體 (Iansui) - 自託管高速穩定版
-   =================================================== */
+<!-- 1. 在 <head> 引入支援完整古典字庫的霞鶩文楷 CDN -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@latest/style.css">
 
-@font-face {
-    font-family: 'Iansui';
-    src: url('./fonts/Iansui-Regular.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap; /* 確保字體載入前不出現白屏 */
-}
-
-/* 全域元件全面套用 Iansui */
+<style>
+/* 2. 全域套用 */
 *, 
 html, 
 body, 
@@ -43,9 +35,10 @@ summary,
 .text-palace-name, 
 .text-tiandi-stem, 
 .combo-lock select {
-    font-family: 'Iansui', serif !important;
+    font-family: 'LXGW WenKai', 'Noto Serif TC', serif !important;
 }
 
+</style>
 html, body { 
     background-color: #F5EFE4 !important; 
     background-image: url('/images/qm04.png') !important;
