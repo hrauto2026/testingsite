@@ -847,31 +847,43 @@ details#accordion-tools summary {
         </div>
     </div>
 
-    <!-- 儲存案例彈窗 -->
-    <div id="save-case-modal" class="fixed inset-0 bg-gray-900/60 hidden flex justify-center items-center z-[70] p-4">
-        <div class="bg-[#FCFAF6] rounded-2xl shadow-2xl p-5 max-w-sm w-full border-t-8 border-[#A67C2E]">
-            <h3 class="text-xl mb-3 text-[#6E501E] font-black tracking-widest text-center">儲存本局案例</h3>
-            <div class="text-xs text-gray-500 bg-white/70 p-2 rounded mb-4 font-bold" id="save-case-time-info"></div>
+<!-- ============================================== -->
+    <!-- 儲存案例彈窗 (標籤+斷語同時輸入 · 純淨宣紙古風) -->
+    <!-- ============================================== -->
+    <div id="save-case-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden flex justify-center items-center z-[90] p-4 transition-opacity">
+        <div class="bg-[#FCFAF6] rounded-2xl shadow-2xl p-5 sm:p-6 max-w-sm w-full border-t-8 border-[#A67C2E] border-x border-b border-[#C5A06A]/40 relative">
+            <button onclick="closeSaveCaseModal()" class="absolute top-3 right-4 text-[#8C887B] hover:text-black text-2xl font-bold transition-colors">✕</button>
+            
+            <h3 class="text-xl mb-2 text-[#6E501E] font-black tracking-widest text-center">儲存本局案例</h3>
+            <div class="text-xs text-[#786C5E] bg-[rgba(248,241,227,0.8)] border border-[#C5A06A]/30 p-2 rounded-lg mb-3 font-bold text-center" id="save-case-time-info"></div>
+            
             <div class="space-y-3">
+                <!-- 1. 標籤 / 問事人 -->
                 <div>
-                    <label class="block text-sm font-bold text-gray-700 mb-1">問事人 / 標籤</label>
-                    <input type="text" id="case-client-name" placeholder="例如：陳先生問求財" class="w-full p-2 border border-[#C5A06A]/60 rounded outline-none font-bold bg-white">
+                    <label class="block text-xs font-black text-[#4A3319] mb-1">問事人 / 標籤</label>
+                    <input type="text" id="case-client-name" placeholder="例如：陳先生問求財" class="w-full p-2 border border-[#C5A06A]/60 rounded-lg outline-none font-bold text-sm bg-white text-[#3C2A1E] focus:border-[#9E2A2B]">
                 </div>
+
+                <!-- 2. 覆盤狀態 (已移除所有 Emoji) -->
                 <div>
-                    <label class="block text-sm font-bold text-gray-700 mb-1">覆盤狀態</label>
-                    <select id="case-status" class="w-full p-2 border border-[#C5A06A]/60 rounded outline-none font-bold bg-white">
-                        <option value="等待反饋">🟡 等待反饋</option>
-                        <option value="完全應驗">🟢 完全應驗</option>
-                        <option value="待覆盤">🔴 有待覆盤</option>
+                    <label class="block text-xs font-black text-[#4A3319] mb-1">覆盤狀態</label>
+                    <select id="case-status" class="w-full p-2 border border-[#C5A06A]/60 rounded-lg outline-none font-bold text-sm bg-white text-[#3C2A1E] focus:border-[#9E2A2B]">
+                        <option value="等待反饋">等待反饋</option>
+                        <option value="完全應驗">完全應驗</option>
+                        <option value="待覆盤">有待覆盤</option>
                     </select>
                 </div>
+
+                <!-- 3. 斷語與筆記 -->
                 <div>
-                    <label class="block text-sm font-bold text-gray-700 mb-1">斷語與筆記</label>
-                    <textarea id="case-notes" placeholder="輸入您的斷語..." rows="3" class="w-full p-2 border border-[#C5A06A]/60 rounded outline-none font-bold resize-none bg-white"></textarea>
+                    <label class="block text-xs font-black text-[#4A3319] mb-1">斷語與筆記</label>
+                    <textarea id="case-notes" placeholder="輸入您的斷語、分析或後續驗證..." rows="3" class="w-full p-2 border border-[#C5A06A]/60 rounded-lg outline-none font-bold text-xs resize-none bg-white text-[#3C2A1E] focus:border-[#9E2A2B]"></textarea>
                 </div>
+
+                <!-- 操作按鈕 -->
                 <div class="flex gap-2 pt-2">
-                    <button onclick="closeSaveCaseModal()" class="w-1/2 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 rounded-lg transition">取消</button>
-                    <button onclick="confirmSaveCase(); closeSaveCaseModal(); setTimeout(() => { if (typeof renderCaseList === 'function') renderCaseList(); }, 60);" class="w-1/2 bg-[#A67C2E] hover:bg-[#8C6A2E] text-white font-bold py-2 rounded-lg transition shadow">確定儲存</button>
+                    <button onclick="closeSaveCaseModal()" class="w-1/2 bg-[#F5EFE4] hover:bg-[#EAE1D0] text-[#3C2A1E] font-black py-2 rounded-xl border border-[#D1C2A5] transition text-sm">取消</button>
+                    <button onclick="confirmSaveCase()" class="w-1/2 bg-[#A67C2E] hover:bg-[#8C6A2E] text-white font-black py-2 rounded-xl shadow transition text-sm border border-[#6E501E]">確定儲存</button>
                 </div>
             </div>
         </div>
