@@ -6,7 +6,7 @@
     <title>奇門遁甲 - 專業排盤系統</title>
     <link rel="apple-touch-icon" href="icon.png">
     <link rel="icon" type="image/png" href="icon.png">
-    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/iansui@latest/css/iansui.css">    
     <!-- 依賴載入 -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -17,22 +17,10 @@
 
     <style>
 /* ===================================================
-   🌟 全域替換字體為「方正聚珍仿宋」
-   涵蓋所有文字、按鈕、輸入框、選單與九宮格
+   🌟 全域套用 芫荽體 (Iansui) - 秀麗清雅古風
    =================================================== */
 
-/* 若你有將字型檔 (如 .ttf / .woff2) 放入專案的 fonts/ 資料夾，可解除以下註解使用 WebFont：
-@font-face {
-    font-family: '方正聚珍仿宋';
-    src: url('./fonts/FZJuZhenFangSong.woff2') format('woff2'),
-         url('./fonts/FZJuZhenFangSong.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-}
-*/
-
-/* 1. 全域強制套用方正聚珍仿宋（包含繁簡英名字體別名與回退仿宋體） */
+/* 1. 表單元件、文字標籤、九宮格全面強制套用 */
 *, 
 html, 
 body, 
@@ -47,20 +35,10 @@ summary,
 .text-palace-name, 
 .text-tiandi-stem, 
 .combo-lock select {
-    font-family: 
-        'FZJuZhenFangSong-Z02',       /* 方正聚珍仿宋 官方英文名 */
-        'FZJuZhenFangSongS-Z02',      /* 方正聚珍仿宋簡體 英文名 */
-        'FZJuZhenFangSongB-Z02',      /* 方正聚珍仿宋繁體 英文名 */
-        '方正聚珍仿宋',               /* 中文名 */
-        '方正聚珍仿宋简体',
-        '方正聚珍仿宋繁体',
-        'STFangsong',                 /* Mac / iOS 華文仿宋 回退備用 */
-        'FangSong',                   /* Windows 仿宋 回退備用 */
-        '仿宋',
-        serif !important;
+    font-family: 'Iansui', 'STKaiti', 'Kaiti', 'BiauKai', 'Noto Serif TC', serif !important;
 }
 
-/* 2. 移除原有的 body font-family 設定，改為純背景宣告 */
+/* 2. 背景與全域字重調整（避免仿粗體破壞秀麗骨線） */
 html, body { 
     background-color: #F5EFE4 !important; 
     background-image: url('/images/qm04.png') !important;
@@ -69,8 +47,25 @@ html, body {
     background-size: cover !important;
     background-attachment: fixed !important;
     min-height: 100vh; 
-    font-weight: bold; 
+    font-weight: 500; /* 保留適當清晰度，不臃腫 */
     color: #26211C; 
+}
+
+/* 3. 標題與九宮格大字微調（保持清秀立體感） */
+.text-main { 
+    font-size: clamp(1.4rem, 5vw, 1.95rem); 
+    font-weight: 700; 
+    letter-spacing: 0.08em; 
+    line-height: 1.15; 
+}
+.text-palace-name { 
+    font-size: clamp(0.78rem, 1.9vw, 0.95rem); 
+    font-weight: 700; 
+}
+.text-tiandi-stem { 
+    font-size: clamp(1.2rem, 4.0vw, 1.55rem); 
+    font-weight: 700; 
+    line-height: 1.05; 
 }
 
 /* ==========================================
