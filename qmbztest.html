@@ -263,12 +263,27 @@
             <button id="btn-mode-toggle" onclick="toggleInputMode()" class="bg-indigo-100 hover:bg-indigo-200 text-indigo-900 font-black py-1.5 px-3.5 rounded-lg shadow-sm text-sm sm:text-base transition-colors border border-indigo-200">四柱方式</button>
 
             <!-- 公曆時間下拉選單 (字體、內距放大) -->
-            <div id="date-selectors" class="flex flex-wrap justify-center items-center gap-1.5">
-                <div class="flex items-center gap-0.5"><select id="sel-year" class="p-1.5 border border-gray-300 rounded-lg bg-white text-base sm:text-lg font-bold outline-none" onchange="updateJieQiYearBtn()"></select><span class="text-gray-700 text-sm sm:text-base font-bold">年</span></div>
-                <div class="flex items-center gap-0.5"><select id="sel-month" class="p-1.5 border border-gray-300 rounded-lg bg-white text-base sm:text-lg font-bold outline-none"></select><span class="text-gray-700 text-sm sm:text-base font-bold">月</span></div>
-                <div class="flex items-center gap-0.5"><select id="sel-day" class="p-1.5 border border-gray-300 rounded-lg bg-white text-base sm:text-lg font-bold outline-none"></select><span class="text-gray-700 text-sm sm:text-base font-bold">日</span></div>
-                <div class="flex items-center gap-0.5"><select id="sel-hour24" class="p-1.5 border border-gray-300 rounded-lg bg-white text-base sm:text-lg font-bold outline-none"></select><span class="text-gray-700 text-sm sm:text-base font-bold">時</span></div>
-                <div class="flex items-center gap-0.5"><select id="sel-minute" class="p-1.5 border border-gray-300 rounded-lg bg-white text-base sm:text-lg font-bold outline-none"></select><span class="text-gray-700 text-sm sm:text-base font-bold">分</span></div>
+<div id="date-selectors" class="flex flex-wrap justify-center items-center gap-1.5">
+                <div class="flex items-center gap-0.5">
+                    <input type="number" id="sel-year" min="1700" max="2050" placeholder="YYYY" class="w-20 p-1.5 text-center border border-gray-300 rounded-lg bg-white text-base sm:text-lg font-bold outline-none focus:ring-2 focus:ring-indigo-400" oninput="updateJieQiYearBtn()" onchange="updateJieQiYearBtn()">
+                    <span class="text-gray-700 text-sm sm:text-base font-bold">年</span>
+                </div>
+                <div class="flex items-center gap-0.5">
+                    <input type="number" id="sel-month" min="1" max="12" placeholder="MM" class="w-14 p-1.5 text-center border border-gray-300 rounded-lg bg-white text-base sm:text-lg font-bold outline-none focus:ring-2 focus:ring-indigo-400">
+                    <span class="text-gray-700 text-sm sm:text-base font-bold">月</span>
+                </div>
+                <div class="flex items-center gap-0.5">
+                    <input type="number" id="sel-day" min="1" max="31" placeholder="DD" class="w-14 p-1.5 text-center border border-gray-300 rounded-lg bg-white text-base sm:text-lg font-bold outline-none focus:ring-2 focus:ring-indigo-400">
+                    <span class="text-gray-700 text-sm sm:text-base font-bold">日</span>
+                </div>
+                <div class="flex items-center gap-0.5">
+                    <input type="number" id="sel-hour24" min="0" max="23" placeholder="HH" class="w-14 p-1.5 text-center border border-gray-300 rounded-lg bg-white text-base sm:text-lg font-bold outline-none focus:ring-2 focus:ring-indigo-400">
+                    <span class="text-gray-700 text-sm sm:text-base font-bold">時</span>
+                </div>
+                <div class="flex items-center gap-0.5">
+                    <select id="sel-minute" class="p-1.5 border border-gray-300 rounded-lg bg-white text-base sm:text-lg font-bold outline-none"></select>
+                    <span class="text-gray-700 text-sm sm:text-base font-bold">分</span>
+                </div>
             </div>
 
             <!-- 八字下拉選單 -->
@@ -953,7 +968,7 @@
     <div class="bg-white rounded-2xl shadow-2xl p-5 max-w-md w-full max-h-[80vh] overflow-y-auto relative border-t-8 border-amber-500">
         <button onclick="document.getElementById('bazi-modal').classList.add('hidden')" class="absolute top-3 right-4 text-gray-400 hover:text-black text-2xl">✖</button>
         <h3 class="text-xl mb-2 text-center text-amber-800 font-bold tracking-widest">四柱搜尋結果</h3>
-        <p class="text-xs text-gray-500 text-center mb-4">搜尋範圍：1930年至2050年</p>
+        <p class="text-xs text-gray-500 text-center mb-4">搜尋範圍：1700年至2050年</p>
         <div id="bazi-result-list" class="flex flex-col border border-gray-100 rounded-lg overflow-hidden max-h-[50vh] overflow-y-auto">
         </div>
     </div>
@@ -2377,15 +2392,17 @@ function initSelectors() {
     const fxSel = document.getElementById('sel-feixing-year');
     const compassFxSel = document.getElementById('sel-compass-feixing-year');
     
-    for (let i = 1930; i <= 2050; i++) {
-        ySel.add(new Option(i, i));
+    // 飛星選單支援 1700 至 2050 年
+    for (let i = 1700; i <= 2050; i++) {
+        if (ySel && ySel.tagName === 'SELECT') ySel.add(new Option(i, i));
         if (fxSel) fxSel.add(new Option(i + "年", i));
         if (compassFxSel) compassFxSel.add(new Option(i + "年", i));
     }
-    for (let i = 1; i <= 12; i++) mSel.add(new Option(i, i));
-    for (let i = 1; i <= 31; i++) dSel.add(new Option(i, i));
-    for (let i = 0; i <= 23; i++) hSel.add(new Option(i.toString().padStart(2, '0'), i));
-    for (let i = 0; i <= 59; i++) minSel.add(new Option(i.toString().padStart(2, '0'), i));
+    // 判斷若元素為 select 才注入選項，若是 input 則自動跳過，防止報錯
+    if (mSel && mSel.tagName === 'SELECT') for (let i = 1; i <= 12; i++) mSel.add(new Option(i, i));
+    if (dSel && dSel.tagName === 'SELECT') for (let i = 1; i <= 31; i++) dSel.add(new Option(i, i));
+    if (hSel && hSel.tagName === 'SELECT') for (let i = 0; i <= 23; i++) hSel.add(new Option(i.toString().padStart(2, '0'), i));
+    if (minSel && minSel.tagName === 'SELECT') for (let i = 0; i <= 59; i++) minSel.add(new Option(i.toString().padStart(2, '0'), i));
     
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.has('y') && urlParams.has('m') && urlParams.has('d') && urlParams.has('h') && urlParams.has('min')) {
@@ -2482,7 +2499,7 @@ function initSelectors() {
         listEl.innerHTML = '';
         
         if (results.length === 0) {
-            listEl.innerHTML = '<div class="p-6 text-center text-gray-500 font-bold">在 1930 - 2050 期間無符合之日期組合。<br><span class="text-xs text-gray-400 mt-2 block">請檢查干支是否符合曆法原則。</span></div>';
+            listEl.innerHTML = '<div class="p-6 text-center text-gray-500 font-bold">在 1700 - 2050 期間無符合之日期組合。<br><span class="text-xs text-gray-400 mt-2 block">請檢查干支是否符合曆法原則。</span></div>';
         } else {
             results.forEach(d => {
                 const y = d.getFullYear();
@@ -2506,7 +2523,7 @@ function initSelectors() {
 
     function searchBaziDates(tgtY, tgtM, tgtD, tgtH) {
         let results = [];
-        let start = new Date(1930, 0, 1);
+        let start = new Date(1700, 0, 1);
         let end = new Date(2050, 11, 31);
         let firstMatch = null;
 
@@ -3049,21 +3066,34 @@ btn.onclick = () => {
         handleFilterPalaceChange(2);
     }
 
-    function generatePan() {
+function generatePan() {
         try {
             const ACTIVE_PALACES = useXianTian ? PALACES_XIAN : PALACES_HOU;
             const y = parseInt(document.getElementById('sel-year').value);
             const m = parseInt(document.getElementById('sel-month').value);
             const d = parseInt(document.getElementById('sel-day').value);
+            const h = parseInt(document.getElementById('sel-hour24').value);
+            const min = parseInt(document.getElementById('sel-minute').value);
+
+            // 輸入防呆與範圍檢驗
+            if (isNaN(y) || isNaN(m) || isNaN(d) || isNaN(h) || isNaN(min)) {
+                alert("請完整輸入公曆之年、月、日、時、分！");
+                return;
+            }
+            if (y < 1700 || y > 2050) {
+                alert(`年份超出範圍！請輸入 1700 年至 2050 年之間的年份。`);
+                return;
+            }
+            if (h < 0 || h > 23 || min < 0 || min > 59) {
+                alert("時間輸入有誤！時辰需介於 0～23，分鐘需介於 0～59。");
+                return;
+            }
             
             const checkDate = new Date(y, m - 1, d);
             if (checkDate.getFullYear() !== y || checkDate.getMonth() !== (m - 1) || checkDate.getDate() !== d) {
-                alert(`錯誤：您輸入的日期 ${y}年${m}月${d}日 並不存在，請重新選擇。`);
+                alert(`錯誤：您輸入的日期 ${y}年${m}月${d}日 並不存在，請重新檢查。`);
                 return;
             }
-
-            const h = parseInt(document.getElementById('sel-hour24').value);
-            const min = parseInt(document.getElementById('sel-minute').value);
             currentDate = new Date(y, m - 1, d, h, min); 
             
             const exactLunar = Solar.fromYmdHms(y, m, d, h, min, 0).getLunar();
