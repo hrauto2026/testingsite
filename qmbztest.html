@@ -280,18 +280,43 @@
                     <input type="number" id="sel-hour24" min="0" max="23" placeholder="HH" class="w-14 p-1.5 text-center border border-gray-300 rounded-lg bg-white text-base sm:text-lg font-bold outline-none focus:ring-2 focus:ring-indigo-400">
                     <span class="text-gray-700 text-sm sm:text-base font-bold">時</span>
                 </div>
-                <div class="flex items-center gap-0.5">
-                    <select id="sel-minute" class="p-1.5 border border-gray-300 rounded-lg bg-white text-base sm:text-lg font-bold outline-none"></select>
-                    <span class="text-gray-700 text-sm sm:text-base font-bold">分</span>
-                </div>
-            </div>
+<div class="flex items-center gap-0.5">
+    <input type="number" id="sel-minute" min="0" max="59" placeholder="分" class="w-14 p-1.5 text-center border border-gray-300 rounded-lg bg-white text-base sm:text-lg font-bold outline-none focus:ring-2 focus:ring-indigo-400">
+    <span class="text-gray-700 text-sm sm:text-base font-bold">分</span>
+</div>            </div>
 
-            <!-- 八字下拉選單 -->
+<!-- 八字點選按鈕組 (點擊開啟兩步選擇器，相容原有 ID) -->
             <div id="bazi-selectors" class="hidden justify-center items-center gap-2 flex-wrap">
-                <div class="flex items-center gap-0.5"><select id="sel-bazi-y" class="p-1.5 border border-amber-300 rounded-lg bg-amber-50 text-base sm:text-lg font-bold outline-none"></select><span class="text-gray-700 text-sm sm:text-base font-bold">年</span></div>
-                <div class="flex items-center gap-0.5"><select id="sel-bazi-m" class="p-1.5 border border-amber-300 rounded-lg bg-amber-50 text-base sm:text-lg font-bold outline-none"></select><span class="text-gray-700 text-sm sm:text-base font-bold">月</span></div>
-                <div class="flex items-center gap-0.5"><select id="sel-bazi-d" class="p-1.5 border border-amber-300 rounded-lg bg-amber-50 text-base sm:text-lg font-bold outline-none"></select><span class="text-gray-700 text-sm sm:text-base font-bold">日</span></div>
-                <div class="flex items-center gap-0.5"><select id="sel-bazi-h" class="p-1.5 border border-amber-300 rounded-lg bg-amber-50 text-base sm:text-lg font-bold outline-none"></select><span class="text-gray-700 text-sm sm:text-base font-bold">時</span></div>
+                <!-- 隱藏 input 供搜尋函式讀取，保持 100% 相容 -->
+                <input type="hidden" id="sel-bazi-y" value="">
+                <input type="hidden" id="sel-bazi-m" value="">
+                <input type="hidden" id="sel-bazi-d" value="">
+                <input type="hidden" id="sel-bazi-h" value="">
+
+                <div class="flex items-center gap-0.5">
+                    <button type="button" onclick="openBaziPicker('y')" id="btn-bazi-y" class="px-2.5 py-1.5 border-2 border-amber-300 rounded-xl bg-amber-50 hover:bg-amber-100 text-base sm:text-lg font-black shadow-sm transition active:scale-95 flex items-center gap-1">
+                        <span id="txt-bazi-y">--</span> <span class="text-xs text-amber-600 font-normal">▼</span>
+                    </button>
+                    <span class="text-gray-700 text-sm sm:text-base font-bold">年</span>
+                </div>
+                <div class="flex items-center gap-0.5">
+                    <button type="button" onclick="openBaziPicker('m')" id="btn-bazi-m" class="px-2.5 py-1.5 border-2 border-amber-300 rounded-xl bg-amber-50 hover:bg-amber-100 text-base sm:text-lg font-black shadow-sm transition active:scale-95 flex items-center gap-1">
+                        <span id="txt-bazi-m">--</span> <span class="text-xs text-amber-600 font-normal">▼</span>
+                    </button>
+                    <span class="text-gray-700 text-sm sm:text-base font-bold">月</span>
+                </div>
+                <div class="flex items-center gap-0.5">
+                    <button type="button" onclick="openBaziPicker('d')" id="btn-bazi-d" class="px-2.5 py-1.5 border-2 border-amber-300 rounded-xl bg-amber-50 hover:bg-amber-100 text-base sm:text-lg font-black shadow-sm transition active:scale-95 flex items-center gap-1">
+                        <span id="txt-bazi-d">--</span> <span class="text-xs text-amber-600 font-normal">▼</span>
+                    </button>
+                    <span class="text-gray-700 text-sm sm:text-base font-bold">日</span>
+                </div>
+                <div class="flex items-center gap-0.5">
+                    <button type="button" onclick="openBaziPicker('h')" id="btn-bazi-h" class="px-2.5 py-1.5 border-2 border-amber-300 rounded-xl bg-amber-50 hover:bg-amber-100 text-base sm:text-lg font-black shadow-sm transition active:scale-95 flex items-center gap-1">
+                        <span id="txt-bazi-h">--</span> <span class="text-xs text-amber-600 font-normal">▼</span>
+                    </button>
+                    <span class="text-gray-700 text-sm sm:text-base font-bold">時</span>
+                </div>
             </div>
         </div>
 
@@ -970,6 +995,53 @@
         <h3 class="text-xl mb-2 text-center text-amber-800 font-bold tracking-widest">四柱搜尋結果</h3>
         <p class="text-xs text-gray-500 text-center mb-4">搜尋範圍：1700年至2050年</p>
         <div id="bazi-result-list" class="flex flex-col border border-gray-100 rounded-lg overflow-hidden max-h-[50vh] overflow-y-auto">
+        </div>
+    </div>
+</div>
+
+<!-- 🌟 兩步點選干支選擇器彈窗 (方案三) -->
+<div id="bazi-picker-modal" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm hidden flex justify-center items-center z-[70] p-3 sm:p-4 select-none">
+    <div class="bg-white rounded-2xl shadow-2xl p-4 sm:p-5 max-w-sm w-full border-t-8 border-amber-500 flex flex-col gap-3">
+        <!-- 頂部標題與關閉按鈕 -->
+        <div class="flex justify-between items-center pb-1 border-b border-amber-100">
+            <h3 class="text-base sm:text-lg font-black text-amber-950 flex items-center gap-1">
+                <span>📜 選擇四柱干支</span>
+            </h3>
+            <button onclick="closeBaziPicker()" class="text-gray-400 hover:text-black font-bold text-xl px-1">✖</button>
+        </div>
+
+        <!-- 四柱切換標籤頁 (點擊可隨時切換要設定的柱) -->
+        <div class="grid grid-cols-4 gap-1 p-1 bg-amber-50/70 rounded-xl border border-amber-200 text-center">
+            <button type="button" id="tab-pillar-y" onclick="switchPickerPillar('y')" class="py-1 px-1 rounded-lg text-xs font-black transition-all">年柱<br><span id="tab-val-y" class="text-xs sm:text-sm">--</span></button>
+            <button type="button" id="tab-pillar-m" onclick="switchPickerPillar('m')" class="py-1 px-1 rounded-lg text-xs font-black transition-all">月柱<br><span id="tab-val-m" class="text-xs sm:text-sm">--</span></button>
+            <button type="button" id="tab-pillar-d" onclick="switchPickerPillar('d')" class="py-1 px-1 rounded-lg text-xs font-black transition-all">日柱<br><span id="tab-val-d" class="text-xs sm:text-sm">--</span></button>
+            <button type="button" id="tab-pillar-h" onclick="switchPickerPillar('h')" class="py-1 px-1 rounded-lg text-xs font-black transition-all">時柱<br><span id="tab-val-h" class="text-xs sm:text-sm">--</span></button>
+        </div>
+
+        <!-- 步驟一：選擇天干 (10 個天干，5x2 矩陣) -->
+        <div>
+            <div class="text-xs font-bold text-gray-500 mb-1.5 flex justify-between items-center">
+                <span>1️⃣ 選擇天干</span>
+                <span class="text-[11px] text-amber-700 font-bold" id="picker-hint-step">目前：天干【<span id="cur-stem-display" class="font-black text-amber-900">甲</span>】</span>
+            </div>
+            <div id="picker-stem-grid" class="grid grid-cols-5 gap-1.5">
+                <!-- 由 JavaScript 動態生成 10 個天干按鈕 -->
+            </div>
+        </div>
+
+        <!-- 步驟二：選擇地支 (6 個合法地支，3x2 矩陣) -->
+        <div>
+            <div class="text-xs font-bold text-gray-500 mb-1.5 flex justify-between items-center">
+                <span>2️⃣ 選擇地支 (點選即確認並跳下一柱)</span>
+            </div>
+            <div id="picker-branch-grid" class="grid grid-cols-3 gap-2">
+                <!-- 由 JavaScript 根據所選天干動態生成 6 個地支按鈕 -->
+            </div>
+        </div>
+
+        <!-- 底部確認按鈕 -->
+        <div class="pt-2 border-t border-gray-100 text-center">
+            <button type="button" onclick="closeBaziPicker()" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 rounded-xl text-sm shadow transition active:scale-95">完成設定</button>
         </div>
     </div>
 </div>
@@ -2392,13 +2464,13 @@ function initSelectors() {
     const fxSel = document.getElementById('sel-feixing-year');
     const compassFxSel = document.getElementById('sel-compass-feixing-year');
     
-    // 飛星選單支援 1700 至 2050 年
+    // 飛星年份維持 1700~2050 年下拉選單
     for (let i = 1700; i <= 2050; i++) {
         if (ySel && ySel.tagName === 'SELECT') ySel.add(new Option(i, i));
         if (fxSel) fxSel.add(new Option(i + "年", i));
         if (compassFxSel) compassFxSel.add(new Option(i + "年", i));
     }
-    // 判斷若元素為 select 才注入選項，若是 input 則自動跳過，防止報錯
+    // 只有在元素仍為 select 時才執行注入，已改為 input 的欄位自動跳過
     if (mSel && mSel.tagName === 'SELECT') for (let i = 1; i <= 12; i++) mSel.add(new Option(i, i));
     if (dSel && dSel.tagName === 'SELECT') for (let i = 1; i <= 31; i++) dSel.add(new Option(i, i));
     if (hSel && hSel.tagName === 'SELECT') for (let i = 0; i <= 23; i++) hSel.add(new Option(i.toString().padStart(2, '0'), i));
@@ -2420,37 +2492,31 @@ function initSelectors() {
     }
 }
 
-    function initBaziSelectors() {
-        const sortedJiaZi = [...JIA_ZI_ARRAY].sort((a, b) => {
-            const stemA = STEMS.indexOf(a[0]);
-            const stemB = STEMS.indexOf(b[0]);
-            if (stemA !== stemB) return stemA - stemB;
-            return JIA_ZI_ARRAY.indexOf(a) - JIA_ZI_ARRAY.indexOf(b);
-        });
-
-        ['sel-bazi-y', 'sel-bazi-m', 'sel-bazi-d', 'sel-bazi-h'].forEach(id => {
-            let sel = document.getElementById(id);
-            sortedJiaZi.forEach(gz => {
-                sel.add(new Option(gz, gz));
-            });
-        });
-        
+function initBaziSelectors() {
         try {
             const nowLunar = Solar.fromDate(new Date()).getLunar();
             const noonLunar = Solar.fromYmdHms(new Date().getFullYear(), new Date().getMonth()+1, new Date().getDate(), 12, 0, 0).getLunar();
-            document.getElementById('sel-bazi-y').value = nowLunar.getYearInGanZhiExact();
-            document.getElementById('sel-bazi-m').value = nowLunar.getMonthInGanZhiExact();
-            document.getElementById('sel-bazi-d').value = noonLunar.getDayInGanZhiExact();
+            
+            const curY = nowLunar.getYearInGanZhiExact();
+            const curM = nowLunar.getMonthInGanZhiExact();
+            const curD = noonLunar.getDayInGanZhiExact();
             
             let hIdx = Math.floor((new Date().getHours() + 1) % 24 / 2);
             let timeBranch = BRANCHES[hIdx];
-            let dayStem = noonLunar.getDayInGanZhiExact().charAt(0);
+            let dayStem = curD.charAt(0);
             let dayStemIdx = STEMS.indexOf(dayStem);
             let hStemIdx = ((dayStemIdx % 5) * 2 + hIdx) % 10;
-            document.getElementById('sel-bazi-h').value = STEMS[hStemIdx] + timeBranch;
-        } catch(e) {}
-    }
+            const curH = STEMS[hStemIdx] + timeBranch;
 
+            // 初始化設定按鈕與隱藏欄位值
+            setBaziPillarValue('y', curY);
+            setBaziPillarValue('m', curM);
+            setBaziPillarValue('d', curD);
+            setBaziPillarValue('h', curH);
+        } catch(e) {
+            console.error("八字預設值初始化錯誤", e);
+        }
+    }
     function updateSelectorsFromDate(d) {
         document.getElementById('sel-year').value = d.getFullYear();
         document.getElementById('sel-month').value = d.getMonth() + 1;
@@ -2463,6 +2529,122 @@ function initSelectors() {
             fxSel.value = d.getFullYear();
         }
         updateJieQiYearBtn();
+    }
+
+// ==================== 方案三：兩步干支選擇器邏輯 ====================
+    let curPickerPillar = 'y'; // 'y' | 'm' | 'd' | 'h'
+    let curPickerStem = '甲';
+
+    // 天干對應的 6 個合法地支
+    const YANG_BRANCHES = ['子', '寅', '辰', '午', '申', '戌'];
+    const YIN_BRANCHES  = ['丑', '卯', '巳', '未', '酉', '亥'];
+
+    function openBaziPicker(pillar) {
+        curPickerPillar = pillar || 'y';
+        const currentVal = document.getElementById('sel-bazi-' + curPickerPillar)?.value || '甲子';
+        curPickerStem = currentVal.charAt(0) || '甲';
+
+        renderBaziPickerUI();
+        const modal = document.getElementById('bazi-picker-modal');
+        if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeBaziPicker() {
+        const modal = document.getElementById('bazi-picker-modal');
+        if (modal) modal.classList.add('hidden');
+    }
+
+    function switchPickerPillar(pillar) {
+        curPickerPillar = pillar;
+        const currentVal = document.getElementById('sel-bazi-' + curPickerPillar)?.value || '甲子';
+        curPickerStem = currentVal.charAt(0) || '甲';
+        renderBaziPickerUI();
+    }
+
+    function selectPickerStem(stem) {
+        curPickerStem = stem;
+        renderBaziPickerUI();
+    }
+
+    function selectPickerBranch(branch) {
+        const fullGZ = curPickerStem + branch;
+        setBaziPillarValue(curPickerPillar, fullGZ);
+
+        // 🌟 自動跳至下一柱 (年 ➔ 月 ➔ 日 ➔ 時 ➔ 自動關閉)
+        const pillarOrder = ['y', 'm', 'd', 'h'];
+        const nextIdx = pillarOrder.indexOf(curPickerPillar) + 1;
+        if (nextIdx < pillarOrder.length) {
+            switchPickerPillar(pillarOrder[nextIdx]);
+        } else {
+            closeBaziPicker(); // 時柱選完自動完成關閉
+        }
+    }
+
+    function setBaziPillarValue(pillar, gz) {
+        const inputEl = document.getElementById('sel-bazi-' + pillar);
+        const txtEl = document.getElementById('txt-bazi-' + pillar);
+        const tabValEl = document.getElementById('tab-val-' + pillar);
+        
+        if (inputEl) inputEl.value = gz;
+        if (txtEl) txtEl.innerHTML = colorizeGanZhi(gz);
+        if (tabValEl) tabValEl.innerHTML = colorizeGanZhi(gz);
+    }
+
+    function renderBaziPickerUI() {
+        // 1. 渲染頂部四柱標籤的選中狀態
+        ['y', 'm', 'd', 'h'].forEach(p => {
+            const tabBtn = document.getElementById('tab-pillar-' + p);
+            if (!tabBtn) return;
+            if (p === curPickerPillar) {
+                tabBtn.className = "py-1.5 px-1 rounded-lg text-xs font-black transition-all bg-amber-600 text-white shadow-sm ring-2 ring-amber-400";
+            } else {
+                tabBtn.className = "py-1.5 px-1 rounded-lg text-xs font-black transition-all text-amber-900 bg-white/80 hover:bg-amber-100 border border-amber-200";
+            }
+        });
+
+        // 2. 顯示目前選中天干
+        const curStemDisp = document.getElementById('cur-stem-display');
+        if (curStemDisp) curStemDisp.innerHTML = colorizeGanZhi(curPickerStem);
+
+        // 3. 渲染 10 個天干按鈕
+        const stemGrid = document.getElementById('picker-stem-grid');
+        if (stemGrid) {
+            stemGrid.innerHTML = STEMS.map(s => {
+                const isSelected = (s === curPickerStem);
+                const sColor = WUXING_COLORS[s] || '#000';
+                const activeStyle = isSelected 
+                    ? "bg-amber-100 border-2 border-amber-600 shadow ring-2 ring-amber-400 scale-105" 
+                    : "bg-gray-50 border border-gray-200 hover:bg-amber-50/60";
+                return `
+                    <button type="button" onclick="selectPickerStem('${s}')" class="py-2 rounded-xl text-base font-black transition active:scale-95 flex items-center justify-center ${activeStyle}">
+                        <span style="color: ${sColor};">${s}</span>
+                    </button>
+                `;
+            }).join('');
+        }
+
+        // 4. 根據天干陰陽，取得 6 個對應地支
+        const isYang = ['甲', '丙', '戊', '庚', '壬'].includes(curPickerStem);
+        const validBranches = isYang ? YANG_BRANCHES : YIN_BRANCHES;
+        const currentPillarVal = document.getElementById('sel-bazi-' + curPickerPillar)?.value || '';
+        const currentBranch = currentPillarVal.charAt(1);
+
+        const branchGrid = document.getElementById('picker-branch-grid');
+        if (branchGrid) {
+            branchGrid.innerHTML = validBranches.map(b => {
+                const isSelected = (b === currentBranch && curPickerStem === currentPillarVal.charAt(0));
+                const bColor = WUXING_COLORS[b] || '#000';
+                const activeStyle = isSelected 
+                    ? "bg-amber-200 border-2 border-amber-600 shadow ring-2 ring-amber-400" 
+                    : "bg-white border-2 border-amber-200 hover:bg-amber-50";
+                return `
+                    <button type="button" onclick="selectPickerBranch('${b}')" class="py-2.5 rounded-xl text-lg font-black transition active:scale-95 flex items-center justify-center gap-1 ${activeStyle}">
+                        <span class="text-xs text-stone-400 font-bold">${curPickerStem}</span>
+                        <span style="color: ${bColor};">${b}</span>
+                    </button>
+                `;
+            }).join('');
+        }
     }
 
     function updateJieQiYearBtn() { document.getElementById('btn-jieqi-year').innerText = document.getElementById('sel-year').value; }
