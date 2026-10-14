@@ -1041,8 +1041,10 @@
         </div>
 
         <!-- 底部確認按鈕 (加高並放大字級) -->
-        <div class="pt-2 border-t border-gray-100 text-center">
-            <button type="button" onclick="closeBaziPicker()" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-black py-3 sm:py-3.5 rounded-2xl text-base sm:text-lg shadow-md transition active:scale-95">完成設定</button>
+<div class="pt-2 border-t border-gray-100 text-center">
+            <button type="button" onclick="closeBaziPicker(); executeBaziSearch();" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-black py-3 sm:py-3.5 rounded-2xl text-base sm:text-lg shadow-md transition active:scale-95 flex items-center justify-center gap-1.5">
+                <span>🔍 搜尋</span>
+            </button>
         </div>
     </div>
 </div>
@@ -1448,10 +1450,10 @@ function renderDaYunAndLiuNian() {
     const daYun = currentBaziChartData.daYun;
 
     let dyHtml = '';
-    daYun.forEach((dy, idx) => {
+daYun.forEach((dy, idx) => {
         const isSelected = (idx === selectedDaYunIndex);
         const activeCardStyle = isSelected 
-            ? 'border-amber-600 bg-amber-100/90 shadow ring-2 ring-amber-500' 
+            ? 'border-stone-200 bg-amber-100/90 shadow' 
             : 'border-stone-200 bg-white hover:bg-amber-50/60';
 
         const gColor = WUXING_COLORS[dy.gan] || '#1a202c';
@@ -2567,17 +2569,17 @@ function initBaziSelectors() {
         renderBaziPickerUI();
     }
 
-    function selectPickerBranch(branch) {
+function selectPickerBranch(branch) {
         const fullGZ = curPickerStem + branch;
         setBaziPillarValue(curPickerPillar, fullGZ);
 
-        // 🌟 自動跳至下一柱 (年 ➔ 月 ➔ 日 ➔ 時 ➔ 自動關閉)
+        // 🌟 自動跳至下一柱 (年 ➔ 月 ➔ 日 ➔ 時)；時柱選取後維持於當前柱，供使用者檢閱並點擊「搜尋」
         const pillarOrder = ['y', 'm', 'd', 'h'];
         const nextIdx = pillarOrder.indexOf(curPickerPillar) + 1;
         if (nextIdx < pillarOrder.length) {
             switchPickerPillar(pillarOrder[nextIdx]);
         } else {
-            closeBaziPicker(); // 時柱選完自動完成關閉
+            renderBaziPickerUI();
         }
     }
 
