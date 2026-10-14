@@ -281,7 +281,7 @@
                     <span class="text-gray-700 text-sm sm:text-base font-bold">時</span>
                 </div>
 <div class="flex items-center gap-0.5">
-    <input type="number" id="sel-minute" min="0" max="59" placeholder="分" class="w-14 p-1.5 text-center border border-gray-300 rounded-lg bg-white text-base sm:text-lg font-bold outline-none focus:ring-2 focus:ring-indigo-400">
+    <input type="number" id="sel-minute" min="0" max="59" placeholder="SS" class="w-14 p-1.5 text-center border border-gray-300 rounded-lg bg-white text-base sm:text-lg font-bold outline-none focus:ring-2 focus:ring-indigo-400">
     <span class="text-gray-700 text-sm sm:text-base font-bold">分</span>
 </div>            </div>
 
@@ -999,49 +999,50 @@
     </div>
 </div>
 
-<!-- 🌟 兩步點選干支選擇器彈窗 (方案三) -->
-<div id="bazi-picker-modal" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm hidden flex justify-center items-center z-[70] p-3 sm:p-4 select-none">
-    <div class="bg-white rounded-2xl shadow-2xl p-4 sm:p-5 max-w-sm w-full border-t-8 border-amber-500 flex flex-col gap-3">
+<!-- 🌟 兩步點選干支選擇器彈窗 (加大 50% 版) -->
+<div id="bazi-picker-modal" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm hidden flex justify-center items-center z-[70] p-3 sm:p-6 select-none overflow-y-auto">
+    <!-- 寬度由 max-w-sm (384px) 改為 max-w-xl (576px)，加大 50% -->
+    <div class="bg-white rounded-3xl shadow-2xl p-5 sm:p-7 max-w-xl w-full border-t-[10px] border-amber-500 flex flex-col gap-4 sm:gap-5 my-auto">
         <!-- 頂部標題與關閉按鈕 -->
-        <div class="flex justify-between items-center pb-1 border-b border-amber-100">
-            <h3 class="text-base sm:text-lg font-black text-amber-950 flex items-center gap-1">
+        <div class="flex justify-between items-center pb-2 border-b border-amber-100">
+            <h3 class="text-xl sm:text-2xl font-black text-amber-950 flex items-center gap-1.5">
                 <span>📜 選擇四柱干支</span>
             </h3>
-            <button onclick="closeBaziPicker()" class="text-gray-400 hover:text-black font-bold text-xl px-1">✖</button>
+            <button onclick="closeBaziPicker()" class="text-gray-400 hover:text-black font-bold text-2xl sm:text-3xl px-1 transition-colors">✖</button>
         </div>
 
-        <!-- 四柱切換標籤頁 (點擊可隨時切換要設定的柱) -->
-        <div class="grid grid-cols-4 gap-1 p-1 bg-amber-50/70 rounded-xl border border-amber-200 text-center">
-            <button type="button" id="tab-pillar-y" onclick="switchPickerPillar('y')" class="py-1 px-1 rounded-lg text-xs font-black transition-all">年柱<br><span id="tab-val-y" class="text-xs sm:text-sm">--</span></button>
-            <button type="button" id="tab-pillar-m" onclick="switchPickerPillar('m')" class="py-1 px-1 rounded-lg text-xs font-black transition-all">月柱<br><span id="tab-val-m" class="text-xs sm:text-sm">--</span></button>
-            <button type="button" id="tab-pillar-d" onclick="switchPickerPillar('d')" class="py-1 px-1 rounded-lg text-xs font-black transition-all">日柱<br><span id="tab-val-d" class="text-xs sm:text-sm">--</span></button>
-            <button type="button" id="tab-pillar-h" onclick="switchPickerPillar('h')" class="py-1 px-1 rounded-lg text-xs font-black transition-all">時柱<br><span id="tab-val-h" class="text-xs sm:text-sm">--</span></button>
+        <!-- 四柱切換標籤頁 (加大按鍵高度與字級) -->
+        <div class="grid grid-cols-4 gap-2 p-1.5 bg-amber-50/70 rounded-2xl border border-amber-200 text-center">
+            <button type="button" id="tab-pillar-y" onclick="switchPickerPillar('y')" class="py-2.5 px-1 rounded-xl text-sm font-black transition-all">年柱<br><span id="tab-val-y" class="text-base sm:text-lg">--</span></button>
+            <button type="button" id="tab-pillar-m" onclick="switchPickerPillar('m')" class="py-2.5 px-1 rounded-xl text-sm font-black transition-all">月柱<br><span id="tab-val-m" class="text-base sm:text-lg">--</span></button>
+            <button type="button" id="tab-pillar-d" onclick="switchPickerPillar('d')" class="py-2.5 px-1 rounded-xl text-sm font-black transition-all">日柱<br><span id="tab-val-d" class="text-base sm:text-lg">--</span></button>
+            <button type="button" id="tab-pillar-h" onclick="switchPickerPillar('h')" class="py-2.5 px-1 rounded-xl text-sm font-black transition-all">時柱<br><span id="tab-val-h" class="text-base sm:text-lg">--</span></button>
         </div>
 
-        <!-- 步驟一：選擇天干 (10 個天干，5x2 矩陣) -->
+        <!-- 步驟一：選擇天干 (按鍵間距加大) -->
         <div>
-            <div class="text-xs font-bold text-gray-500 mb-1.5 flex justify-between items-center">
+            <div class="text-sm sm:text-base font-bold text-gray-600 mb-2 flex justify-between items-center">
                 <span>1️⃣ 選擇天干</span>
-                <span class="text-[11px] text-amber-700 font-bold" id="picker-hint-step">目前：天干【<span id="cur-stem-display" class="font-black text-amber-900">甲</span>】</span>
+                <span class="text-xs sm:text-sm text-amber-800 font-bold" id="picker-hint-step">目前：天干【<span id="cur-stem-display" class="font-black text-amber-900 text-base sm:text-lg">甲</span>】</span>
             </div>
-            <div id="picker-stem-grid" class="grid grid-cols-5 gap-1.5">
-                <!-- 由 JavaScript 動態生成 10 個天干按鈕 -->
+            <div id="picker-stem-grid" class="grid grid-cols-5 gap-2 sm:gap-2.5">
+                <!-- 由 JavaScript 動態生成按鈕 -->
             </div>
         </div>
 
-        <!-- 步驟二：選擇地支 (6 個合法地支，3x2 矩陣) -->
+        <!-- 步驟二：選擇地支 (按鍵間距加大) -->
         <div>
-            <div class="text-xs font-bold text-gray-500 mb-1.5 flex justify-between items-center">
-                <span>2️⃣ 選擇地支 (點選即確認並跳下一柱)</span>
+            <div class="text-sm sm:text-base font-bold text-gray-600 mb-2 flex justify-between items-center">
+                <span>2️⃣ 選擇地支 <span class="text-xs sm:text-sm font-normal text-stone-500">(點選即確認並跳下一柱)</span></span>
             </div>
-            <div id="picker-branch-grid" class="grid grid-cols-3 gap-2">
-                <!-- 由 JavaScript 根據所選天干動態生成 6 個地支按鈕 -->
+            <div id="picker-branch-grid" class="grid grid-cols-3 gap-2.5 sm:gap-3">
+                <!-- 由 JavaScript 動態生成按鈕 -->
             </div>
         </div>
 
-        <!-- 底部確認按鈕 -->
+        <!-- 底部確認按鈕 (加高並放大字級) -->
         <div class="pt-2 border-t border-gray-100 text-center">
-            <button type="button" onclick="closeBaziPicker()" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 rounded-xl text-sm shadow transition active:scale-95">完成設定</button>
+            <button type="button" onclick="closeBaziPicker()" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-black py-3 sm:py-3.5 rounded-2xl text-base sm:text-lg shadow-md transition active:scale-95">完成設定</button>
         </div>
     </div>
 </div>
@@ -2590,15 +2591,15 @@ function initBaziSelectors() {
         if (tabValEl) tabValEl.innerHTML = colorizeGanZhi(gz);
     }
 
-    function renderBaziPickerUI() {
-        // 1. 渲染頂部四柱標籤的選中狀態
+function renderBaziPickerUI() {
+        // 1. 渲染頂部四柱標籤的選中狀態 (加大高度與字級)
         ['y', 'm', 'd', 'h'].forEach(p => {
             const tabBtn = document.getElementById('tab-pillar-' + p);
             if (!tabBtn) return;
             if (p === curPickerPillar) {
-                tabBtn.className = "py-1.5 px-1 rounded-lg text-xs font-black transition-all bg-amber-600 text-white shadow-sm ring-2 ring-amber-400";
+                tabBtn.className = "py-2.5 px-1 rounded-xl text-sm font-black transition-all bg-amber-600 text-white shadow-md ring-2 ring-amber-400";
             } else {
-                tabBtn.className = "py-1.5 px-1 rounded-lg text-xs font-black transition-all text-amber-900 bg-white/80 hover:bg-amber-100 border border-amber-200";
+                tabBtn.className = "py-2.5 px-1 rounded-xl text-sm font-black transition-all text-amber-900 bg-white/90 hover:bg-amber-100 border border-amber-200";
             }
         });
 
@@ -2606,24 +2607,24 @@ function initBaziSelectors() {
         const curStemDisp = document.getElementById('cur-stem-display');
         if (curStemDisp) curStemDisp.innerHTML = colorizeGanZhi(curPickerStem);
 
-        // 3. 渲染 10 個天干按鈕
+        // 3. 渲染 10 個天干按鈕 (加大至 py-3.5，字級由 text-base 改為 text-2xl)
         const stemGrid = document.getElementById('picker-stem-grid');
         if (stemGrid) {
             stemGrid.innerHTML = STEMS.map(s => {
                 const isSelected = (s === curPickerStem);
                 const sColor = WUXING_COLORS[s] || '#000';
                 const activeStyle = isSelected 
-                    ? "bg-amber-100 border-2 border-amber-600 shadow ring-2 ring-amber-400 scale-105" 
-                    : "bg-gray-50 border border-gray-200 hover:bg-amber-50/60";
+                    ? "bg-amber-100 border-2 border-amber-600 shadow-md ring-2 ring-amber-400 scale-105" 
+                    : "bg-gray-50 border border-gray-200 hover:bg-amber-50/70";
                 return `
-                    <button type="button" onclick="selectPickerStem('${s}')" class="py-2 rounded-xl text-base font-black transition active:scale-95 flex items-center justify-center ${activeStyle}">
+                    <button type="button" onclick="selectPickerStem('${s}')" class="py-3 sm:py-3.5 rounded-2xl text-xl sm:text-2xl font-black transition active:scale-95 flex items-center justify-center ${activeStyle}">
                         <span style="color: ${sColor};">${s}</span>
                     </button>
                 `;
             }).join('');
         }
 
-        // 4. 根據天干陰陽，取得 6 個對應地支
+        // 4. 根據天干陰陽，取得 6 個對應地支 (加大至 py-4，字級由 text-lg 改為 text-2xl/3xl)
         const isYang = ['甲', '丙', '戊', '庚', '壬'].includes(curPickerStem);
         const validBranches = isYang ? YANG_BRANCHES : YIN_BRANCHES;
         const currentPillarVal = document.getElementById('sel-bazi-' + curPickerPillar)?.value || '';
@@ -2635,11 +2636,11 @@ function initBaziSelectors() {
                 const isSelected = (b === currentBranch && curPickerStem === currentPillarVal.charAt(0));
                 const bColor = WUXING_COLORS[b] || '#000';
                 const activeStyle = isSelected 
-                    ? "bg-amber-200 border-2 border-amber-600 shadow ring-2 ring-amber-400" 
+                    ? "bg-amber-200 border-2 border-amber-600 shadow-md ring-2 ring-amber-400 scale-[1.02]" 
                     : "bg-white border-2 border-amber-200 hover:bg-amber-50";
                 return `
-                    <button type="button" onclick="selectPickerBranch('${b}')" class="py-2.5 rounded-xl text-lg font-black transition active:scale-95 flex items-center justify-center gap-1 ${activeStyle}">
-                        <span class="text-xs text-stone-400 font-bold">${curPickerStem}</span>
+                    <button type="button" onclick="selectPickerBranch('${b}')" class="py-3.5 sm:py-4 rounded-2xl text-2xl sm:text-3xl font-black transition active:scale-95 flex items-center justify-center gap-1.5 ${activeStyle}">
+                        <span class="text-sm sm:text-base text-stone-400 font-bold">${curPickerStem}</span>
                         <span style="color: ${bColor};">${b}</span>
                     </button>
                 `;
